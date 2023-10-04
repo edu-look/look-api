@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import com.google.api.services.classroom.ClassroomScopes;
+import com.google.api.services.classroom.model.*;
+import com.google.api.services.classroom.Classroom;
+
+import java.util.List;
+
 @Log4j2
 @RestController
 @AllArgsConstructor
@@ -20,6 +26,7 @@ import reactor.core.publisher.Mono;
 public class GoogleClassroomController {
 
     GoogleClassroomClient googleClassroomClient;
+    private final Classroom service;
 
     @GetMapping("/v1/courses/{id}")
     public Mono<CourseResponse> getCourseById (@PathVariable String id){
@@ -32,4 +39,19 @@ public class GoogleClassroomController {
         return googleClassroomClient.getAllCourses();
     }
 
+    @GetMapping("courses")
+    public List<Course> getAllCoursesRaw() {
+        try {
+            var response = service.courses().list()
+                .setPageSize(10)
+                .execute();
+            
+            return response.getCourses();
+        }
+        catch(Exception e) {
+            log.error("{}", e);
+        }
+
+        return List.of();
+    }
 }
