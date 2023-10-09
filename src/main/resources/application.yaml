@@ -12,6 +12,10 @@ spring:
   application:
     name: look-service-account
 
+firebase:
+  serviceAccountKeyPath: src/main/resources/serviceAccountKey.json
+  databaseUrl: https://look-project-400817-default-rtdb.firebaseio.com
+
 
 
 # security:
