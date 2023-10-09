@@ -20,11 +20,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@EnableWebSecurity
-@Configuration
+// @EnableWebSecurity
+// @Configuration
 public class WebSecurityConfig {
 
-    //configuração está hard code, mas vou mudar pra pegar do yaml
+    // configuração está hard code, mas vou mudar pra pegar do yaml
     private static final String CLIENT_REGISTRATION_ID = "google";
     private static final String REDIRECT_URI_TEMPLATE = "http://localhost:8085/login/oauth2/code/google";
 

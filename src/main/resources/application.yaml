@@ -2,28 +2,40 @@ server:
   port: 8085
 
 spring:
+  cloud:
+    gcp:
+      project-id: look-project-400817
+      credentials:
+        scopes: 
+         - https://www.googleapis.com/auth/cloud-platform
+        location: classpath:credentials.json
   application:
-    name: look-authuser-service
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            clientId: 279941193466-b5qg23t7n1s50h2aspaec6l4ucavkjqn.apps.googleusercontent.com
-            clientSecret: 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
-            scope:
-              - openid
-              - email
-              - profile
-        provider:
-          google:
-            authorizationUri: https://accounts.google.com/o/oauth2/auth
-            tokenUri: https://oauth2.googleapis.com/token
-            userInfoUri: https://openidconnect.googleapis.com/v1/userinfo
-            jwkSetUri: https://www.googleapis.com/oauth2/v1/certs
+    name: look-service-account
 
-logging:
-  level:
-    com.github.edulook: TRACE
-    root: INFO
-    org.springframework.web: DEBUG
+
+
+# security:
+#   basic:
+#     enable: false 
+#   oauth2:
+  #     client:
+  #       registration:
+  #         google:
+  #           clientId: 279941193466-b5qg23t7n1s50h2aspaec6l4ucavkjqn.apps.googleusercontent.com
+  #           clientSecret: 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
+  #           scope:
+  #             - openid
+  #             - email
+  #             - profile
+  #       provider:
+  #         google:
+  #           authorizationUri: https://accounts.google.com/o/oauth2/auth
+  #           tokenUri: https://oauth2.googleapis.com/token
+  #           userInfoUri: https://openidconnect.googleapis.com/v1/userinfo
+  #           jwkSetUri: https://www.googleapis.com/oauth2/v1/certs
+
+# logging:
+#   level:
+#     com.github.edulook: TRACE
+#     root: INFO
+#     org.springframework.web: DEBUG

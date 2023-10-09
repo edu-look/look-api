@@ -2,7 +2,12 @@ package com.github.edulook.look.clients;
 
 import com.github.edulook.look.responses.CourseResponse;
 import com.github.edulook.look.responses.ListOfCourses;
+import com.google.api.gax.core.CredentialsProvider;
+
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
