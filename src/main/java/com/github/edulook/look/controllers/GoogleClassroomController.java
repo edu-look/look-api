@@ -30,7 +30,7 @@ public class GoogleClassroomController {
     private final GoogleClassroomClient googleClassroomClient;
 
     private final Classroom client;
-    private final GoogleCredentials credential;
+   // private final GoogleCredentials credential;
     private final CourseService courseService;
 
 
@@ -40,7 +40,7 @@ public class GoogleClassroomController {
         return googleClassroomClient.findCourseInfoById(id);
     }
 
-    @GetMapping("/v1/courses")
+
     public ResponseEntity<List<CourseDto>> listCourses() {
         try {
             List<Course> courses = courseService.listCourses();
@@ -75,6 +75,8 @@ public class GoogleClassroomController {
         courseDTO.setDescription(course.getDescription());
         return courseDTO;
     }
+
+    @GetMapping("/v1/courses")
     public ResponseEntity<?> getAllCourses() throws Exception {
 
         var response = client.courses().list()
@@ -84,8 +86,11 @@ public class GoogleClassroomController {
         return ResponseEntity.ok().body(response);
     }
 
+    /*
     @GetMapping("/v1/token")
     public String token() throws IOException, GeneralSecurityException {
        return String.valueOf(credential);
     }
+
+     */
 }
