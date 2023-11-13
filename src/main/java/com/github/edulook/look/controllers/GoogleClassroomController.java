@@ -24,13 +24,10 @@ import reactor.core.publisher.Mono;
 @Log4j2
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/classroom")
 public class GoogleClassroomController {
 
     private final GoogleClassroomClient googleClassroomClient;
-
     private final Classroom client;
-   // private final GoogleCredentials credential;
     private final CourseService courseService;
 
 
@@ -56,18 +53,6 @@ public class GoogleClassroomController {
         }
     }
 
-    @PostMapping("/v1/courses")
-//    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDTO) {
-//        try {
-//            Course createdCourse = courseService.createCourse(courseDTO.getName(), courseDTO.getDescription());
-//            CourseDto createdCourseDTO = convertToDTO(createdCourse);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(createdCourseDTO);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-
     private CourseDto convertToDTO(Course course) {
         CourseDto courseDTO = new CourseDto();
         courseDTO.setId(course.getId());
@@ -85,12 +70,4 @@ public class GoogleClassroomController {
 
         return ResponseEntity.ok().body(response);
     }
-
-    /*
-    @GetMapping("/v1/token")
-    public String token() throws IOException, GeneralSecurityException {
-       return String.valueOf(credential);
-    }
-
-     */
 }

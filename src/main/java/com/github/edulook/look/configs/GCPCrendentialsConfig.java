@@ -29,15 +29,9 @@ import com.google.auth.oauth2.ServiceAccountCredentials;
 
 import static com.google.api.client.googleapis.auth.oauth2.GoogleOAuthConstants.AUTHORIZATION_SERVER_URL;
 
-// https://github.com/gcbrandao/gcp-auth/blob/master/src/main/java/com/gcbrandao/gcp/auth/gcpauth/GCPAccessToken.java
-// https://developers.google.com/api-client-library/java/google-api-java-client/oauth2?hl=pt-br
-// https://stackoverflow.com/questions/57972607/what-is-the-alternative-to-the-deprecated-googlecredential
 
 @Configuration
 public class GCPCrendentialsConfig {
-
-    private static final String AUTHORIZATION_SERVER_URL =
-            "https://api.dailymotion.com/oauth/authorize";
 
     private static final List<String> SCOPES = List.of(
         ClassroomScopes.CLASSROOM_COURSES_READONLY,
@@ -47,80 +41,42 @@ public class GCPCrendentialsConfig {
         ClassroomScopes.CLASSROOM_PROFILE_EMAILS
     );
 
-    private static final String APPLICATION_NAME = "look-service-account";
-    private static final String USER_EMAIL = "look-service-account@look-project-400817.iam.gserviceaccount.com";
 
-    /*
     @Bean
     public Classroom classroomClientConfig() throws GeneralSecurityException, IOException {
         var httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         var jsonFactory = GsonFactory.getDefaultInstance();
-
-        File credentialsFile = ResourceUtils.getFile("classpath:credentials.json");
-
-        var delegatedCredentials = ServiceAccountCredentials
-            .fromStream(new FileInputStream(credentialsFile))
-            .createDelegated(USER_EMAIL)
-            .createScoped(SCOPES);
-
-        var credentials = new HttpCredentialsAdapter(delegatedCredentials);
-           
+        var DATA_STORE_DIR = new File(System.getProperty("user.home"), ".store/look");
+        var DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
         
-        Classroom service = new Classroom.Builder(httpTransport, jsonFactory, credentials)
-            .setApplicationName(APPLICATION_NAME)
-            .build();
-        
-        return service;
-    }
-
-
-     */
-
-    @Bean
-    public Classroom classroomClientConfig2() throws GeneralSecurityException, IOException {
-        var httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        var jsonFactory = GsonFactory.getDefaultInstance();
-         FileDataStoreFactory DATA_STORE_FACTORY;
-         final File DATA_STORE_DIR =
-                new File(System.getProperty("user.home"), ".store/look");
-
-        DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-
+        // name: look-api-integration - type: Desktop -  client id: 279941193466-64ja...
+        var CLIENT_ID = "279941193466-64ja6mia1h00es4c0v4pk8mse8qhpb36.apps.googleusercontent.com";
+        var CLIENT_SECRET = "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";
 
         AuthorizationCodeFlow flow =
-                new AuthorizationCodeFlow.Builder(
-                        BearerToken.authorizationHeaderAccessMethod(),
-                        httpTransport,
-                        jsonFactory,
-                        new GenericUrl( "https://oauth2.googleapis.com/token"),
-                        new ClientParametersAuthentication(
-                                "AIzaSyBkn7eZmfGwKykWZRaSBpiGGUS5_n1PypY", "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"),
-                        "AIzaSyBkn7eZmfGwKykWZRaSBpiGGUS5_n1PypY",
-                        "https://accounts.google.com/o/oauth2/auth")
-                        .setScopes(SCOPES)
-                        .setClientId("279941193466-64ja6mia1h00es4c0v4pk8mse8qhpb36.apps.googleusercontent.com")
-                        .setDataStoreFactory(DATA_STORE_FACTORY)
-                        .build();
-        // authorize
-        LocalServerReceiver receiver =
-                new LocalServerReceiver.Builder()
-                        .setHost("localhost")
-                        .setPort(8085)
-                        .build();
-       var credentials = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+            new AuthorizationCodeFlow.Builder(
+                BearerToken.authorizationHeaderAccessMethod(),
+                httpTransport,
+                jsonFactory,
+                new GenericUrl("https://oauth2.googleapis.com/token"),
+                new ClientParametersAuthentication(CLIENT_ID, CLIENT_SECRET),
+                CLIENT_ID,
+                "https://accounts.google.com/o/oauth2/auth"
+            )
+            .setScopes(SCOPES)
+            .setDataStoreFactory(DATA_STORE_FACTORY)
+            .build();
 
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder()
+            .setHost("localhost")
+            .setPort(8085)
+            .build();
+        
+        var credentials = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 
-        Classroom service = new Classroom.Builder(httpTransport, jsonFactory, credentials)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        return service;
+       return new Classroom
+            .Builder(httpTransport, jsonFactory, credentials)
+            .setApplicationName(APPLICATION_NAME)
+            .build();
     }
-/*
-    @Bean
-    public GoogleCredentials googleCredentialsDI() throws IOException, GeneralSecurityException {
-        return ServiceAccountCredentials.getApplicationDefault();
-    }
-
- */
 }
