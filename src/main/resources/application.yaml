@@ -1,21 +1,45 @@
+# Environment
+# -------------------------
+# LOOK_APPLICATION_NAME
+# LOOK_GCLOUD_CLIENT_ID
+# LOOK_GCLOUD_CLIENT_SECRET
+# LOOK_GCLOUD_CLIENT_SECRET
+# LOOK_GCLOUD_TOKEN_STORAGE
+# LOOK_SERVER_ADDRESS
+# LOOK_SERVER_PORT
+# LOOK_STORAGE_CREDENTIALS
+# LOOK_STORAGE_URL
+#
+
 server:
-  port: 8085
+  port: ${LOOK_SERVER_PORT:8085}
 
 spring:
-  cloud:
-    gcp:
-      project-id: look-project-400817
-      credentials:
-        scopes: 
-         - https://www.googleapis.com/auth/cloud-platform
-        location: classpath:credentials.json
   application:
-    name: look-service-account
+    name: look-service
 
 firebase:
-  serviceAccountKeyPath: src/main/resources/serviceAccountKey.json
-  databaseUrl: https://look-project-400817-default-rtdb.firebaseio.com
+  serviceAccountKeyPath: ${LOOK_STORAGE_CREDENTIALS:src/main/resources/serviceAccountKey.json}
+  databaseUrl: ${LOOK_STORAGE_URL:https://look-project-400817-default-rtdb.firebaseio.com}
 
+look:
+  cloud:
+    gcp:
+      client:
+        id: ${LOOK_GCLOUD_CLIENT_ID:279941193466-64ja6mia1h00es4c0v4pk8mse8qhpb36.apps.googleusercontent.com}
+        secret: ${LOOK_GCLOUD_CLIENT_SECRET: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}
+        storage: ${LOOK_GCLOUD_TOKEN_STORAGE:tokens}
+      server:
+        token-url: https://oauth2.googleapis.com/token
+        authorization-encoded-url: https://accounts.google.com/o/oauth2/auth
+  application:
+    name: ${LOOK_APPLICATION_NAME:look-service}
+
+logging:
+  level:
+    com.github.edulook: TRACE
+    root: INFO
+    org.springframework.web: DEBUG
 
 
 # security:
@@ -37,9 +61,3 @@ firebase:
   #           tokenUri: https://oauth2.googleapis.com/token
   #           userInfoUri: https://openidconnect.googleapis.com/v1/userinfo
   #           jwkSetUri: https://www.googleapis.com/oauth2/v1/certs
-
-# logging:
-#   level:
-#     com.github.edulook: TRACE
-#     root: INFO
-#     org.springframework.web: DEBUG

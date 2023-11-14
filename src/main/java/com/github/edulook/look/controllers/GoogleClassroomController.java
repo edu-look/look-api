@@ -1,21 +1,21 @@
 package com.github.edulook.look.controllers;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.github.edulook.look.dtos.CourseDto;
-import com.github.edulook.look.services.CourseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.github.edulook.look.clients.GoogleClassroomClient;
+import com.github.edulook.look.dtos.CourseDto;
 import com.github.edulook.look.responses.CourseResponse;
+import com.github.edulook.look.services.CourseService;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.Course;
-import com.google.auth.oauth2.GoogleCredentials;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
