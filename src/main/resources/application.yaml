@@ -17,6 +17,10 @@ server:
 spring:
   application:
     name: look-service
+  # cloud:
+  #   gcp:
+  #     core:
+  #       enabled: false
 
 firebase:
   serviceAccountKeyPath: ${LOOK_STORAGE_CREDENTIALS:src/main/resources/serviceAccountKey.json}

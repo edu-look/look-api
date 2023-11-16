@@ -1,4 +1,4 @@
-package com.github.edulook.look.configs;
+package com.github.edulook.look.infra.config.di;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import com.google.api.services.classroom.ClassroomScopes;
 
 
 @Configuration
-public class GCPCrendentialsConfig {
+public class GoogleClientClassroomDI {
 
     @Value("${look.application.name}")
     private String applicationName;
