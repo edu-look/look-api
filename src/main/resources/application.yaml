@@ -15,12 +15,19 @@ server:
   port: ${LOOK_SERVER_PORT:8085}
 
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${LOOK_GCLOUD_CLIENT_ID:279941193466-64ja6mia1h00es4c0v4pk8mse8qhpb36.apps.googleusercontent.com}
+            client-secret: ${LOOK_GCLOUD_CLIENT_SECRET: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}
+        # resourceserver:
+        #   jwt:
+        #     issuer-uri: https://accounts.google.com
+        #     jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
   application:
     name: look-service
-  # cloud:
-  #   gcp:
-  #     core:
-  #       enabled: false
 
 firebase:
   serviceAccountKeyPath: ${LOOK_STORAGE_CREDENTIALS:src/main/resources/serviceAccountKey.json}
@@ -30,8 +37,6 @@ look:
   cloud:
     gcp:
       client:
-        id: ${LOOK_GCLOUD_CLIENT_ID:279941193466-64ja6mia1h00es4c0v4pk8mse8qhpb36.apps.googleusercontent.com}
-        secret: ${LOOK_GCLOUD_CLIENT_SECRET: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}
         storage: ${LOOK_GCLOUD_TOKEN_STORAGE:tokens}
       server:
         token-url: https://oauth2.googleapis.com/token

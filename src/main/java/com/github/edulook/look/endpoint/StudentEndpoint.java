@@ -1,9 +1,9 @@
 package com.github.edulook.look.endpoint;
 
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import java.security.Principal;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.edulook.look.endpoint.exceptions.ResourceNotFoundException;
@@ -24,13 +24,15 @@ public class StudentEndpoint {
     private final StudentAndDTOMapper mapper;
     
     @GetMapping("profile")
-    public StudentDTO getProfile(@RequestParam(name = "id") String userLogged) {
-        log.debug("student logged: {}", userLogged);
-        
-        var student = studentService
-            .getStudentProfile(userLogged)
-            .orElseThrow(() -> new ResourceNotFoundException(String.format("profile to %s not found", userLogged)));
+    public StudentDTO getProfile(Principal principal) {
+            var user = principal.getName();
 
-        return mapper.toDto(student);
+            log.info("user logged: {}", user);
+
+            var student = studentService
+                .getStudentProfile(user)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("profile to %s not found", user)));
+
+            return mapper.toDto(student);
     }
 }

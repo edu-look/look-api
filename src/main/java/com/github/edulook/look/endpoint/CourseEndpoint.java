@@ -1,6 +1,7 @@
 package com.github.edulook.look.endpoint;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +27,11 @@ public class CourseEndpoint {
 
 
     @GetMapping
-    public List<CourseDTO> getCourses(@RequestParam(name = "id") String userLogged) throws IOException {
-        log.info("Student {} ", userLogged);
+    public List<CourseDTO> getCourses(Principal principal) throws IOException {
+        var user = principal.getName();
+
+        log.info("Student {} ", user);
         return courseAndDTOMapper
-            .toDtoList(courseService.listCourses(userLogged));
+            .toDtoList(courseService.listCourses(user));
     }
 }

@@ -1,18 +1,14 @@
 package com.github.edulook.look.service.student.internal;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.github.edulook.look.core.data.CourseState;
 import com.github.edulook.look.core.model.Student;
-import com.github.edulook.look.core.model.Student.Profile;
 import com.github.edulook.look.core.usecases.GetStudent;
 import com.github.edulook.look.service.student.internal.mapper.ClassroomStudentAndCoreStudentMapper;
 import com.google.api.services.classroom.Classroom;
-import com.google.api.services.classroom.Classroom.UserProfiles;
 import com.google.api.services.classroom.model.UserProfile;
 
 import lombok.AllArgsConstructor;
