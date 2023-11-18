@@ -10,22 +10,22 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
 
 import com.google.common.annotations.Beta;
 
-// @Configuration
+@Configuration
 // @Beta
 public class DecoderJWT {
     
-    // @Value("${spring.security.oauth2.client.resourceserver.jwt.issuer-uri:}")
-    // private String issuerUri;
+    @Value("${spring.security.oauth2.client.resourceserver.jwt.issuer-uri:}")
+    private String issuerUri;
     
-    // // @Bean
-    // @Beta
-    // public JwtDecoder jwtDecoder() {
-    //     return JwtDecoders.fromIssuerLocation(issuerUri);
-    // }
+    // @Bean
+    @Beta
+    public JwtDecoder jwtDecoder() {
+        return JwtDecoders.fromIssuerLocation(issuerUri);
+    }
 
-    // // @Bean
-    // @Beta
-    // public ReactiveJwtDecoder reactiveJwtDecoder() {
-    //     return ReactiveJwtDecoders.fromIssuerLocation(issuerUri);
-    // }
+    // @Bean
+    @Beta
+    public ReactiveJwtDecoder reactiveJwtDecoder() {
+        return ReactiveJwtDecoders.fromIssuerLocation(issuerUri);
+    }
 }

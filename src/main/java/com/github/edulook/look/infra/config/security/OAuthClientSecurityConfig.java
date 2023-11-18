@@ -13,7 +13,7 @@ import com.google.common.annotations.Beta;
 @Configuration
 @EnableWebSecurity
 public class OAuthClientSecurityConfig {
-    private final String ROOT = "https://laughing-eureka-q9xrp595j6534p69-8085.app.github.dev";
+    private final String ROOT = "/";
     
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +37,7 @@ public class OAuthClientSecurityConfig {
                 .redirectionEndpoint(redirectionEndpoint ->
                     redirectionEndpoint
                         .baseUri(ROOT))
-                .defaultSuccessUrl(ROOT)
+                .defaultSuccessUrl(ROOT, Boolean.TRUE)
             )
             .build();
     }
@@ -46,6 +46,8 @@ public class OAuthClientSecurityConfig {
     @Beta
     @Deprecated
     public SecurityFilterChain securityFilterChainWithJWT(HttpSecurity http) throws Exception {
+        // https://github.com/Baeldung/spring-security-oauth/tree/master/oauth-jwt
+
         http.authorizeHttpRequests( auth -> { 
             auth.anyRequest().authenticated();
         })

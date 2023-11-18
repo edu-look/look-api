@@ -20,12 +20,14 @@ spring:
       client:
         registration:
           google:
-            client-id: ${LOOK_GCLOUD_CLIENT_ID:279941193466-64ja6mia1h00es4c0v4pk8mse8qhpb36.apps.googleusercontent.com}
-            client-secret: ${LOOK_GCLOUD_CLIENT_SECRET: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}
-        # resourceserver:
-        #   jwt:
-        #     issuer-uri: https://accounts.google.com
-        #     jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+            # IDs do cliente OAuth 2.0 - auth-look - Web
+            client-id: ${LOOK_GCLOUD_CLIENT_ID:279941193466-b5qg23t7n1s50h2aspaec6l4ucavkjqn.apps.googleusercontent.com}
+            client-secret: ${LOOK_GCLOUD_CLIENT_SECRET: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}
+            # redirect-uri: https://laughing-eureka-q9xrp595j6534p69-8085.app.github.dev/v1/students/profile
+        resourceserver:
+          jwt:
+            issuer-uri: https://accounts.google.com
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
   application:
     name: look-service
 
