@@ -10,20 +10,19 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.github.edulook.look.endpoint.exceptions.ResourceNotFoundException;
+import com.github.edulook.look.utils.LookUtils;
 
 @ControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler{
+public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     
   @ExceptionHandler(value = { ResourceNotFoundException.class })
     protected ResponseEntity<Object> NotFound(RuntimeException ex, WebRequest request) {
-        var bodyOfResponse = "Specific resource not found";
-        
-        return handleExceptionInternal(
-          ex, 
-          bodyOfResponse, 
-          new HttpHeaders(), 
-          HttpStatus.NOT_FOUND, 
-          request
-        );
+      return handleExceptionInternal(
+        ex, 
+        LookUtils.toJSON(ex), 
+        new HttpHeaders(), 
+        HttpStatus.NOT_FOUND, 
+        request
+      );
     }
 }
