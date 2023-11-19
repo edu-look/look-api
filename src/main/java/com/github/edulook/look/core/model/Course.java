@@ -7,13 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Course { 
-    // com.google.api.services.classroom.model.Course
     private String id;
     private String state;
     private String description;
@@ -22,4 +23,5 @@ public class Course {
     private String room;
     private String section;
     private String updated;
+    private List<Teacher> teachers;
 }

@@ -27,10 +27,10 @@ public class GoogleClientClassroomDI {
     @Value("${look.application.name}")
     private String applicationName;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    @Value("${look.cloud.gcp.server.client.id}")
     private String clientId;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    @Value("${look.cloud.gcp.server.client.secret}")
     private String clientSecret;
 
     @Value("${look.cloud.gcp.server.token-url}")
@@ -39,7 +39,7 @@ public class GoogleClientClassroomDI {
     @Value("${look.cloud.gcp.server.authorization-encoded-url}")
     private String authorizationServerEncodedUrl;
 
-    @Value("${look.cloud.gcp.client.storage}")
+    @Value("${look.cloud.gcp.server.client.storage}")
     private String storageFolder;
 
     @Value("${server.port:8085}")

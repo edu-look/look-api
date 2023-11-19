@@ -7,5 +7,5 @@ import com.github.edulook.look.endpoint.io.student.StudentDTO;
 
 @Mapper(componentModel = "spring")
 public interface StudentAndDTOMapper {
-    StudentDTO toDto(Student student);
+    StudentDTO toDTO(Student student);
 }

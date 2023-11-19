@@ -1,4 +1,4 @@
-package com.github.edulook.look.service.student.internal.mapper;
+package com.github.edulook.look.service.student.mapper;
 
 import org.springframework.stereotype.Component;
 

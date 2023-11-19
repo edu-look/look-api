@@ -1,12 +1,10 @@
-package com.github.edulook.look.service.course;
-
-import com.github.edulook.look.core.usecases.GetCourse;
-
+package com.github.edulook.look.service;
 
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import com.github.edulook.look.core.model.Course;
+import com.github.edulook.look.core.usecases.course.GetCourse;
 
 import java.io.IOException;
 import java.util.List;

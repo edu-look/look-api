@@ -35,12 +35,16 @@ firebase:
   serviceAccountKeyPath: ${LOOK_STORAGE_CREDENTIALS:src/main/resources/serviceAccountKey.json}
   databaseUrl: ${LOOK_STORAGE_URL:https://look-project-400817-default-rtdb.firebaseio.com}
 
+# look.cloud.gcp.server.client.id
+# look.cloud.gcp.server.client.secret
 look:
   cloud:
     gcp:
-      client:
-        storage: ${LOOK_GCLOUD_TOKEN_STORAGE:tokens}
       server:
+        client:
+          id: ${LOOK_GCLOUD_SERVER_CLIENT_ID:279941193466-64ja6mia1h00es4c0v4pk8mse8qhpb36.apps.googleusercontent.com}
+          secret: ${LOOK_GCLOUD_SERVER_CLIENT_SECRET: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}
+          storage: ${LOOK_GCLOUD_TOKEN_STORAGE:tokens}
         token-url: https://oauth2.googleapis.com/token
         authorization-encoded-url: https://accounts.google.com/o/oauth2/auth
   application:

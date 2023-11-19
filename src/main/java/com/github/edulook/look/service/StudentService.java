@@ -1,12 +1,11 @@
-package com.github.edulook.look.service.student;
+package com.github.edulook.look.service;
 
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.github.edulook.look.core.model.Student;
-import com.github.edulook.look.core.usecases.GetStudent;
-import com.github.edulook.look.endpoint.io.student.StudentDTO;
+import com.github.edulook.look.core.usecases.student.GetStudent;
 
 import lombok.AllArgsConstructor;
 

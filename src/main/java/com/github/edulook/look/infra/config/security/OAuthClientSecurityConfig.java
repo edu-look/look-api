@@ -13,7 +13,6 @@ import com.google.common.annotations.Beta;
 @Configuration
 @EnableWebSecurity
 public class OAuthClientSecurityConfig {
-    private final String ROOT = "/";
     
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -29,6 +28,7 @@ public class OAuthClientSecurityConfig {
     @Beta
     @Deprecated
     SecurityFilterChain securityFilterChainWithRedirectionEndpoint(HttpSecurity http) throws Exception {
+        var ROOT = "/";
         return http
             .authorizeHttpRequests( auth -> {
                 auth.anyRequest().authenticated();
@@ -48,10 +48,11 @@ public class OAuthClientSecurityConfig {
     public SecurityFilterChain securityFilterChainWithJWT(HttpSecurity http) throws Exception {
         // https://github.com/Baeldung/spring-security-oauth/tree/master/oauth-jwt
 
-        http.authorizeHttpRequests( auth -> { 
-            auth.anyRequest().authenticated();
-        })
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-        return http.build();
+        return http
+            .authorizeHttpRequests( auth -> { 
+                auth.anyRequest().authenticated();
+             })
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+            .build();
     }
 }

@@ -10,7 +10,7 @@ import com.github.edulook.look.endpoint.io.student.StudentDTO;
 public class StudentAndDTOMapperImpl implements StudentAndDTOMapper {
 
     @Override
-    public StudentDTO toDto(Student student) {
+    public StudentDTO toDTO(Student student) {
         return StudentDTO.builder()
         .name(student.getProfile().name())
         .photo(student.getProfile().photoUrl())

@@ -9,7 +9,7 @@ import com.github.edulook.look.endpoint.io.course.CourseDTO;
 
 @Mapper(componentModel = "spring")
 public interface CourseAndDTOMapper {
-    CourseDTO toDto(Course course);
-    Course toModel(CourseDTO dto);
-    List<CourseDTO> toDtoList(List<Course> list);
+    CourseDTO toDTO(Course source);
+    Course toModel(CourseDTO source);
+    List<CourseDTO> toDTOList(List<Course> source);
 }

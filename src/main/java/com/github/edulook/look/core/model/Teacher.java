@@ -11,14 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Student {
+public class Teacher {
     private String id;
-    private Profile profile;
-
-    @Builder
-    public static record Profile(
-        String email,
-        String name,
-        String photoUrl
-    ) {}
+    private String email;
+    private String photo;
+    private String name;   
 }

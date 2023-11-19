@@ -10,8 +10,8 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
 
 import com.google.common.annotations.Beta;
 
-@Configuration
-// @Beta
+// @Configuration
+@Beta
 public class DecoderJWT {
     
     @Value("${spring.security.oauth2.client.resourceserver.jwt.issuer-uri:}")
