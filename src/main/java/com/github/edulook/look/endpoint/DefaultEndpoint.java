@@ -1,7 +1,10 @@
 package com.github.edulook.look.endpoint;
 
 import java.io.IOException;
+import java.security.Principal;
 
+import org.springframework.boot.actuate.web.exchanges.HttpExchange;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +30,7 @@ public class DefaultEndpoint {
     }
 
     @GetMapping("/user")
-    public UserAuthDTO user(@AuthenticationPrincipal OAuth2User user) {
-        return oAuthMapper.toDTO(user);
+    public Object user(JwtAuthenticationToken user) {
+        return user;
     }
 }
