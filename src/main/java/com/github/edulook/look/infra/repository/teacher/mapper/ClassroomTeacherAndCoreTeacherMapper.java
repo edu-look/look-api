@@ -1,4 +1,6 @@
-package com.github.edulook.look.service.teacher.mapper;
+package com.github.edulook.look.infra.repository.teacher.mapper;
+
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 

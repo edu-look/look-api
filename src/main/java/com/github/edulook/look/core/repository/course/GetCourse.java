@@ -1,4 +1,4 @@
-package com.github.edulook.look.core.usecases.course;
+package com.github.edulook.look.core.repository.course;
 
 import java.util.List;
 import java.util.Optional;

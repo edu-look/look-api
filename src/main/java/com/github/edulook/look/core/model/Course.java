@@ -24,4 +24,15 @@ public class Course {
     private String section;
     private String updated;
     private List<Teacher> teachers;
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Announcement {
+        private String content;
+        private String createdAt;
+        private String owner;
+    }
 }

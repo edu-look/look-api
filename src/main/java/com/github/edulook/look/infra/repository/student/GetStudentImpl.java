@@ -1,4 +1,4 @@
-package com.github.edulook.look.service.student;
+package com.github.edulook.look.infra.repository.student;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.github.edulook.look.core.model.Student;
-import com.github.edulook.look.core.usecases.student.GetStudent;
-import com.github.edulook.look.service.student.mapper.ClassroomStudentAndCoreStudentMapper;
+import com.github.edulook.look.core.repository.student.GetStudent;
+import com.github.edulook.look.infra.repository.student.mapper.ClassroomStudentAndCoreStudentMapper;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.UserProfile;
 

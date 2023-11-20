@@ -1,4 +1,4 @@
-package com.github.edulook.look.service.course;
+package com.github.edulook.look.infra.repository.course;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,14 +7,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.github.edulook.look.core.data.CourseState;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Teacher;
-import com.github.edulook.look.core.usecases.course.GetCourse;
-import com.github.edulook.look.core.usecases.teacher.GetTeacher;
-import com.github.edulook.look.service.course.mapper.ClassroomCourseAndCoreCourseMapper;
+import com.github.edulook.look.core.repository.course.GetCourse;
+import com.github.edulook.look.core.repository.teacher.GetTeacher;
+import com.github.edulook.look.infra.repository.course.mapper.ClassroomCourseAndCoreCourseMapper;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.ListCoursesResponse;
 
@@ -22,14 +24,18 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
-@AllArgsConstructor
+@Component("GetCourse::Class")
 public class GetCourseImpl implements GetCourse {
 
-    private final Classroom classroom;
-    private final ClassroomCourseAndCoreCourseMapper mapper;
+    @Autowired
+    private Classroom classroom;
+    
+    @Autowired
+    private ClassroomCourseAndCoreCourseMapper mapper;
 
-    private final GetTeacher getTeacher;
+    @Autowired
+    @Qualifier("GetTeacher::Class")
+    private GetTeacher getTeacher;
 
     @Override
     public List<Course> findCoursesByStudentId(String studentId) {
@@ -83,7 +89,30 @@ public class GetCourseImpl implements GetCourse {
 
     @Override
     public Optional<Course> findOneCourseByStudentId(String courseId, String studentId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findCourseByStudentId'");
+
+        try {
+            var courseFound = getClassroomCourse(courseId);
+            if(courseFound.isEmpty()) {
+                return Optional.empty();
+            }
+
+            var course = courseFound.get();
+            var teachers = getTeacher.getTeachersFromCourse(course.getId());
+            
+            return Optional.ofNullable(mapper.toModel(course, teachers));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("findCourse error: {}", e);
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<com.google.api.services.classroom.model.Course> getClassroomCourse(String courseId) throws IOException {
+        return Optional.ofNullable(classroom.courses()
+            .get(courseId)
+            .execute()
+        );
     }
 }

@@ -29,7 +29,6 @@ public class CourseEndpoint {
     private final CourseAndDTOMapper courseAndDTOMapper;
     private final OAuth2AndUserAuthDTOMapper oAuthMapper;
 
-
     @GetMapping
     public List<CourseDTO> getCourses(@AuthenticationPrincipal OAuth2User oAuth2User) throws IOException {
         var user = oAuthMapper.toDTO(oAuth2User);

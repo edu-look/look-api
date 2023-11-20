@@ -1,4 +1,4 @@
-package com.github.edulook.look.service.course.mapper;
+package com.github.edulook.look.infra.repository.course.mapper;
 
 import java.util.Map;
 import java.util.List;
@@ -31,6 +31,21 @@ public class ClassroomCourseAndCoreCourseMapper {
             .section(source.getSection())
             .updated(source.getUpdateTime())
             .teachers(teachers.getOrDefault(source.getId(), List.of()))
+            .build();
+    }
+
+    public Course toModel(com.google.api.services.classroom.model.Course source, List<Teacher> teachers) {        
+        return Course
+            .builder()
+            .id(source.getId())
+            .state(source.getCourseState())
+            .description(source.getDescription())
+            .name(source.getName())
+            .ownerId(source.getOwnerId())
+            .room(source.getRoom())
+            .section(source.getSection())
+            .updated(source.getUpdateTime())
+            .teachers(teachers)
             .build();
     }
 }

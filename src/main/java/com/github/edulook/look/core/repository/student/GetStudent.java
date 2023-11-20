@@ -1,4 +1,4 @@
-package com.github.edulook.look.core.usecases.student;
+package com.github.edulook.look.core.repository.student;
 
 import java.util.Optional;
 
