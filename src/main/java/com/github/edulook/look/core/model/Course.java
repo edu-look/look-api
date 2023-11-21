@@ -31,6 +31,7 @@ public class Course {
     @NoArgsConstructor
     @Builder
     public static class Announcement {
+        private String id;
         private String content;
         private String createdAt;
         private String owner;

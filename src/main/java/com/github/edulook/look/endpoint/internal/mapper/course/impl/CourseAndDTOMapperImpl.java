@@ -6,9 +6,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.github.edulook.look.core.model.Course;
+import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
+import com.github.edulook.look.endpoint.io.course.CourseDTO.AnnouncementDTO;
 import com.github.edulook.look.endpoint.io.course.CourseDTO.TeacherDTO;
 
 @Component
@@ -43,6 +45,17 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper{
             .stream()
             .map(this::toDTO)
             .toList();
+    }
+
+    @Override
+    public AnnouncementDTO toModel(Announcement source) {
+        return AnnouncementDTO
+            .builder()
+            .id(source.getId())
+            .content(source.getContent())
+            .createdAt(source.getCreatedAt())
+            .owner(source.getOwner())
+            .build();
     }
 
     @Override

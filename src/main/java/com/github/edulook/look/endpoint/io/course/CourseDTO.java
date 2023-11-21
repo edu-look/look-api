@@ -2,6 +2,8 @@ package com.github.edulook.look.endpoint.io.course;
 
 import java.util.List;
 
+import com.github.edulook.look.endpoint.io.course.CourseDTO.TeacherDTO;
+
 import lombok.Builder;
 
 @Builder
@@ -24,4 +26,12 @@ public record CourseDTO(
     ) {
     }
 
+    @Builder
+    public static record AnnouncementDTO(
+        String id,
+        String content,
+        String createdAt,
+        String owner
+    ) {
+    }
 }

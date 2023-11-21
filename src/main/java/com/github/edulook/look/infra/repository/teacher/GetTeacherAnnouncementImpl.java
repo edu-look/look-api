@@ -66,6 +66,7 @@ public class GetTeacherAnnouncementImpl implements GetTeacherAnnouncement {
         return announcements
             .stream()
             .map(it -> Announcement.builder()
+                .id(it.getId())
                 .owner(teacher.getName())
                 .content(it.getText())
                 .createdAt(it.getCreationTime())
