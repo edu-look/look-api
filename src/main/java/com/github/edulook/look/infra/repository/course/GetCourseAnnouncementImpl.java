@@ -1,7 +1,8 @@
-package com.github.edulook.look.infra.repository.teacher;
+package com.github.edulook.look.infra.repository.course;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +12,15 @@ import org.springframework.stereotype.Component;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Teacher;
+import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
 import com.github.edulook.look.core.repository.teacher.GetTeacher;
-import com.github.edulook.look.core.repository.teacher.GetTeacherAnnouncement;
 import com.google.api.services.classroom.Classroom;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component("GetTeacherAnnouncement::class")
-public class GetTeacherAnnouncementImpl implements GetTeacherAnnouncement {
+public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
     
     @Autowired
     private Classroom classroom;
@@ -75,14 +76,22 @@ public class GetTeacherAnnouncementImpl implements GetTeacherAnnouncement {
             .toList();
     }
 
-    private List<com.google.api.services.classroom.model.Announcement> getAnnouncementsFromClassroom(Course course)
-            throws IOException {
-        return classroom
+    private List<com.google.api.services.classroom.model.Announcement> getAnnouncementsFromClassroom(Course course) throws IOException {
+        var request = Optional.ofNullable(classroom
             .courses()
             .announcements()
             .list(course.getId())
-            .execute()
-            .getAnnouncements();
+            .execute());
+        
+        if(request.isEmpty()) {
+            return List.of();
+        }
+
+        var announcements = Optional
+            .ofNullable(request.get().getAnnouncements());
+
+        return announcements
+            .orElse(List.of());
     }
 
     private String getTeacherId(List<com.google.api.services.classroom.model.Announcement> announcements) {

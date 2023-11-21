@@ -20,7 +20,6 @@ import com.github.edulook.look.infra.repository.course.mapper.ClassroomCourseAnd
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.ListCoursesResponse;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
