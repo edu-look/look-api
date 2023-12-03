@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.edulook.look.core.model.Course.Announcement;
+import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.internal.mapper.shared.OAuth2AndUserAuthDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
@@ -29,7 +30,6 @@ import lombok.extern.log4j.Log4j2;
 public class CourseEndpoint {
 
     private final CourseService courseService;
-    private final TeacherService teacherService;
     
     private final CourseAndDTOMapper courseAndDTOMapper;
     private final OAuth2AndUserAuthDTOMapper oAuthMapper;
@@ -51,7 +51,17 @@ public class CourseEndpoint {
         log.info("user logged: {}", user.id());
         log.info("announcements to course: {}", courseId);
 
-        return teacherService
+        return courseService
            .listAllAnnouncements(courseId, user.id());
+    }
+
+    @GetMapping("{courseId}/materials")
+    public List<WorkMaterial> listAllWorkMaterials(@PathVariable String courseId, @AuthenticationPrincipal OAuth2User oAuth2User) {
+        var user = oAuthMapper.toDTO(oAuth2User);
+
+        log.info("user logged: {}", user.id());
+        log.info("materials to course: {}", courseId);
+
+        return courseService.listAllWorkMaterials(courseId, user.jwt().token());
     }
 }

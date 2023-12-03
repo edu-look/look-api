@@ -32,8 +32,30 @@ public class Course {
     @Builder
     public static class Announcement {
         private String id;
+        private String courseId;
         private String content;
         private String createdAt;
         private String owner;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class WorkMaterial {
+        private String id;
+        private String courseId;
+        private String title;
+        private String description;
+        private String createdAt;
+        private List<Material> materials;
+
+        @Builder
+        public static record Material (
+          String description,
+          String type,
+          String originLink
+        ){}
     }
 }
