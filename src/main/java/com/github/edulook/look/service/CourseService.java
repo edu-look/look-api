@@ -45,9 +45,7 @@ public class CourseService {
 
         var workMaterials = courseRepository.listAllWorkMaterial(course, access);
 
-        workMaterials.forEach(it -> {
-            publisher.publishEvent(WorkMaterialEvent.fromModel(it));
-        });
+        workMaterials.forEach(it -> publisher.publishEvent(WorkMaterialEvent.fromModel(it)));
 
         return workMaterials;
     }
@@ -65,9 +63,7 @@ public class CourseService {
         var announcements = courseRepository
                 .getAllAnnouncementByCourse(course.get());
 
-        announcements.forEach(it -> {
-            publisher.publishEvent(AnnouncementEvent.fromModel(it));
-        });
+        announcements.forEach(it -> publisher.publishEvent(AnnouncementEvent.fromModel(it)));
 
         return announcements;
     }
