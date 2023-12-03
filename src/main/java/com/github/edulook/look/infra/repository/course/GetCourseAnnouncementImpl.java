@@ -36,17 +36,17 @@ public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
                 .filter(it -> selectCourseOwnerAnnouncement(it, course))
                 .toList();
             
-            if(announcements.isEmpty()) {
+            if(announcements.isEmpty())
                 return List.of();
-            }
 
             return toAnnouncementsCore(
-                announcements, 
+                announcements,
+                course,
                 getTeacher(course, getTeacherId(announcements))
             );
 
         } catch (IOException e) {
-            log.error("annoucement error", e);
+            log.error("announcement error", e);
             return List.of();
         }        
     }
@@ -62,12 +62,14 @@ public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
 
     private List<Announcement> toAnnouncementsCore(
         List<com.google.api.services.classroom.model.Announcement> announcements,
+        Course course,
         Teacher teacher
     ) {
         return announcements
             .stream()
             .map(it -> Announcement.builder()
                 .id(it.getId())
+                .courseId(course.getId())
                 .owner(teacher.getName())
                 .content(it.getText())
                 .createdAt(it.getCreationTime())

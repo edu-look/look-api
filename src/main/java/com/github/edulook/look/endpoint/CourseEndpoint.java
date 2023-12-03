@@ -63,5 +63,5 @@ public class CourseEndpoint {
         log.info("materials to course: {}", courseId);
 
         return courseService.listAllWorkMaterials(courseId, user.jwt().token());
-    } 
+    }
 }

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Component
 @NoArgsConstructor
-public class ClassroomCourseAndCoreCourseMapper {
+public class ClassroomCourseToCoreCourseMapper {
 
     public Course toModel(com.google.api.services.classroom.model.Course source) {
         return toModel(source, Map.of());

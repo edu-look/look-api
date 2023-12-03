@@ -15,6 +15,9 @@ import com.google.api.services.classroom.model.ListCourseWorkMaterialResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.github.edulook.look.core.model.Course.WorkMaterial.Material;
+import static com.github.edulook.look.infra.repository.course.mapper.ClassroomMaterialToCourseMaterialMapper.*;
+
 @Slf4j
 @Component("GetCourseWorkMaterial::Class")
 public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
@@ -68,15 +71,35 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
 
         return workMaterial.get()
             .parallelStream()
-            .map(it -> WorkMaterial
-                .builder()
-                .createdAt(it.getCreationTime())
-                .title(it.getTitle())
-                .id(it.getId())
-                .description(it.getDescription())
-                .materials(it.getMaterials())
-                .build()
-            )
+            .map(it -> {
+
+                var materialsCore = it.getMaterials()
+                    .parallelStream()
+                    .map(this::buildCoreMaterial)
+                    .toList();
+
+                return WorkMaterial
+                    .builder()
+                    .createdAt(it.getCreationTime())
+                    .title(it.getTitle())
+                    .id(it.getId())
+                    .description(it.getDescription())
+                    .materials(materialsCore)
+                    .build();
+            })
             .toList();
     }
+
+    private Material buildCoreMaterial(com.google.api.services.classroom.model.Material material) {
+        if(material.getYoutubeVideo() != null)
+            return fromYoutubeResource(material);
+        if(material.getDriveFile() != null)
+            return fromDriveResource(material);
+        if(material.getForm() != null)
+            return fromFormResource(material);
+
+        return Material.builder().build();
+    }
+
+
 }

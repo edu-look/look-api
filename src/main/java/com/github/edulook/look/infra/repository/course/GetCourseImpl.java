@@ -16,7 +16,7 @@ import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.core.repository.course.GetCourse;
 import com.github.edulook.look.core.repository.teacher.GetTeacher;
-import com.github.edulook.look.infra.repository.course.mapper.ClassroomCourseAndCoreCourseMapper;
+import com.github.edulook.look.infra.repository.course.mapper.ClassroomCourseToCoreCourseMapper;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.ListCoursesResponse;
 
@@ -30,7 +30,7 @@ public class GetCourseImpl implements GetCourse {
     private Classroom classroom;
     
     @Autowired
-    private ClassroomCourseAndCoreCourseMapper mapper;
+    private ClassroomCourseToCoreCourseMapper mapper;
 
     @Autowired
     @Qualifier("GetTeacher::Class")

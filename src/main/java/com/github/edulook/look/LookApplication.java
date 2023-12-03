@@ -2,6 +2,7 @@ package com.github.edulook.look;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication(
 	exclude = {
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration.class
 	}
 )
+@EnableCaching
 public class LookApplication {
 
 	public static void main(String[] args) {
