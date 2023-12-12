@@ -3,6 +3,7 @@ package com.github.edulook.look.service;
 import java.io.IOException;
 import java.util.List;
 
+import com.github.edulook.look.core.service.CourseService;
 import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ import lombok.AllArgsConstructor;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class CourseService {
+public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final ApplicationEventPublisher publisher;

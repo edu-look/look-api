@@ -1,12 +1,9 @@
 package com.github.edulook.look.service;
 
-import java.util.List;
-
+import com.github.edulook.look.core.service.TeacherService;
 import org.springframework.stereotype.Service;
 
-import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.repository.CourseRepository;
-import com.github.edulook.look.core.repository.TeacherRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -15,6 +12,6 @@ import lombok.AllArgsConstructor;
  */
 @Service
 @AllArgsConstructor
-public class TeacherService {
+public class TeacherServiceImpl implements TeacherService {
     private final CourseRepository courseRepository;
 }

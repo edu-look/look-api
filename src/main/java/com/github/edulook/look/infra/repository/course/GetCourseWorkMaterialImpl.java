@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.edulook.look.infra.repository.course.mapper.ClassroomMaterialToCourseMaterialMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,15 +16,15 @@ import com.google.api.services.classroom.model.ListCourseWorkMaterialResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static com.github.edulook.look.core.model.Course.WorkMaterial.Material;
-import static com.github.edulook.look.infra.repository.course.mapper.ClassroomMaterialToCourseMaterialMapper.*;
-
 @Slf4j
 @Component("GetCourseWorkMaterial::Class")
 public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
 
     @Autowired
     private Classroom classroom;
+
+    @Autowired
+    ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper;
 
     @Override
     public List<WorkMaterial> listAllWorkMaterial(Course course) {
@@ -74,8 +75,8 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
             .map(it -> {
 
                 var materialsCore = it.getMaterials()
-                    .parallelStream()
-                    .map(this::buildCoreMaterial)
+                    .stream()
+                    .map(classroomMaterialToCourseMaterialMapper::toModel)
                     .toList();
 
                 return WorkMaterial
@@ -89,17 +90,4 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
             })
             .toList();
     }
-
-    private Material buildCoreMaterial(com.google.api.services.classroom.model.Material material) {
-        if(material.getYoutubeVideo() != null)
-            return fromYoutubeResource(material);
-        if(material.getDriveFile() != null)
-            return fromDriveResource(material);
-        if(material.getForm() != null)
-            return fromFormResource(material);
-
-        return Material.builder().build();
-    }
-
-
 }

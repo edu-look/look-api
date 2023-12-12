@@ -2,6 +2,7 @@ package com.github.edulook.look.service;
 
 import java.util.Optional;
 
+import com.github.edulook.look.core.service.StudentService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import lombok.AllArgsConstructor;
  */
 @Service
 @AllArgsConstructor
-public class StudentService {
+public class StudentServiceImpl implements StudentService {
     private final StudentRepository repository;
 
     @Cacheable("getStudentProfile")

@@ -30,7 +30,7 @@ public class CourseRepositoryImpl implements CourseRepository {
     private GetCourseWorkMaterial getCourseWorkMaterial;
 
     @Autowired
-    @Qualifier("GetTeacherAnnouncement::class")
+    @Qualifier("GetTeacherAnnouncement::Class")
     private GetCourseAnnouncement announcements;
 
 
