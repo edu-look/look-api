@@ -19,7 +19,7 @@ import com.google.api.services.classroom.Classroom;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component("GetTeacherAnnouncement::class")
+@Component("GetTeacherAnnouncement::Class")
 public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
     
     @Autowired

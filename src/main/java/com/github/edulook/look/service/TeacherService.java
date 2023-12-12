@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 /**
  * Facade teacher service 
  */
-@Service(value="TeacherService::Class")
+@Service
 @AllArgsConstructor
 public class TeacherService {
     private final CourseRepository courseRepository;
