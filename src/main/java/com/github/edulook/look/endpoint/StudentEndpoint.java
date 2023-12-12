@@ -1,10 +1,10 @@
 package com.github.edulook.look.endpoint;
 
-import com.github.edulook.look.core.service.StudentService;
 import com.github.edulook.look.endpoint.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.endpoint.internal.mapper.shared.OAuth2AndUserAuthDTOMapper;
 import com.github.edulook.look.endpoint.internal.mapper.student.StudentAndDTOMapper;
 import com.github.edulook.look.endpoint.io.student.StudentDTO;
+import com.github.edulook.look.service.StudentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

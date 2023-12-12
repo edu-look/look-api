@@ -2,10 +2,10 @@ package com.github.edulook.look.endpoint;
 
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
-import com.github.edulook.look.core.service.CourseService;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.internal.mapper.shared.OAuth2AndUserAuthDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
+import com.github.edulook.look.service.CourseService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

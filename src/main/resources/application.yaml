@@ -35,8 +35,6 @@ firebase:
   serviceAccountKeyPath: ${LOOK_STORAGE_CREDENTIALS:src/main/resources/serviceAccountKey.json}
   databaseUrl: ${LOOK_STORAGE_URL:https://look-project-400817-default-rtdb.firebaseio.com}
 
-# look.cloud.gcp.server.client.id
-# look.cloud.gcp.server.client.secret
 look:
   cloud:
     gcp:

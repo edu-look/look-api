@@ -1,17 +1,14 @@
 package com.github.edulook.look.service;
 
-import com.github.edulook.look.core.service.TeacherService;
-import org.springframework.stereotype.Service;
-
 import com.github.edulook.look.core.repository.CourseRepository;
-
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * Facade teacher service 
  */
-@Service
+@Service(value="TeacherService::Class")
 @AllArgsConstructor
-public class TeacherServiceImpl implements TeacherService {
+public class TeacherService {
     private final CourseRepository courseRepository;
 }
