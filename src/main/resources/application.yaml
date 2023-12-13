@@ -5,11 +5,13 @@
 # LOOK_GCLOUD_CLIENT_SECRET
 # LOOK_GCLOUD_CLIENT_SECRET
 # LOOK_GCLOUD_TOKEN_STORAGE
+# LOOK_GCLOUD_PROJECT_ID
 # LOOK_SERVER_ADDRESS
 # LOOK_SERVER_PORT
 # LOOK_STORAGE_CREDENTIALS
 # LOOK_STORAGE_URL
-#
+# GOOGLE_APPLICATION_CREDENTIALS
+
 
 server:
   port: ${LOOK_SERVER_PORT:8085}
@@ -17,9 +19,9 @@ server:
 spring:
   cloud:
     gcp:
-      project-id: look-project-400817
+      project-id: ${LOOK_GCLOUD_PROJECT_ID:look-project-400817}
       credentials:
-        location: classpath:credentials.json
+        location: ${GOOGLE_APPLICATION_CREDENTIALS:classpath:credentials.json}
   security:
     oauth2:
       client:
