@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.github.edulook.look.endpoint.exceptions.ResourceNotFoundException;
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.utils.LookUtils;
 
 @ControllerAdvice

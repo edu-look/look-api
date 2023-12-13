@@ -15,11 +15,15 @@ import lombok.AllArgsConstructor;
 
 
 @Component("GetTeacher::Class")
-@AllArgsConstructor
 public class GetTeacherImpl implements GetTeacher {
 
     private final Classroom classroom;
     private final ClassroomTeacherAndCoreTeacherMapper mapper;
+
+    public GetTeacherImpl(Classroom classroom, ClassroomTeacherAndCoreTeacherMapper mapper) {
+        this.classroom = classroom;
+        this.mapper = mapper;
+    }
 
     @Override
     public List<Teacher> getTeachersFromCourse(String courseId) throws IOException {

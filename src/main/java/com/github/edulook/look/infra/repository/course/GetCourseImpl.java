@@ -1,16 +1,5 @@
 package com.github.edulook.look.infra.repository.course;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
 import com.github.edulook.look.core.data.CourseState;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Teacher;
@@ -19,22 +8,30 @@ import com.github.edulook.look.core.repository.teacher.GetTeacher;
 import com.github.edulook.look.infra.repository.course.mapper.ClassroomCourseToCoreCourseMapper;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.ListCoursesResponse;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component("GetCourse::Class")
 public class GetCourseImpl implements GetCourse {
 
-    @Autowired
-    private Classroom classroom;
-    
-    @Autowired
-    private ClassroomCourseToCoreCourseMapper mapper;
+    private final Classroom classroom;
+    private final ClassroomCourseToCoreCourseMapper mapper;
+    private final GetTeacher getTeacher;
 
-    @Autowired
-    @Qualifier("GetTeacher::Class")
-    private GetTeacher getTeacher;
+    public GetCourseImpl(Classroom classroom, ClassroomCourseToCoreCourseMapper mapper, @Qualifier("GetTeacher::Class") GetTeacher getTeacher) {
+        this.classroom = classroom;
+        this.mapper = mapper;
+        this.getTeacher = getTeacher;
+    }
 
     @Override
     public List<Course> findCoursesByStudentId(String studentId) {
@@ -47,8 +44,7 @@ public class GetCourseImpl implements GetCourse {
             return transformClassroomCourseToCoreCourse(courses, teachers);
 
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error("studentId: {}: {}", studentId, e);
+            log.error("error:: ", e);
             return List.of();
         }
     }
@@ -64,21 +60,26 @@ public class GetCourseImpl implements GetCourse {
     private List<String> getCourseIDs(List<com.google.api.services.classroom.model.Course> courses) {
         return courses
             .stream()
-            .map(it -> it.getId()).toList();
+            .map(com.google.api.services.classroom.model.Course::getId)
+            .toList();
     }
 
     private ListCoursesResponse findCourses(String studentId) throws IOException {
-        var clientRequest = classroom.courses()
+        return classroom.courses()
             .list()
             .setStudentId(studentId)
             .setCourseStates(List.of(CourseState.ACTIVE))
             .execute();
-        return clientRequest;
     }
 
     private Map<String, List<Teacher>> getTeachersByCourse(List<String> courseIdList) throws IOException {
         var teachersByCourse = new HashMap<String, List<Teacher>>();
 
+        /*
+          TODO
+          It need to resolve this
+          N + 1 Problem: https://planetscale.com/blog/what-is-n-1-query-problem-and-how-to-solve-it
+         */
         for(var courseId : courseIdList) {
             teachersByCourse.putIfAbsent(courseId, getTeacher.getTeachersFromCourse(courseId));
         }
@@ -101,8 +102,7 @@ public class GetCourseImpl implements GetCourse {
             return Optional.ofNullable(mapper.toModel(course, teachers));
 
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error("findCourse error: {}", e);
+            log.error("error:: ", e);
         }
 
         return Optional.empty();

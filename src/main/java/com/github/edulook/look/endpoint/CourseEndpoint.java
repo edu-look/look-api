@@ -6,7 +6,6 @@ import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMappe
 import com.github.edulook.look.endpoint.internal.mapper.shared.OAuth2AndUserAuthDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
 import com.github.edulook.look.service.CourseService;
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -20,14 +19,18 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@AllArgsConstructor
 @RequestMapping("v1/courses")
 public class CourseEndpoint {
 
     private final CourseService courseService;
-    
     private final CourseAndDTOMapper courseAndDTOMapper;
     private final OAuth2AndUserAuthDTOMapper oAuthMapper;
+
+    public CourseEndpoint(CourseService courseService, CourseAndDTOMapper courseAndDTOMapper, OAuth2AndUserAuthDTOMapper oAuthMapper) {
+        this.courseService = courseService;
+        this.courseAndDTOMapper = courseAndDTOMapper;
+        this.oAuthMapper = oAuthMapper;
+    }
 
     @GetMapping
     public List<CourseDTO> getCourses(@AuthenticationPrincipal OAuth2User oAuth2User) throws IOException {

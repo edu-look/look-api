@@ -15,12 +15,16 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@AllArgsConstructor
 @Slf4j
 public class GetStudentImpl implements GetStudent {
 
     private final Classroom classroom;
     private final ClassroomStudentAndCoreStudentMapper mapper;
+
+    public GetStudentImpl(Classroom classroom, ClassroomStudentAndCoreStudentMapper mapper) {
+        this.classroom = classroom;
+        this.mapper = mapper;
+    }
 
     @Override
     public Optional<Student> findStudentById(String studentId) {

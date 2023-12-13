@@ -1,4 +1,4 @@
-package com.github.edulook.look.endpoint.exceptions;
+package com.github.edulook.look.core.exceptions;
 
 import lombok.NoArgsConstructor;
 

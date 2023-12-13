@@ -1,30 +1,29 @@
 package com.github.edulook.look.infra.repository.course;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
-import com.github.edulook.look.infra.repository.course.mapper.ClassroomMaterialToCourseMaterialMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
+import com.github.edulook.look.infra.repository.course.mapper.ClassroomMaterialToCourseMaterialMapper;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.ListCourseWorkMaterialResponse;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component("GetCourseWorkMaterial::Class")
 public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
 
-    @Autowired
-    private Classroom classroom;
+    private final Classroom classroom;
+    private final ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper;
 
-    @Autowired
-    ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper;
+    public GetCourseWorkMaterialImpl(Classroom classroom, ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper) {
+        this.classroom = classroom;
+        this.classroomMaterialToCourseMaterialMapper = classroomMaterialToCourseMaterialMapper;
+    }
 
     @Override
     public List<WorkMaterial> listAllWorkMaterial(Course course) {
@@ -43,8 +42,7 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
             return toWorkMaterialCore(materials.get());
 
         } catch (IOException e) {
-            e.printStackTrace();
-            log.error("list work material error: {}", e);
+            log.error("error:: ", e);
         }
     
         return List.of();
@@ -65,7 +63,7 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
 
     private List<WorkMaterial> toWorkMaterialCore(ListCourseWorkMaterialResponse materials) {
         var workMaterial = Optional.ofNullable(materials.getCourseWorkMaterial());
-        
+
         if(workMaterial.isEmpty()) {
             return List.of();
         }
@@ -73,7 +71,6 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
         return workMaterial.get()
             .parallelStream()
             .map(it -> {
-
                 var materialsCore = it.getMaterials()
                     .stream()
                     .map(classroomMaterialToCourseMaterialMapper::toModel)
@@ -87,6 +84,7 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
                     .description(it.getDescription())
                     .materials(materialsCore)
                     .build();
+
             })
             .toList();
     }

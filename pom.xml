@@ -142,9 +142,6 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<environmentVariables>
-						<GOOGLE_APPLICATION_CREDENTIALS>src/main/resources/credentials.json</GOOGLE_APPLICATION_CREDENTIALS>
-					</environmentVariables>
 				</configuration>
 			</plugin>
 		</plugins>

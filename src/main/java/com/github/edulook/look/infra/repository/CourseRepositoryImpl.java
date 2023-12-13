@@ -1,12 +1,5 @@
 package com.github.edulook.look.infra.repository;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
@@ -14,25 +7,26 @@ import com.github.edulook.look.core.repository.CourseRepository;
 import com.github.edulook.look.core.repository.course.GetCourse;
 import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.Optional;
 
 @Component
-@AllArgsConstructor
 public class CourseRepositoryImpl implements CourseRepository {
-    
-    @Autowired
-    @Qualifier("GetCourse::Class")
-    private GetCourse getCourse;
-   
-    @Autowired
-    @Qualifier("GetCourseWorkMaterial::Class")
-    private GetCourseWorkMaterial getCourseWorkMaterial;
 
-    @Autowired
-    @Qualifier("GetTeacherAnnouncement::Class")
-    private GetCourseAnnouncement announcements;
+    private final GetCourse getCourse;
+    private final GetCourseWorkMaterial getCourseWorkMaterial;
+    private final GetCourseAnnouncement announcements;
 
+    public CourseRepositoryImpl(@Qualifier("GetCourse::Class") GetCourse getCourse,
+                                @Qualifier("GetCourseWorkMaterial::Class") GetCourseWorkMaterial getCourseWorkMaterial,
+                                @Qualifier("GetTeacherAnnouncement::Class") GetCourseAnnouncement announcements) {
+        this.getCourse = getCourse;
+        this.getCourseWorkMaterial = getCourseWorkMaterial;
+        this.announcements = announcements;
+    }
 
     @Override
     public List<Course> findCoursesByStudentId(String studentId) {

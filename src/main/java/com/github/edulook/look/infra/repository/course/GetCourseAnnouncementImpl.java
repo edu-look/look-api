@@ -1,33 +1,31 @@
 package com.github.edulook.look.infra.repository.course;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
 import com.github.edulook.look.core.repository.teacher.GetTeacher;
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.google.api.services.classroom.Classroom;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component("GetTeacherAnnouncement::Class")
 public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
-    
-    @Autowired
-    private Classroom classroom;
 
-    @Autowired
-    @Qualifier("GetTeacher::Class")
-    private GetTeacher getTeacher;
+    private final Classroom classroom;
+    private final GetTeacher getTeacher;
+
+    public GetCourseAnnouncementImpl(Classroom classroom, @Qualifier("GetTeacher::Class") GetTeacher getTeacher) {
+        this.classroom = classroom;
+        this.getTeacher = getTeacher;
+    }
 
     public List<Announcement> getAllAnnouncementByCourse(Course course) {
         try {
@@ -37,16 +35,20 @@ public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
                 .toList();
             
             if(announcements.isEmpty())
-                return List.of();
+                throw new ResourceNotFoundException("announcements not found");
+
+            var teacherIdOptional = getTeacherId(announcements);
+            if (teacherIdOptional.isEmpty())
+                throw new ResourceNotFoundException("teacher id not found");
 
             return toAnnouncementsCore(
                 announcements,
                 course,
-                getTeacher(course, getTeacherId(announcements))
+                getTeacher(course, teacherIdOptional.get())
             );
 
         } catch (IOException e) {
-            log.error("announcement error", e);
+            log.error("error:: ", e);
             return List.of();
         }        
     }
@@ -96,12 +98,14 @@ public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
             .orElse(List.of());
     }
 
-    private String getTeacherId(List<com.google.api.services.classroom.model.Announcement> announcements) {
-        return announcements
+    private Optional<String> getTeacherId(List<com.google.api.services.classroom.model.Announcement> announcements) {
+        var announcementsOptional =  announcements
             .stream()
-            .findFirst()
-            .get()
-            .getCreatorUserId();
+            .findFirst();
+
+        return announcementsOptional
+            .map(com.google.api.services.classroom.model.Announcement::getCreatorUserId);
+
     }
 
     private Teacher getTeacher(Course course, String teacherId) {
