@@ -4,6 +4,8 @@ import com.github.edulook.look.endpoint.internal.mapper.shared.OAuth2AndUserAuth
 import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -13,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import java.io.IOException;
 
 @Configuration
+@Slf4j
 public class UserAuthenticatedAdapterFilter implements Filter {
 
     private final OAuth2AndUserAuthDTOMapper mapper;
@@ -21,20 +24,27 @@ public class UserAuthenticatedAdapterFilter implements Filter {
         this.mapper = mapper;
     }
 
+    @SneakyThrows
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        var details = (WebAuthenticationDetails) auth.getDetails();
 
-        var user = details.getSessionId() == null
-            ? mapper.toDTO((Jwt) auth.getPrincipal())
-            : mapper.toDTO((OAuth2User) auth.getPrincipal());
+        try {
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            var details = (WebAuthenticationDetails) auth.getDetails();
 
-        request.setAttribute("user", user);
-        var httpServletResponse = ((HttpServletResponse) response);
-        httpServletResponse.addHeader("Authorization", String.format("Bearer %s", user.jwt().token()));
+            var user = details.getSessionId() == null
+                ? mapper.toDTO((Jwt) auth.getPrincipal())
+                : mapper.toDTO((OAuth2User) auth.getPrincipal());
 
+
+            request.setAttribute("user", user);
+            var httpServletResponse = ((HttpServletResponse) response);
+            httpServletResponse.addHeader("Authorization", String.format("Bearer %s", user.jwt().token()));
+        }
+        catch (Exception e) {
+            log.error("error:: ", e);
+            throw e;
+        }
         chain.doFilter(request, response);
     }
-
 }
