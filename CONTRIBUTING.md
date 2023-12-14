@@ -7,6 +7,7 @@
   - [Indention](#indention)
   - [Commit message](#commit-message)
 - [Setup](#setup)
+- [Using](#using)
 
 
 ## Code Style:
@@ -81,3 +82,27 @@ Os valores de ***cliente ID*** e ***secret*** são obtidos no Google Cloud Platf
 
 #### Acesso aos recursos:
 - Acesse [localhost:8085](localhost:8085) e acesse com uma conta de um estudante para testar a API.
+
+
+## Using
+### Insomnia
+- Crie uma nova request no Insomnia do tipo GET
+- Altere a o tipo de autenticação para OAuth 2.0
+  ![Insomnia 1](screenshot/03.1.using-insomnia.png)
+- Altere o tipo de de concessão para **Implicit**
+  ![Insomnia 2](screenshot/03.2.using-insomnia.png)
+- Adicione as configurações abaixo (O **cliente id** deve ser o mesmo da secção da [configuração do cliente OAuth2](#configuração-do-cliente-oauth2):
+  ![Insomnia 3](screenshot/03.3.using-insomnia.png)
+O cliente ID do exemplo acima pode está inválido, adicione o cliente ID válido.
+- Faça login com uma conta de um aluno e recupere o token de autorização
+  ![Insomnia 4](screenshot/03.4.using-insomnia.png)
+  ![Insomnia 5screenshot/03.5.using-insomnia.png)
+  ![Insomnia 6](screenshot/03.6.using-insomnia.png)
+- Token definido
+  ![Insomnia 7](screenshot/03.7.using-insomnia.png)
+- Fazendo chamada para endpoint *v1/courses* 
+  ![Insomnia 8](screenshot/03.8.using-insomnia.png)
+
+### Extra
+Observe que em todas as request com sucesso retorno no Header da resposta o Authorization Token:
+![Token OBS](screenshot/03.9.using-insomnia.png)
