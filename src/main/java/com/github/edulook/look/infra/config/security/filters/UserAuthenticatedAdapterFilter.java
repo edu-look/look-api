@@ -1,7 +1,9 @@
 package com.github.edulook.look.infra.config.security.filters;
 
 import com.github.edulook.look.endpoint.internal.mapper.shared.OAuth2AndUserAuthDTOMapper;
+import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -24,12 +26,13 @@ public class UserAuthenticatedAdapterFilter implements Filter {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         var details = (WebAuthenticationDetails) auth.getDetails();
 
-        if(details.getSessionId() == null) {
-            request.setAttribute("user", mapper.toDTO((Jwt) auth.getPrincipal()));
-        }
-        else {
-            request.setAttribute("user", mapper.toDTO((OAuth2User) auth.getPrincipal()));
-        }
+        var user = details.getSessionId() == null
+            ? mapper.toDTO((Jwt) auth.getPrincipal())
+            : mapper.toDTO((OAuth2User) auth.getPrincipal());
+
+        request.setAttribute("user", user);
+        var httpServletResponse = ((HttpServletResponse) response);
+        httpServletResponse.addHeader("Authorization", String.format("Bearer %s", user.jwt().token()));
 
         chain.doFilter(request, response);
     }
