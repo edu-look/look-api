@@ -54,6 +54,8 @@ look:
         authorization-encoded-url: https://accounts.google.com/o/oauth2/auth
   application:
     name: ${LOOK_APPLICATION_NAME:look-service}
+    caching:
+        tll: 3600000 # milliseconds >> 3600s * 1000ms
 
 logging:
   level:
