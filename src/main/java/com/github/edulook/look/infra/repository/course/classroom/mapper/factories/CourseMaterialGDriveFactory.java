@@ -1,9 +1,15 @@
 package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
+import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
 import com.google.api.services.classroom.model.Material;
+import org.springframework.security.crypto.codec.Hex;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,13 +45,15 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
 
         return Course.WorkMaterial.Material
             .builder()
+            .id(hash256(source.getDriveFile().getDriveFile().getAlternateLink()))
+            .name(source.getDriveFile().getDriveFile().getTitle())
             .originLink(source.getDriveFile().getDriveFile().getAlternateLink())
             .previewLink(source.getDriveFile().getDriveFile().getThumbnailUrl())
             .type(getFiletype(filename))
-            .description(source.getDriveFile().getDriveFile().getTitle())
+            .description(PageContent.withDefaults(source.getDriveFile().getDriveFile().getTitle()))
             .build();
-    }
 
+    }
 
     private static String getFiletype(String filename) {
         if(filename == null)
@@ -54,9 +62,10 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
         var slices = filename.split("[.]");
         if(slices.length < 2)
             return Typename.FILE;
-
         var extension  = slices[slices.length - 1 ].toLowerCase(Locale.ROOT);
-        if (videoExtension.contains(extension))
+        if(extension.equalsIgnoreCase("pdf"))
+            return Typename.PDF;
+        else if (videoExtension.contains(extension))
             return Typename.VIDEO;
         else if (imageExtensions.contains(extension))
             return Typename.IMAGE;

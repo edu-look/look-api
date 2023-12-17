@@ -1,6 +1,7 @@
 package com.github.edulook.look.core.model;
 
 
+import com.github.edulook.look.core.data.PageContent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,11 +53,15 @@ public class Course {
         private List<Material> materials;
 
         @Builder
-        public static record Material (
-          String description,
-          String type,
-          String originLink,
-          String previewLink
-        ){}
+        @Getter
+        @Setter
+        public static class Material {
+            private String id;
+            private String name;
+            private PageContent description;
+            private String type;
+            private String originLink;
+            private String previewLink;
+        }
     }
 }

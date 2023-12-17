@@ -69,6 +69,16 @@ public class CourseRepositoryAdapter implements CourseRepository {
     }
 
     @Override
+    public Optional<WorkMaterial> findOneMaterial(Course course, String materialId) {
+        var workMaterial = getCourseWorkMaterialStorage.findOneMaterial(course, materialId);
+
+        if(workMaterial.isEmpty())
+            return getCourseWorkMaterialClassroom.findOneMaterial(course, materialId);
+
+        return workMaterial;
+    }
+
+    @Override
     public List<WorkMaterial> listAllWorkMaterial(Course course, String access) {
         var materials = getCourseWorkMaterialStorage.listAllWorkMaterial(course, access);
 
@@ -94,5 +104,12 @@ public class CourseRepositoryAdapter implements CourseRepository {
 
     private Boolean isInvalidCourse(Course course) {
         return course == null || course.getId() == null;
+    }
+
+    @Override
+    public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
+        // TODO: add persistence here
+
+        return materialSaved;
     }
 }

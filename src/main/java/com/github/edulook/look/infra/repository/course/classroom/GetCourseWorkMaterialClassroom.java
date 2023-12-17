@@ -5,6 +5,7 @@ import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
 import com.github.edulook.look.infra.repository.course.classroom.mapper.ClassroomMaterialToCourseMaterialMapper;
 import com.google.api.services.classroom.Classroom;
+import com.google.api.services.classroom.model.CourseWorkMaterial;
 import com.google.api.services.classroom.model.ListCourseWorkMaterialResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,23 @@ public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
     public List<WorkMaterial> listAllWorkMaterial(Course course) {
         return listAllWorkMaterial(course, null);
     }
-    
+
+    @Override
+    public Optional<WorkMaterial> findOneMaterial(Course course, String materialId) {
+        try {
+            var material = classroom.courses()
+                .courseWorkMaterials()
+                .get(course.getId(), materialId)
+                .execute();
+
+            return Optional.ofNullable(toWorkMaterialCore(material));
+
+        } catch (IOException e) {
+            log.error("error:: ", e);
+        }
+        return Optional.empty();
+    }
+
 
     @Override
     public List<WorkMaterial> listAllWorkMaterial(Course course, String access) {
@@ -65,28 +82,27 @@ public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
     private List<WorkMaterial> toWorkMaterialCore(ListCourseWorkMaterialResponse materials) {
         var workMaterial = Optional.ofNullable(materials.getCourseWorkMaterial());
 
-        if(workMaterial.isEmpty()) {
-            return List.of();
-        }
+        return workMaterial.map(courseWorkMaterials -> courseWorkMaterials
+                .parallelStream()
+                .map(this::toWorkMaterialCore)
+                .toList())
+                .orElseGet(List::of);
 
-        return workMaterial.get()
-            .parallelStream()
-            .map(it -> {
-                var materialsCore = it.getMaterials()
-                    .stream()
-                    .map(classroomMaterialToCourseMaterialMapper::toModel)
-                    .toList();
+    }
 
-                return WorkMaterial
-                    .builder()
-                    .createdAt(it.getCreationTime())
-                    .title(it.getTitle())
-                    .id(it.getId())
-                    .description(it.getDescription())
-                    .materials(materialsCore)
-                    .build();
-
-            })
+    private WorkMaterial toWorkMaterialCore(CourseWorkMaterial material) {
+        var materialsCore = material.getMaterials()
+            .stream()
+            .map(classroomMaterialToCourseMaterialMapper::toModel)
             .toList();
+
+        return WorkMaterial
+                .builder()
+                .createdAt(material.getCreationTime())
+                .title(material.getTitle())
+                .id(material.getId())
+                .description(material.getDescription())
+                .materials(materialsCore)
+                .build();
     }
 }

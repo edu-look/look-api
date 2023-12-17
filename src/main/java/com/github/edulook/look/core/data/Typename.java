@@ -7,4 +7,5 @@ public class Typename {
     public static final String FORM = "Form";
     public static final String NONE = "None";
     public static final String WEB = "Web";
+    public static final String PDF = "PDF";
 }

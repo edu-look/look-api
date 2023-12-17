@@ -2,10 +2,14 @@ package com.github.edulook.look.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
+import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final ApplicationEventPublisher publisher;
+
 
     @Cacheable("listCourses")
     public List<Course> listCourses(String studentId) throws IOException {
@@ -66,5 +71,38 @@ public class CourseService {
         announcements.forEach(it -> publisher.publishEvent(AnnouncementEvent.fromModel(it)));
 
         return announcements;
+    }
+
+
+    @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
+    public WorkMaterial upsetCourseMaterial(String courseId, String materialId, MaterialDTO material) {
+        var materialSavedOptional = courseRepository.findOneMaterial(Course.builder().id(courseId).build(), materialId);
+        if(materialSavedOptional.isEmpty())
+            throw new ResourceNotFoundException(String.format("Material '%s' not found", materialId));
+
+        var materialSaved = materialSavedOptional.get();
+
+        materialSaved.setDescription(material.description());
+
+        materialSaved.getMaterials().parallelStream().forEach(it -> {
+            var materialSelectedDTO = material.materials().stream()
+                .filter(mat -> mat.id().equalsIgnoreCase(it.getId()))
+                .findFirst()
+                .get();
+
+            it.setDescription(materialSelectedDTO.description());
+        });
+
+        return courseRepository.upsetCourseMaterial(materialSaved);
+    }
+
+    @Cacheable("findOneCourseMaterial")
+    public Optional<WorkMaterial> findOneCourseMaterial(String courseId, String materialId) {
+        var course = Course.builder()
+            .id(courseId)
+            .build();
+
+        return courseRepository
+            .findOneMaterial(course, materialId);
     }
 }
