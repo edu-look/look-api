@@ -12,6 +12,7 @@ import com.github.edulook.look.endpoint.io.course.CourseDTO.AnnouncementDTO;
 import com.github.edulook.look.endpoint.io.course.CourseDTO.TeacherDTO;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO.ContentMaterialDTO;
+import com.github.edulook.look.endpoint.io.course.SimpleMaterialDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -102,6 +103,17 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper {
             .origin(source.getOriginLink())
             .preview(source.getPreviewLink())
             .range(source.getRange())
+            .build();
+    }
+
+    @Override
+    public SimpleMaterialDTO toSimpleDTO(WorkMaterial source) {
+        return SimpleMaterialDTO.builder()
+            .title(source.getTitle())
+            .description(source.getDescription())
+            .id(source.getId())
+            .courseId(source.getCourseId())
+            .createdAt(source.getCreatedAt())
             .build();
     }
 }

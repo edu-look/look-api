@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO.ContentMaterialDTO;
 
+import com.github.edulook.look.endpoint.io.course.SimpleMaterialDTO;
 import org.mapstruct.Mapper;
 
 import com.github.edulook.look.core.model.Course;
@@ -22,4 +23,5 @@ public interface CourseAndDTOMapper {
     List<CourseDTO> toDTOList(List<Course> source);
     MaterialDTO toDTO(WorkMaterial source);
     ContentMaterialDTO toDTO(Material source);
+    SimpleMaterialDTO toSimpleDTO(WorkMaterial source);
 }
