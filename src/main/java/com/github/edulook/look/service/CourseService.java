@@ -77,6 +77,7 @@ public class CourseService {
     @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(String courseId, String materialId, MaterialDTO material) {
         var materialSavedOptional = courseRepository.findOneMaterial(Course.builder().id(courseId).build(), materialId);
+
         if(materialSavedOptional.isEmpty())
             throw new ResourceNotFoundException(String.format("Material '%s' not found", materialId));
 

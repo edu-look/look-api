@@ -13,7 +13,6 @@ public class LookUtils {
       try {
         return objectMapper.writeValueAsString(obj);
       } catch (JsonProcessingException e) {
-        e.printStackTrace();
         log.error("object to json", e);
       }
 

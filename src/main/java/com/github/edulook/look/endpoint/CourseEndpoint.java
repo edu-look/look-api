@@ -1,5 +1,6 @@
 package com.github.edulook.look.endpoint;
 
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
@@ -8,12 +9,10 @@ import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import com.github.edulook.look.service.CourseService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -54,12 +53,13 @@ public class CourseEndpoint {
     }
 
     @GetMapping("{courseId}/materials/{materialId}")
-    public Optional<MaterialDTO> findOneCourseMaterial(@PathVariable String courseId,
-                                                       @PathVariable String materialId,
-                                                       @RequestAttribute("user") UserAuthDTO user) {
+    public MaterialDTO findOneCourseMaterial(@PathVariable String courseId,
+                                             @PathVariable String materialId,
+                                             @RequestAttribute("user") UserAuthDTO user) {
 
         return courseService.findOneCourseMaterial(courseId, materialId)
-            .map(courseAndDTOMapper::toDTO);
+            .map(courseAndDTOMapper::toDTO)
+            .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s from course %s not found", materialId, courseId)));
     }
 
 
