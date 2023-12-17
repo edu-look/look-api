@@ -1,4 +1,4 @@
-package com.github.edulook.look.infra.repository.course.mapper.factories;
+package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
 import static com.github.edulook.look.core.model.Course.WorkMaterial.Material;
 

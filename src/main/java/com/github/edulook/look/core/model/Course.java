@@ -55,7 +55,8 @@ public class Course {
         public static record Material (
           String description,
           String type,
-          String originLink
+          String originLink,
+          String previewLink
         ){}
     }
 }

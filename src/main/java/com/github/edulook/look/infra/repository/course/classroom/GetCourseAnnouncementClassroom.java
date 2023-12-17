@@ -1,4 +1,4 @@
-package com.github.edulook.look.infra.repository.course;
+package com.github.edulook.look.infra.repository.course.classroom;
 
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.Announcement;
@@ -16,13 +16,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Component("GetTeacherAnnouncement::Class")
-public class GetCourseAnnouncementImpl implements GetCourseAnnouncement {
+@Component("GetCourseAnnouncementClassroom::Class")
+public class GetCourseAnnouncementClassroom implements GetCourseAnnouncement {
 
     private final Classroom classroom;
     private final GetTeacher getTeacher;
 
-    public GetCourseAnnouncementImpl(Classroom classroom, @Qualifier("GetTeacher::Class") GetTeacher getTeacher) {
+    public GetCourseAnnouncementClassroom(Classroom classroom,
+                                          @Qualifier("GetTeacherClassroom::Class") GetTeacher getTeacher) {
         this.classroom = classroom;
         this.getTeacher = getTeacher;
     }

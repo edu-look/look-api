@@ -1,9 +1,9 @@
-package com.github.edulook.look.infra.repository.course;
+package com.github.edulook.look.infra.repository.course.classroom;
 
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
-import com.github.edulook.look.infra.repository.course.mapper.ClassroomMaterialToCourseMaterialMapper;
+import com.github.edulook.look.infra.repository.course.classroom.mapper.ClassroomMaterialToCourseMaterialMapper;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.ListCourseWorkMaterialResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Component("GetCourseWorkMaterial::Class")
-public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
+@Component("GetCourseWorkMaterialClassroom::Class")
+public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
 
     private final Classroom classroom;
     private final ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper;
 
-    public GetCourseWorkMaterialImpl(Classroom classroom, ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper) {
+    public GetCourseWorkMaterialClassroom(Classroom classroom,
+                                          ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper) {
         this.classroom = classroom;
         this.classroomMaterialToCourseMaterialMapper = classroomMaterialToCourseMaterialMapper;
     }

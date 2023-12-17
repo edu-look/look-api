@@ -1,6 +1,6 @@
-package com.github.edulook.look.infra.repository.course.mapper.factories;
+package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
-import com.github.edulook.look.core.data.FileType;
+import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
 import com.google.api.services.classroom.model.Material;
 
@@ -33,13 +33,14 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
     @Override
     public Course.WorkMaterial.Material create(Material source) {
         if(source == null)
-            throw new RuntimeException("Material can't be null");
+            throw new IllegalArgumentException("Material can't be null");
 
         var filename = source.getDriveFile().getDriveFile().getTitle();
 
         return Course.WorkMaterial.Material
             .builder()
             .originLink(source.getDriveFile().getDriveFile().getAlternateLink())
+            .previewLink(source.getDriveFile().getDriveFile().getThumbnailUrl())
             .type(getFiletype(filename))
             .description(source.getDriveFile().getDriveFile().getTitle())
             .build();
@@ -48,18 +49,18 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
 
     private static String getFiletype(String filename) {
         if(filename == null)
-            return FileType.NONE;
+            return Typename.NONE;
 
         var slices = filename.split("[.]");
         if(slices.length < 2)
-            return FileType.FILE;
+            return Typename.FILE;
 
         var extension  = slices[slices.length - 1 ].toLowerCase(Locale.ROOT);
         if (videoExtension.contains(extension))
-            return FileType.VIDEO;
+            return Typename.VIDEO;
         else if (imageExtensions.contains(extension))
-            return FileType.IMAGE;
+            return Typename.IMAGE;
 
-        return FileType.FILE;
+        return Typename.FILE;
     }
 }

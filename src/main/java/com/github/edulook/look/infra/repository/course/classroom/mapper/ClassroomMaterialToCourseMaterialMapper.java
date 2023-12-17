@@ -1,6 +1,6 @@
-package com.github.edulook.look.infra.repository.course.mapper;
+package com.github.edulook.look.infra.repository.course.classroom.mapper;
 
-import com.github.edulook.look.infra.repository.course.mapper.factories.FactoryCourseMaterial;
+import com.github.edulook.look.infra.repository.course.classroom.mapper.factories.FactoryCourseMaterial;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
