@@ -81,7 +81,6 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper {
 
     @Override
     public MaterialDTO toDTO(WorkMaterial source) {
-
         var materials = source
             .getMaterials()
             .parallelStream()
@@ -96,17 +95,13 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper {
 
     @Override
     public ContentMaterialDTO toDTO(WorkMaterial.Material source) {
-        var range = source.getType().equalsIgnoreCase(Typename.PDF)
-            ? Range.withDefaults()
-            : Range.None();
-
         return ContentMaterialDTO.builder()
             .description(source.getDescription())
             .id(source.getId())
             .name(source.getName())
             .origin(source.getOriginLink())
             .preview(source.getPreviewLink())
-            .range(range)
+            .range(source.getRange())
             .build();
     }
 }

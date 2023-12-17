@@ -1,6 +1,7 @@
 package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
 import com.github.edulook.look.core.data.PageContent;
+import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
 import com.google.api.services.classroom.model.Material;
@@ -16,7 +17,7 @@ public class CourseMaterialYoutubeFactory implements AbstractCourseMaterialFacto
     @Override
     public Course.WorkMaterial.Material create(Material source) {
         if(source == null)
-            throw new IllegalArgumentException("Material can't be null");
+            throw new IllegalArgumentException("material can't be null");
 
         return Course.WorkMaterial.Material
             .builder()
@@ -24,7 +25,9 @@ public class CourseMaterialYoutubeFactory implements AbstractCourseMaterialFacto
             .name(source.getYoutubeVideo().getTitle())
             .originLink(source.getYoutubeVideo().getAlternateLink())
             .type(Typename.VIDEO)
-            .description(PageContent.withDefaults(source.getYoutubeVideo().getTitle()))
+            .description(source.getYoutubeVideo().getTitle())
+            .range(Range.None())
+            .content(PageContent.None())
             .build();
     }
 }

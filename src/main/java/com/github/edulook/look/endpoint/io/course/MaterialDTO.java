@@ -8,6 +8,7 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Optional;
 
 @Builder
 public record MaterialDTO(
@@ -22,12 +23,14 @@ public record MaterialDTO(
         String id,
         @NotBlank
         String name,
+
         @NotBlank
-        PageContent description,
+        String description,
 
         String origin,
         String preview,
-        Range range
+        Optional<PageContent> content,
+        Optional<Range> range
     ) {
     }
 }

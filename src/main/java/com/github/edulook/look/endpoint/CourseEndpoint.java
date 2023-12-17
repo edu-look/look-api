@@ -66,9 +66,9 @@ public class CourseEndpoint {
 
     @PatchMapping("{courseId}/materials/{materialId}/edit")
     public WorkMaterial listAllWorkMaterialsUpdate(@PathVariable String courseId,
-                                                         @PathVariable String materialId,
-                                                         @RequestBody MaterialDTO material,
-                                                         @RequestAttribute("user") UserAuthDTO user) {
+                                                   @PathVariable String materialId,
+                                                   @RequestBody MaterialDTO material,
+                                                   @RequestAttribute("user") UserAuthDTO user) {
 
         return courseService.upsetCourseMaterial(courseId, materialId, material);
     }

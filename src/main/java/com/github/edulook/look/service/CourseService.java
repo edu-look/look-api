@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
+import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractPDFEvent;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
+import com.github.edulook.look.core.model.Course.WorkMaterial.Material;
 import com.github.edulook.look.core.repository.CourseRepository;
 
 import lombok.AllArgsConstructor;
@@ -79,22 +82,44 @@ public class CourseService {
         var materialSavedOptional = courseRepository.findOneMaterial(Course.builder().id(courseId).build(), materialId);
 
         if(materialSavedOptional.isEmpty())
-            throw new ResourceNotFoundException(String.format("Material '%s' not found", materialId));
+            throw new ResourceNotFoundException(String.format("material '%s' not found", materialId));
 
         var materialSaved = materialSavedOptional.get();
 
         materialSaved.setDescription(material.description());
 
         materialSaved.getMaterials().parallelStream().forEach(it -> {
-            var materialSelectedDTO = material.materials().stream()
-                .filter(mat -> mat.id().equalsIgnoreCase(it.getId()))
-                .findFirst()
-                .get();
+            try {
+                var materialSelectedDTO = material.materials().stream()
+                    .filter(mat -> mat.id().equalsIgnoreCase(it.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s not found", it.getId())));
 
-            it.setDescription(materialSelectedDTO.description());
+                it.setName(materialSelectedDTO.name());
+                it.setRange(materialSelectedDTO.range());
+                it.setDescription(materialSelectedDTO.description());
+
+                emitContentParserEvent(it, materialSaved);
+            }
+            catch (Exception e) {
+                log.error("error:: ", e);
+            }
         });
 
         return courseRepository.upsetCourseMaterial(materialSaved);
+    }
+
+    private void emitContentParserEvent(Material it, WorkMaterial materialSaved) {
+        if(it.getRange().isPresent() && it.getType().equalsIgnoreCase(Typename.PDF)) {
+            var event = CourseMaterialExtractPDFEvent.builder()
+                .contentId(it.getId())
+                .courseId(materialSaved.getCourseId())
+                .materialId(materialSaved.getId())
+                .range(it.getRange().get())
+                .build();
+
+            publisher.publishEvent(event);
+        }
     }
 
     @Cacheable("findOneCourseMaterial")

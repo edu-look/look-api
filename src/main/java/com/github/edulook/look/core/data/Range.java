@@ -3,6 +3,8 @@ package com.github.edulook.look.core.data;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Optional;
+
 @Builder
 @Getter
 public class Range {
@@ -23,7 +25,7 @@ public class Range {
     public static Range withDefaults() {
         return new Range(0, 0);
     }
-    public static Range None() {
-        return null;
+    public static Optional<Range> None() {
+        return Optional.empty();
     }
 }

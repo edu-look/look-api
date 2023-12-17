@@ -1,6 +1,7 @@
 package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
 import com.github.edulook.look.core.data.PageContent;
+import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
 import com.google.api.services.classroom.model.Material;
@@ -11,7 +12,7 @@ public class CourseMaterialFormFactory implements AbstractCourseMaterialFactory 
     @Override
     public Course.WorkMaterial.Material create(Material source) {
         if(source == null)
-            throw new IllegalArgumentException("Material can't be null");
+            throw new IllegalArgumentException("material can't be null");
 
         return Course.WorkMaterial.Material
             .builder()
@@ -20,7 +21,9 @@ public class CourseMaterialFormFactory implements AbstractCourseMaterialFactory 
             .originLink(source.getForm().getFormUrl())
             .previewLink(source.getForm().getThumbnailUrl())
             .type(Typename.FORM)
-            .description(PageContent.withDefaults(source.getForm().getTitle()))
+            .description(source.getForm().getTitle())
+            .range(Range.None())
+            .content(PageContent.None())
             .build();
     }
 }

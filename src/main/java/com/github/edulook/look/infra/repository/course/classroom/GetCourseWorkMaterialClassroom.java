@@ -101,6 +101,7 @@ public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
                 .createdAt(material.getCreationTime())
                 .title(material.getTitle())
                 .id(material.getId())
+                .courseId(material.getCourseId())
                 .description(material.getDescription())
                 .materials(materialsCore)
                 .build();

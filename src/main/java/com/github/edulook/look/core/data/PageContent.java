@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Builder
 @Getter
@@ -27,8 +28,8 @@ public class PageContent {
     }
 
 
-    public PageContent None () {
-        return null;
+    public static Optional<PageContent> None () {
+        return Optional.empty();
     }
 
     @Builder
