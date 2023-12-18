@@ -14,6 +14,8 @@ public class FactoryCourseMaterial {
             return new CourseMaterialGDriveFactory();
         if(source.getForm() != null)
             return new CourseMaterialFormFactory();
+        if(source.getLink() != null)
+            return new CouseMaterialLinkFactory();
 
         throw new NotImplementedException();
     }

@@ -13,7 +13,7 @@ public class CourseWorker {
 
     @EventListener
     public void processorWorkMaterial(WorkMaterialEvent course) {
-      log.info("saving work material {}", course.getCourseId());
+      log.info("saving work materialmaterial {}", course.getCourseId());
     }
 
     @EventListener

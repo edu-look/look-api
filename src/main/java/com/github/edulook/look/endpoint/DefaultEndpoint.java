@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("v1")
 public class DefaultEndpoint {
 
     @GetMapping
     public void rootRedirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/user");
+        response.sendRedirect("/v1/students/profile");
     }
 
     @GetMapping("/user")

@@ -33,7 +33,7 @@ public class CourseService {
        return courseRepository.findCoursesByStudentId(studentId);
     }
 
-    @Cacheable("listAllWorkMaterials")
+    //@Cacheable("listAllWorkMaterials")
     public List<WorkMaterial> listAllWorkMaterials(String courseId, String access) {
         if(courseId == null) {
             return List.of();

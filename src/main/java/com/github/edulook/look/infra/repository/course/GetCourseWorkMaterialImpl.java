@@ -69,7 +69,7 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
         }
 
         return workMaterial.get()
-            .parallelStream()
+            .stream()
             .map(it -> {
                 var materialsCore = it.getMaterials()
                     .stream()
