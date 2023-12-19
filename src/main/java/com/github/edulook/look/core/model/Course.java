@@ -28,6 +28,9 @@ public class Course {
     private String updated;
     private List<Teacher> teachers;
 
+    public Course(String courseId, String id, String description, String title, String createdAt) {
+    }
+
     @Getter
     @Setter
     @AllArgsConstructor
