@@ -1,11 +1,11 @@
-package com.github.edulook.look.infra.repository.course;
+package com.github.edulook.look.infra.repository.course.classroom;
 
 import com.github.edulook.look.core.data.CourseState;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.core.repository.course.GetCourse;
 import com.github.edulook.look.core.repository.teacher.GetTeacher;
-import com.github.edulook.look.infra.repository.course.mapper.ClassroomCourseToCoreCourseMapper;
+import com.github.edulook.look.infra.repository.course.classroom.mapper.ClassroomCourseToCoreCourseMapper;
 import com.google.api.services.classroom.Classroom;
 import com.google.api.services.classroom.model.ListCoursesResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +20,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component("GetCourse::Class")
-public class GetCourseImpl implements GetCourse {
+@Component("GetCourseClassroom::Class")
+public class GetCourseClassroom implements GetCourse {
 
     private final Classroom classroom;
     private final ClassroomCourseToCoreCourseMapper mapper;
     private final GetTeacher getTeacher;
 
-    public GetCourseImpl(Classroom classroom, ClassroomCourseToCoreCourseMapper mapper, @Qualifier("GetTeacher::Class") GetTeacher getTeacher) {
+    public GetCourseClassroom(Classroom classroom, ClassroomCourseToCoreCourseMapper mapper,
+                              @Qualifier("GetTeacherClassroom::Class") GetTeacher getTeacher) {
         this.classroom = classroom;
         this.mapper = mapper;
         this.getTeacher = getTeacher;

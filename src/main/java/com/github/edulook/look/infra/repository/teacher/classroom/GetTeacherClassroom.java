@@ -1,4 +1,4 @@
-package com.github.edulook.look.infra.repository.teacher;
+package com.github.edulook.look.infra.repository.teacher.classroom;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,19 +8,17 @@ import org.springframework.stereotype.Component;
 
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.core.repository.teacher.GetTeacher;
-import com.github.edulook.look.infra.repository.teacher.mapper.ClassroomTeacherAndCoreTeacherMapper;
+import com.github.edulook.look.infra.repository.teacher.classroom.mapper.ClassroomTeacherAndCoreTeacherMapper;
 import com.google.api.services.classroom.Classroom;
 
-import lombok.AllArgsConstructor;
 
-
-@Component("GetTeacher::Class")
-public class GetTeacherImpl implements GetTeacher {
+@Component("GetTeacherClassroom::Class")
+public class GetTeacherClassroom implements GetTeacher {
 
     private final Classroom classroom;
     private final ClassroomTeacherAndCoreTeacherMapper mapper;
 
-    public GetTeacherImpl(Classroom classroom, ClassroomTeacherAndCoreTeacherMapper mapper) {
+    public GetTeacherClassroom(Classroom classroom, ClassroomTeacherAndCoreTeacherMapper mapper) {
         this.classroom = classroom;
         this.mapper = mapper;
     }
@@ -34,7 +32,7 @@ public class GetTeacherImpl implements GetTeacher {
     private List<Teacher> toCoreTeacher(List<com.google.api.services.classroom.model.Teacher> teachers) {
         return teachers
             .stream()
-            .map(it -> mapper.toModel(it))
+            .map(mapper::toModel)
             .toList();
     }
 

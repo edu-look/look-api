@@ -1,10 +1,11 @@
-package com.github.edulook.look.infra.repository.course;
+package com.github.edulook.look.infra.repository.course.classroom;
 
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
-import com.github.edulook.look.infra.repository.course.mapper.ClassroomMaterialToCourseMaterialMapper;
+import com.github.edulook.look.infra.repository.course.classroom.mapper.ClassroomMaterialToCourseMaterialMapper;
 import com.google.api.services.classroom.Classroom;
+import com.google.api.services.classroom.model.CourseWorkMaterial;
 import com.google.api.services.classroom.model.ListCourseWorkMaterialResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,13 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Component("GetCourseWorkMaterial::Class")
-public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
+@Component("GetCourseWorkMaterialClassroom::Class")
+public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
 
     private final Classroom classroom;
     private final ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper;
 
-    public GetCourseWorkMaterialImpl(Classroom classroom, ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper) {
+    public GetCourseWorkMaterialClassroom(Classroom classroom,
+                                          ClassroomMaterialToCourseMaterialMapper classroomMaterialToCourseMaterialMapper) {
         this.classroom = classroom;
         this.classroomMaterialToCourseMaterialMapper = classroomMaterialToCourseMaterialMapper;
     }
@@ -29,7 +31,23 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
     public List<WorkMaterial> listAllWorkMaterial(Course course) {
         return listAllWorkMaterial(course, null);
     }
-    
+
+    @Override
+    public Optional<WorkMaterial> findOneMaterial(Course course, String materialId) {
+        try {
+            var material = classroom.courses()
+                .courseWorkMaterials()
+                .get(course.getId(), materialId)
+                .execute();
+
+            return Optional.ofNullable(toWorkMaterialCore(material));
+
+        } catch (IOException e) {
+            log.error("error:: ", e);
+        }
+        return Optional.empty();
+    }
+
 
     @Override
     public List<WorkMaterial> listAllWorkMaterial(Course course, String access) {
@@ -64,10 +82,13 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
     private List<WorkMaterial> toWorkMaterialCore(ListCourseWorkMaterialResponse materials) {
         var workMaterial = Optional.ofNullable(materials.getCourseWorkMaterial());
 
-        if(workMaterial.isEmpty()) {
-            return List.of();
-        }
+        return workMaterial.map(courseWorkMaterials -> courseWorkMaterials
+                .parallelStream()
+                .map(this::toWorkMaterialCore)
+                .toList())
+                .orElseGet(List::of);
 
+<<<<<<< HEAD:src/main/java/com/github/edulook/look/infra/repository/course/GetCourseWorkMaterialImpl.java
         return workMaterial.get()
             .stream()
             .map(it -> {
@@ -86,6 +107,24 @@ public class GetCourseWorkMaterialImpl implements GetCourseWorkMaterial {
                     .build();
 
             })
+=======
+    }
+
+    private WorkMaterial toWorkMaterialCore(CourseWorkMaterial material) {
+        var materialsCore = material.getMaterials()
+            .stream()
+            .map(classroomMaterialToCourseMaterialMapper::toModel)
+>>>>>>> 17c1f651d2fb525063fbde8dccccda73e241afde:src/main/java/com/github/edulook/look/infra/repository/course/classroom/GetCourseWorkMaterialClassroom.java
             .toList();
+
+        return WorkMaterial
+                .builder()
+                .createdAt(material.getCreationTime())
+                .title(material.getTitle())
+                .id(material.getId())
+                .courseId(material.getCourseId())
+                .description(material.getDescription())
+                .materials(materialsCore)
+                .build();
     }
 }

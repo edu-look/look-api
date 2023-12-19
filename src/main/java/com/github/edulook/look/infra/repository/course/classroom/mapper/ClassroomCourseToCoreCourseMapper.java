@@ -1,4 +1,4 @@
-package com.github.edulook.look.infra.repository.course.mapper;
+package com.github.edulook.look.infra.repository.course.classroom.mapper;
 
 import java.util.Map;
 import java.util.List;

@@ -1,20 +1,26 @@
 package com.github.edulook.look.endpoint.internal.mapper.course.impl;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Component;
-
+import com.github.edulook.look.core.data.Range;
+import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
+import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
 import com.github.edulook.look.endpoint.io.course.CourseDTO.AnnouncementDTO;
 import com.github.edulook.look.endpoint.io.course.CourseDTO.TeacherDTO;
+import com.github.edulook.look.endpoint.io.course.MaterialDTO;
+import com.github.edulook.look.endpoint.io.course.MaterialDTO.ContentMaterialDTO;
+import com.github.edulook.look.endpoint.io.course.SimpleMaterialDTO;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
+
 
 @Component
-public class CourseAndDTOMapperImpl implements CourseAndDTOMapper{
+public class CourseAndDTOMapperImpl implements CourseAndDTOMapper {
 
     @Override
     public CourseDTO toDTO(Course course) {
@@ -74,5 +80,40 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper{
             .toList();
     }
 
-    
+    @Override
+    public MaterialDTO toDTO(WorkMaterial source) {
+        var materials = source
+            .getMaterials()
+            .parallelStream()
+            .map(this::toDTO)
+            .toList();
+
+        return MaterialDTO.builder()
+            .description(source.getDescription())
+            .materials(materials)
+            .build();
+    }
+
+    @Override
+    public ContentMaterialDTO toDTO(WorkMaterial.Material source) {
+        return ContentMaterialDTO.builder()
+            .description(source.getDescription())
+            .id(source.getId())
+            .name(source.getName())
+            .origin(source.getOriginLink())
+            .preview(source.getPreviewLink())
+            .range(source.getRange())
+            .build();
+    }
+
+    @Override
+    public SimpleMaterialDTO toSimpleDTO(WorkMaterial source) {
+        return SimpleMaterialDTO.builder()
+            .title(source.getTitle())
+            .description(source.getDescription())
+            .id(source.getId())
+            .courseId(source.getCourseId())
+            .createdAt(source.getCreatedAt())
+            .build();
+    }
 }

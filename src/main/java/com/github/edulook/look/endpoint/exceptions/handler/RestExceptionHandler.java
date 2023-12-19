@@ -18,7 +18,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     
     @ExceptionHandler(value = { ResourceNotFoundException.class })
     protected ResponseEntity<Object> NotFound(RuntimeException ex, WebRequest request) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(),  LookUtils.toJSON(ex));
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
         return new ResponseEntity<>(
                 apiError,
                 new HttpHeaders(),
@@ -28,7 +28,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { ForbiddenException.class })
     protected ResponseEntity<Object> forbidden(RuntimeException ex, WebRequest request) {
-        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getLocalizedMessage(),  LookUtils.toJSON(ex));
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getLocalizedMessage());
         return new ResponseEntity<>(
                 apiError,
                 new HttpHeaders(),

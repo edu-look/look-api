@@ -1,12 +1,18 @@
-package com.github.edulook.look.infra.repository.course.mapper.factories;
+package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
-import com.github.edulook.look.core.data.FileType;
+import com.github.edulook.look.core.data.PageContent;
+import com.github.edulook.look.core.data.Range;
+import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
 import com.google.api.services.classroom.model.Material;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
+@Slf4j
 public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactory {
 
     private  static List<String> videoExtension = List.of(
@@ -33,33 +39,62 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
     @Override
     public Course.WorkMaterial.Material create(Material source) {
         if(source == null)
-            throw new RuntimeException("Material can't be null");
+            throw new IllegalArgumentException("material can't be null");
 
         var filename = source.getDriveFile().getDriveFile().getTitle();
+        var filetype = getFiletype(filename);
+
+        var range = filetype.equalsIgnoreCase(Typename.PDF)
+                ? Optional.of(Range.withDefaults())
+                : Range.None();
 
         return Course.WorkMaterial.Material
             .builder()
+            .id(hash256(source.getDriveFile().getDriveFile().getAlternateLink()))
+            .name(normalizeFilename(source.getDriveFile().getDriveFile().getTitle()))
             .originLink(source.getDriveFile().getDriveFile().getAlternateLink())
-            .type(getFiletype(filename))
+            .previewLink(source.getDriveFile().getDriveFile().getThumbnailUrl())
+            .type(filetype)
             .description(source.getDriveFile().getDriveFile().getTitle())
+            .range(range)
+            .content(PageContent.None())
             .build();
+
+    }
+    private String normalizeFilename(String filename) {
+
+        try {
+            var slices = filename.split("[.]");
+            var rawFilename  = slices[0].toLowerCase(Locale.ROOT);
+
+            var cleanFilename = rawFilename.trim()
+                    .replaceAll("[-_.]", " ")
+                    .replaceAll(" +", " ");
+
+            return StringUtils.capitalize(cleanFilename);
+        }
+        catch (Exception e) {
+            log.error("error:: ", e);
+            return filename;
+        }
     }
 
-
-    private static String getFiletype(String filename) {
+    private String getFiletype(String filename) {
         if(filename == null)
-            return FileType.NONE;
+            return Typename.NONE;
 
         var slices = filename.split("[.]");
         if(slices.length < 2)
-            return FileType.FILE;
+            return Typename.FILE;
 
         var extension  = slices[slices.length - 1 ].toLowerCase(Locale.ROOT);
-        if (videoExtension.contains(extension))
-            return FileType.VIDEO;
+        if(extension.equalsIgnoreCase("pdf"))
+            return Typename.PDF;
+        else if (videoExtension.contains(extension))
+            return Typename.VIDEO;
         else if (imageExtensions.contains(extension))
-            return FileType.IMAGE;
+            return Typename.IMAGE;
 
-        return FileType.FILE;
+        return Typename.FILE;
     }
 }
