@@ -32,10 +32,7 @@ public class UserAuthenticatedAdapterFilter implements Filter {
             var auth = SecurityContextHolder.getContext().getAuthentication();
             var details = (WebAuthenticationDetails) auth.getDetails();
 
-            var user = details.getSessionId() == null
-                ? mapper.toDTO((Jwt) auth.getPrincipal())
-                : mapper.toDTO((OAuth2User) auth.getPrincipal());
-
+            var user = toUserDTO(auth.getPrincipal());
 
             request.setAttribute("user", user);
             var httpServletResponse = ((HttpServletResponse) response);
@@ -46,5 +43,14 @@ public class UserAuthenticatedAdapterFilter implements Filter {
             throw e;
         }
         chain.doFilter(request, response);
+    }
+
+    private UserAuthDTO toUserDTO(Object principal) {
+        try {
+            return mapper.toDTO((Jwt) principal);
+        }
+        catch (Exception e) {
+            return mapper.toDTO((OAuth2User) principal);
+        }
     }
 }

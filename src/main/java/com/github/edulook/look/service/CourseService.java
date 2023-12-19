@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
+import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
 import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractPDFEvent;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
