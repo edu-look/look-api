@@ -1,0 +1,50 @@
+<script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+</script>
+
+<div id="app">
+    <div v-for="item in material?.materials">
+      <h3>Nome: </h3><input :value="item.name"  @input="event => item.name = event.target.value" />
+      <h3>Descricao </h3><input :value="item.description" @input="event => item.description = event.target.value" />
+        <img :src=item.preview />
+    </div>
+</div>
+
+
+<script type="module">
+    import { createApp } from 'vue'
+
+    createApp({
+      data(){
+        return {
+          access: '',
+          material: [],
+          course: {
+            id: '',
+            materialId: '',
+          }
+        }
+      },
+      methods: {
+        getCourseIDAndMaterialID() {
+          let { courseId: id, materialId } = location.pathname.match(/v\d+\/\w+\/(?<courseId>\w+)\/\w+\/(?<materialId>\w+)\/\w+/).groups
+          this.course = { id, materialId }
+        },
+
+        async getCourseMaterial() {
+
+          const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
+
+          this.material = await response.json()
+        }
+      },
+      async mounted() {
+        this.getCourseIDAndMaterialID()
+        await this.getCourseMaterial()
+      }
+    }).mount('#app')
+</script>
