@@ -15,11 +15,7 @@ public class FactoryCourseMaterial {
         if(source.getForm() != null)
             return new CourseMaterialFormFactory();
         if(source.getLink() != null)
-<<<<<<< HEAD:src/main/java/com/github/edulook/look/infra/repository/course/mapper/factories/FactoryCourseMaterial.java
-            return new CouseMaterialLinkFactory();
-=======
             return new CourseMaterialLinkFactory();
->>>>>>> 17c1f651d2fb525063fbde8dccccda73e241afde:src/main/java/com/github/edulook/look/infra/repository/course/classroom/mapper/factories/FactoryCourseMaterial.java
 
         throw new NotImplementedException();
     }

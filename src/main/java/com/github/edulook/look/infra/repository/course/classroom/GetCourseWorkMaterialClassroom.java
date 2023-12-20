@@ -87,34 +87,12 @@ public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
                 .map(this::toWorkMaterialCore)
                 .toList())
                 .orElseGet(List::of);
-
-<<<<<<< HEAD:src/main/java/com/github/edulook/look/infra/repository/course/GetCourseWorkMaterialImpl.java
-        return workMaterial.get()
-            .stream()
-            .map(it -> {
-                var materialsCore = it.getMaterials()
-                    .stream()
-                    .map(classroomMaterialToCourseMaterialMapper::toModel)
-                    .toList();
-
-                return WorkMaterial
-                    .builder()
-                    .createdAt(it.getCreationTime())
-                    .title(it.getTitle())
-                    .id(it.getId())
-                    .description(it.getDescription())
-                    .materials(materialsCore)
-                    .build();
-
-            })
-=======
     }
 
     private WorkMaterial toWorkMaterialCore(CourseWorkMaterial material) {
         var materialsCore = material.getMaterials()
-            .stream()
+            .parallelStream()
             .map(classroomMaterialToCourseMaterialMapper::toModel)
->>>>>>> 17c1f651d2fb525063fbde8dccccda73e241afde:src/main/java/com/github/edulook/look/infra/repository/course/classroom/GetCourseWorkMaterialClassroom.java
             .toList();
 
         return WorkMaterial
