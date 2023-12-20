@@ -37,9 +37,11 @@ public class GetCourseClassroom implements GetCourse {
     @Override
     public List<Course> findCoursesByStudentId(String studentId) {
         try {
-            var courses = findCourses(studentId)
-                .getCourses();
+            var response = findCourses(studentId);
+            if(response.isEmpty())
+                return  List.of();
 
+            var courses =  response.get().getCourses();
             var teachers = getTeachersByCourse(getCourseIDs(courses));
             
             return transformClassroomCourseToCoreCourse(courses, teachers);
@@ -65,12 +67,12 @@ public class GetCourseClassroom implements GetCourse {
             .toList();
     }
 
-    private ListCoursesResponse findCourses(String studentId) throws IOException {
-        return classroom.courses()
+    private Optional<ListCoursesResponse> findCourses(String studentId) throws IOException {
+        return Optional.ofNullable(classroom.courses()
             .list()
             .setStudentId(studentId)
             .setCourseStates(List.of(CourseState.ACTIVE))
-            .execute();
+            .execute());
     }
 
     private Map<String, List<Teacher>> getTeachersByCourse(List<String> courseIdList) throws IOException {
