@@ -9,6 +9,8 @@
 - [Setup](#setup)
 - [Using](#using)
 
+## GCP
+Acesse a documentação de setup do projeto no CGP [Aqui](docs/gcp-setup.md)
 
 ## Code Style:
  - Seguir code style google: [Google Styleguide](google.github.io/styleguide/javaguide.md)
