@@ -87,12 +87,11 @@ public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
                 .map(this::toWorkMaterialCore)
                 .toList())
                 .orElseGet(List::of);
-
     }
 
     private WorkMaterial toWorkMaterialCore(CourseWorkMaterial material) {
         var materialsCore = material.getMaterials()
-            .stream()
+            .parallelStream()
             .map(classroomMaterialToCourseMaterialMapper::toModel)
             .toList();
 
