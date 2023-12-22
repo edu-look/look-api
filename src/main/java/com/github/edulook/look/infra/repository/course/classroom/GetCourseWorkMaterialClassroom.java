@@ -76,7 +76,12 @@ public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
             ? client
             : client.setAccessToken(access);
 
-        return Optional.ofNullable(client.execute());
+        var materials = client.execute();
+
+        if(materials == null || materials.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(materials);
     }
 
     private List<WorkMaterial> toWorkMaterialCore(ListCourseWorkMaterialResponse materials) {

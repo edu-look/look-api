@@ -33,8 +33,13 @@ public class CourseEndpoint {
     public List<CourseDTO> getCourses(@RequestAttribute("user") UserAuthDTO user) throws IOException {
         log.info("user logged: {}", user.id());
 
-        return courseAndDTOMapper
+        var courses =  courseAndDTOMapper
             .toDTOList(courseService.listCourses(user.id()));
+
+        if(courses.isEmpty())
+            throw new ResourceNotFoundException(String.format("courses not found to '%s' student id", user.id()));
+
+        return courses;
     }
 
     @GetMapping("{courseId}/announcements")
@@ -51,11 +56,15 @@ public class CourseEndpoint {
         log.info("user logged: {}", user.id());
         log.info("materials to course: {}", courseId);
 
-        return courseService
+        var materials = courseService
             .listAllWorkMaterials(courseId, user.jwt().token())
             .parallelStream()
             .map(courseAndDTOMapper::toSimpleDTO)
             .toList();
+        if(materials.isEmpty())
+            throw new ResourceNotFoundException(String.format("materials not found to '%s' course id", courseId));
+
+        return materials;
     }
 
     @GetMapping("{courseId}/materials/{materialId}")
