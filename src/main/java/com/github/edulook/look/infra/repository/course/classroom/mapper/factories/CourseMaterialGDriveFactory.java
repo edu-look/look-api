@@ -69,23 +69,6 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
         }
     }
 
-    private String normalizeFilename(String filename) {
-
-        try {
-            var slices = filename.split("[.]");
-            var rawFilename  = slices[0].toLowerCase(Locale.ROOT);
-
-            var cleanFilename = rawFilename.trim()
-                    .replaceAll("[-_.]", " ")
-                    .replaceAll(" +", " ");
-
-            return StringUtils.capitalize(cleanFilename);
-        }
-        catch (Exception e) {
-            log.error("error:: ", e);
-            return filename;
-        }
-    }
 
     private String getFiletype(String filename) {
         if(filename == null)

@@ -20,7 +20,7 @@ public class CourseMaterialLinkFactory implements AbstractCourseMaterialFactory 
             return Course.WorkMaterial.Material
                 .builder()
                 .id(hash256(link.getUrl()))
-                .name(link.getTitle())
+                .name(normalizeFilename(link.getTitle()))
                 .originLink(link.getUrl())
                 .previewLink(link.getThumbnailUrl())
                 .type(Typename.WEB)
