@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -98,6 +99,7 @@ public class GetCourseWorkMaterialClassroom implements GetCourseWorkMaterial {
         var materialsCore = material.getMaterials()
             .parallelStream()
             .map(classroomMaterialToCourseMaterialMapper::toModel)
+            .filter(Objects::nonNull)
             .toList();
 
         return WorkMaterial

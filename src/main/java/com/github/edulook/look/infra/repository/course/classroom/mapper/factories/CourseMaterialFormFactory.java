@@ -5,25 +5,33 @@ import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
 import com.google.api.services.classroom.model.Material;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-
+@Slf4j
 public class CourseMaterialFormFactory implements AbstractCourseMaterialFactory {
     @Override
     public Course.WorkMaterial.Material create(Material source) {
-        if(source == null)
-            throw new IllegalArgumentException("material can't be null");
+        try {
+            if(source == null)
+                throw new IllegalArgumentException("material can't be null");
 
-        return Course.WorkMaterial.Material
-            .builder()
-            .id(hash256(source.getForm().getFormUrl()))
-            .name(source.getForm().getTitle())
-            .originLink(source.getForm().getFormUrl())
-            .previewLink(source.getForm().getThumbnailUrl())
-            .type(Typename.FORM)
-            .description(source.getForm().getTitle())
-            .range(Range.None())
-            .content(PageContent.None())
-            .build();
+            var form = source.getForm();
+
+            return Course.WorkMaterial.Material
+                .builder()
+                .id(hash256(form.getFormUrl()))
+                .name(form.getTitle())
+                .originLink(form.getFormUrl())
+                .previewLink(form.getThumbnailUrl())
+                .type(Typename.FORM)
+                .description(form.getTitle())
+                .range(Range.None())
+                .content(PageContent.None())
+                .build();
+        }
+        catch (Exception e) {
+            log.error("error:: ", e);
+            return null;
+        }
     }
 }
