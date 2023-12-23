@@ -52,7 +52,8 @@ public class CourseEndpoint {
     }
 
     @GetMapping("{courseId}/materials")
-    public List<SimpleMaterialDTO> listAllWorkMaterials(@PathVariable String courseId, @RequestAttribute("user") UserAuthDTO user) {
+    public List<SimpleMaterialDTO> listAllWorkMaterials(@PathVariable String courseId,
+                                                        @RequestAttribute("user") UserAuthDTO user) {
         log.info("user logged: {}", user.id());
         log.info("materials to course: {}", courseId);
 
@@ -87,5 +88,19 @@ public class CourseEndpoint {
 
         return Optional.ofNullable(courseService.upsetCourseMaterial(courseId, materialId, material))
                 .map(courseAndDTOMapper::toDTO);
+    }
+
+
+    @GetMapping("{courseId}/works")
+    public List<?> findlAllWorks(@PathVariable String courseId,
+                                 @RequestAttribute("user") UserAuthDTO user) {
+
+        var courseWorks = courseService
+                .findAllCourseWorks(courseId);
+
+        if(courseWorks.isEmpty())
+            throw new ResourceNotFoundException(String.format("course works not found to '%s' course id", courseId));
+
+        return courseWorks;
     }
 }
