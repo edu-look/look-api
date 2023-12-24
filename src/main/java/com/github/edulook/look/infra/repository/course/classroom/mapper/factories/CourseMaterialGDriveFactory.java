@@ -38,46 +38,37 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
 
     @Override
     public Course.WorkMaterial.Material create(Material source) {
-        if(source == null)
-            throw new IllegalArgumentException("material can't be null");
-
-        var filename = source.getDriveFile().getDriveFile().getTitle();
-        var filetype = getFiletype(filename);
-
-        var range = filetype.equalsIgnoreCase(Typename.PDF)
-                ? Optional.of(Range.withDefaults())
-                : Range.None();
-
-        return Course.WorkMaterial.Material
-            .builder()
-            .id(hash256(source.getDriveFile().getDriveFile().getAlternateLink()))
-            .name(normalizeFilename(source.getDriveFile().getDriveFile().getTitle()))
-            .originLink(source.getDriveFile().getDriveFile().getAlternateLink())
-            .previewLink(source.getDriveFile().getDriveFile().getThumbnailUrl())
-            .type(filetype)
-            .description(source.getDriveFile().getDriveFile().getTitle())
-            .range(range)
-            .content(PageContent.None())
-            .build();
-
-    }
-    private String normalizeFilename(String filename) {
-
         try {
-            var slices = filename.split("[.]");
-            var rawFilename  = slices[0].toLowerCase(Locale.ROOT);
+            if (source == null)
+                throw new IllegalArgumentException("material can't be null");
 
-            var cleanFilename = rawFilename.trim()
-                    .replaceAll("[-_.]", " ")
-                    .replaceAll(" +", " ");
+            var sharedDriveFile = source.getDriveFile();
+            var file = sharedDriveFile.getDriveFile();
 
-            return StringUtils.capitalize(cleanFilename);
-        }
-        catch (Exception e) {
+            var filename = file.getTitle();
+            var filetype = getFiletype(filename);
+
+            var range = filetype.equalsIgnoreCase(Typename.PDF)
+                    ? Optional.of(Range.withDefaults())
+                    : Range.None();
+
+            return Course.WorkMaterial.Material
+                .builder()
+                .id(hash256(file.getAlternateLink()))
+                .name(normalizeFilename(file.getTitle()))
+                .originLink(file.getAlternateLink())
+                .previewLink(file.getThumbnailUrl())
+                .type(filetype)
+                .description(file.getTitle())
+                .range(range)
+                .content(PageContent.None())
+                .build();
+        } catch (Exception e) {
             log.error("error:: ", e);
-            return filename;
+            return null;
         }
     }
+
 
     private String getFiletype(String filename) {
         if(filename == null)
