@@ -68,11 +68,16 @@ public class GetCourseClassroom implements GetCourse {
     }
 
     private Optional<ListCoursesResponse> findCourses(String studentId) throws IOException {
-        return Optional.ofNullable(classroom.courses()
+        var courses = classroom.courses()
             .list()
             .setStudentId(studentId)
             .setCourseStates(List.of(CourseState.ACTIVE))
-            .execute());
+            .execute();
+
+        if(courses == null || courses.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(courses);
     }
 
     private Map<String, List<Teacher>> getTeachersByCourse(List<String> courseIdList) throws IOException {

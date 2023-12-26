@@ -2,13 +2,17 @@ package com.github.edulook.look.infra.repository.course.classroom.mapper.factori
 
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.codec.Hex;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 import static com.github.edulook.look.core.model.Course.WorkMaterial.Material;
+
 
 public interface AbstractCourseMaterialFactory {
     Material create(com.google.api.services.classroom.model.Material source);
@@ -21,6 +25,23 @@ public interface AbstractCourseMaterialFactory {
 
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    default String normalizeFilename(String filename) {
+
+        try {
+            var slices = filename.split("[.]");
+            var rawFilename  = slices[0].toLowerCase(Locale.ROOT);
+
+            var cleanFilename = rawFilename.trim()
+                    .replaceAll("[-_.]", " ")
+                    .replaceAll(" +", " ");
+
+            return StringUtils.capitalize(cleanFilename);
+        }
+        catch (Exception e) {
+            return filename;
         }
     }
 }

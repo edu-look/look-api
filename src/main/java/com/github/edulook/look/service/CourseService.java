@@ -42,7 +42,7 @@ public class CourseService {
        return courseRepository.findCoursesByStudentId(studentId);
     }
 
-    //@Cacheable("listAllWorkMaterials")
+    @Cacheable("listAllWorkMaterials")
     public List<WorkMaterial> listAllWorkMaterials(String courseId, String access) {
         if(courseId == null) {
             return List.of();
@@ -131,5 +131,13 @@ public class CourseService {
 
         return courseRepository
             .findOneMaterial(course, materialId);
+    }
+
+    public List<WorkMaterial> findAllCourseWorks(String courseId) {
+        var course = Course.builder()
+            .id(courseId)
+            .build();
+
+        return courseRepository.listAllWorks(course);
     }
 }

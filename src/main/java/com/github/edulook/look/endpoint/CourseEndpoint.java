@@ -33,8 +33,13 @@ public class CourseEndpoint {
     public List<CourseDTO> getCourses(@RequestAttribute("user") UserAuthDTO user) throws IOException {
         log.info("user logged: {}", user.id());
 
-        return courseAndDTOMapper
+        var courses =  courseAndDTOMapper
             .toDTOList(courseService.listCourses(user.id()));
+
+        if(courses.isEmpty())
+            throw new ResourceNotFoundException(String.format("courses not found to '%s' student id", user.id()));
+
+        return courses;
     }
 
     @GetMapping("{courseId}/announcements")
@@ -47,15 +52,20 @@ public class CourseEndpoint {
     }
 
     @GetMapping("{courseId}/materials")
-    public List<SimpleMaterialDTO> listAllWorkMaterials(@PathVariable String courseId, @RequestAttribute("user") UserAuthDTO user) {
+    public List<SimpleMaterialDTO> listAllWorkMaterials(@PathVariable String courseId,
+                                                        @RequestAttribute("user") UserAuthDTO user) {
         log.info("user logged: {}", user.id());
         log.info("materials to course: {}", courseId);
 
-        return courseService
+        var materials = courseService
             .listAllWorkMaterials(courseId, user.jwt().token())
             .parallelStream()
             .map(courseAndDTOMapper::toSimpleDTO)
             .toList();
+        if(materials.isEmpty())
+            throw new ResourceNotFoundException(String.format("materials not found to '%s' course id", courseId));
+
+        return materials;
     }
 
     @GetMapping("{courseId}/materials/{materialId}")
@@ -78,5 +88,19 @@ public class CourseEndpoint {
 
         return Optional.ofNullable(courseService.upsetCourseMaterial(courseId, materialId, material))
                 .map(courseAndDTOMapper::toDTO);
+    }
+
+
+    @GetMapping("{courseId}/works")
+    public List<?> findlAllWorks(@PathVariable String courseId,
+                                 @RequestAttribute("user") UserAuthDTO user) {
+
+        var courseWorks = courseService
+                .findAllCourseWorks(courseId);
+
+        if(courseWorks.isEmpty())
+            throw new ResourceNotFoundException(String.format("course works not found to '%s' course id", courseId));
+
+        return courseWorks;
     }
 }
