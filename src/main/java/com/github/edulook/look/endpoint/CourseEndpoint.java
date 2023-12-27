@@ -73,9 +73,12 @@ public class CourseEndpoint {
                                              @PathVariable String materialId,
                                              @RequestAttribute("user") UserAuthDTO user) {
 
-        return courseService.findOneCourseMaterial(courseId, materialId)
+        var material =  courseService.findOneCourseMaterial(courseId, materialId)
             .map(courseAndDTOMapper::toDTO)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s from course %s not found", materialId, courseId)));
+
+        courseService.upsetCourseMaterial(courseId, materialId, material);
+        return material;
     }
 
 

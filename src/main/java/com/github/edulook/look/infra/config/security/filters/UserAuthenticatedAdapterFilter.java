@@ -1,18 +1,17 @@
 package com.github.edulook.look.infra.config.security.filters;
 
 import com.github.edulook.look.endpoint.internal.mapper.shared.OAuth2AndUserAuthDTOMapper;
-import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import java.io.IOException;
+
+import static com.github.edulook.look.utils.LookUtils.toUserDTO;
 
 @Configuration
 @Slf4j
@@ -43,14 +42,5 @@ public class UserAuthenticatedAdapterFilter implements Filter {
             throw e;
         }
         chain.doFilter(request, response);
-    }
-
-    private UserAuthDTO toUserDTO(Object principal) {
-        try {
-            return mapper.toDTO((Jwt) principal);
-        }
-        catch (Exception e) {
-            return mapper.toDTO((OAuth2User) principal);
-        }
     }
 }
