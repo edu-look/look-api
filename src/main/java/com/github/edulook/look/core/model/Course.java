@@ -3,6 +3,8 @@ package com.github.edulook.look.core.model;
 
 import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.Range;
+import com.google.cloud.firestore.annotation.DocumentId;
+import com.google.cloud.spring.data.firestore.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +19,9 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Course { 
+@Document(collectionName = "look_courses")
+public class Course {
+    @DocumentId
     private String id;
     private String state;
     private String description;
@@ -49,7 +53,9 @@ public class Course {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    @Document(collectionName = "look_course_material")
     public static class WorkMaterial {
+        @DocumentId
         private String id;
         private String courseId;
         private String title;
