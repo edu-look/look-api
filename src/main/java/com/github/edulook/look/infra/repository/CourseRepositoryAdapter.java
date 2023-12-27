@@ -7,7 +7,11 @@ import com.github.edulook.look.core.repository.CourseRepository;
 import com.github.edulook.look.core.repository.course.GetCourse;
 import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
+import com.github.edulook.look.infra.repository.firestore.CourseFirestoreRepository;
+import com.github.edulook.look.infra.repository.firestore.CourseStudentFirestoreRepository;
+import com.github.edulook.look.infra.repository.firestore.WorkMaterialFirestoreRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,6 +20,13 @@ import java.util.Optional;
 @Component
 public class CourseRepositoryAdapter implements CourseRepository {
 
+    private final CourseStudentFirestoreRepository courseStudentFirestoreRepository;
+
+    private final ApplicationEventPublisher publisher;
+    private final CourseFirestoreRepository courseFirestoreRepository;
+
+    private final WorkMaterialFirestoreRepository workMaterialFirestoreRepository;
+
     private final GetCourse getCourseClassroom;
     private final GetCourse getCourseStorage;
     private final GetCourseWorkMaterial getCourseWorkMaterialClassroom;
@@ -23,12 +34,16 @@ public class CourseRepositoryAdapter implements CourseRepository {
     private final GetCourseAnnouncement getCourseAnnouncementClassroom;
     private final GetCourseAnnouncement getCourseAnnouncementStorage;
 
-    public CourseRepositoryAdapter(@Qualifier("GetCourseClassroom::Class") GetCourse getCourseClassroom,
+    public CourseRepositoryAdapter(CourseStudentFirestoreRepository courseStudentFirestoreRepository, ApplicationEventPublisher publisher, CourseFirestoreRepository courseFirestoreRepository, WorkMaterialFirestoreRepository workMaterialFirestoreRepository, @Qualifier("GetCourseClassroom::Class") GetCourse getCourseClassroom,
                                    @Qualifier("GetCourseStorage::Class") GetCourse getCourseStorage,
                                    @Qualifier("GetCourseWorkMaterialClassroom::Class") GetCourseWorkMaterial getCourseWorkMaterialClassroom,
                                    @Qualifier("GetCourseWorkMaterialStorage::Class") GetCourseWorkMaterial getCourseWorkMaterialStorage,
                                    @Qualifier("GetCourseAnnouncementClassroom::Class") GetCourseAnnouncement getCourseAnnouncementClassroom,
                                    @Qualifier("GetCourseAnnouncementStorage::Class") GetCourseAnnouncement getCourseAnnouncementStorage) {
+        this.courseStudentFirestoreRepository = courseStudentFirestoreRepository;
+        this.publisher = publisher;
+        this.courseFirestoreRepository = courseFirestoreRepository;
+        this.workMaterialFirestoreRepository = workMaterialFirestoreRepository;
         this.getCourseClassroom = getCourseClassroom;
         this.getCourseStorage = getCourseStorage;
         this.getCourseWorkMaterialClassroom = getCourseWorkMaterialClassroom;
@@ -40,12 +55,18 @@ public class CourseRepositoryAdapter implements CourseRepository {
 
     @Override
     public List<Course> findCoursesByStudentId(String studentId) {
-        var courses = getCourseStorage.findCoursesByStudentId(studentId);
+//        var courses = getCourseStorage.findCoursesByStudentId(studentId);
 
-        if(courses.isEmpty())
+//        if(courses.isEmpty()) {
             return getCourseClassroom.findCoursesByStudentId(studentId);
-
-        return courses;
+//            courses.forEach(this::save);
+//            var courseStudent = CourseStudent.builder()
+//                    .studentId(studentId)
+//                    .courseId(courses.stream().map(Course::getId).toList())
+//                    .build();
+//            courseStudentFirestoreRepository.save(courseStudent).blockOptional();
+//        }
+//        return courses;
     }
 
     @Override
@@ -108,8 +129,19 @@ public class CourseRepositoryAdapter implements CourseRepository {
 
     @Override
     public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
-        // TODO: add persistence here
-
-        return materialSaved;
+        return workMaterialFirestoreRepository.save(materialSaved).block();
     }
+
+    @Override
+    public Optional<Course> save(Course model) {
+        return courseFirestoreRepository.save(model).blockOptional();
+    }
+
+    @Override
+    public Optional<Course> delete(String id) {
+        var course = courseFirestoreRepository.findById(id).blockOptional();
+        courseFirestoreRepository.deleteById(id);
+        return course;
+    }
+
 }
