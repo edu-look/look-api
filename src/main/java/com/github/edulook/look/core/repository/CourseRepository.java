@@ -1,14 +1,14 @@
 package com.github.edulook.look.core.repository;
 
-import static com.github.edulook.look.core.model.Course.WorkMaterial;
-import com.github.edulook.look.core.repository.course.GetCourse;
-import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
-import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
-import com.github.edulook.look.core.repository.course.UpsetCourseWorkMaterial;
+
+import com.github.edulook.look.core.model.Course;
+import com.github.edulook.look.core.repository.course.*;
+
 
 public interface CourseRepository
         extends GetCourse,
         GetCourseWorkMaterial,
         GetCourseAnnouncement,
-        UpsetCourseWorkMaterial {
+        UpsetCourseWorkMaterial,
+        Crud<Course> {
 }
