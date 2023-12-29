@@ -14,6 +14,7 @@
 
 
 server:
+  address: ${LOOK_SERVER_DOMAIN:localhost}
   port: ${LOOK_SERVER_PORT:8085}
 
 spring:
