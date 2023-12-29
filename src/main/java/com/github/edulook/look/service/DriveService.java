@@ -28,24 +28,28 @@ public class DriveService {
     }
 
     public Optional<File> download(String fileId, String pathToSave) {
-        var pathResolved = Paths.get(pathToSave).normalize().toAbsolutePath();
-
         if(fileId.isBlank())
             throw new TextExtractInvalidException("file id is invalid");
 
-        try(var outputStream = new ByteArrayOutputStream()) {
+        try {
             var originFile = drive.files()
-                    .get(fileId)
-                    .execute();
+                .get(fileId)
+                .execute();
 
-            var saveTo = new File(pathResolved + originFile.getName());
+            var pathResolved = Paths.get(pathToSave + "/" + originFile.getName())
+                .normalize()
+                .toAbsolutePath();
+
+            var saveTo = pathResolved.toFile();
+
+            var outputStream = new ByteArrayOutputStream();
 
             drive.files()
-                    .get(originFile.getId())
-                    .executeAndDownloadTo(outputStream);
+                .get(originFile.getId())
+                .executeAndDownloadTo(outputStream);
 
-            try(var fileOutputStream = new FileOutputStream(saveTo)) {
-                fileOutputStream.write(outputStream.toByteArray());
+            try(var outputLocalFile = new FileOutputStream(saveTo)) {
+                outputLocalFile.write(outputStream.toByteArray());
             }
 
             return Optional.of(saveTo);
