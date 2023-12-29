@@ -33,6 +33,7 @@ public class CourseEndpointWebPage {
 
         log.info("user {}", user.id());
 
-        return "edit.html" ;
+        return "edit.html";
     }
+
 }

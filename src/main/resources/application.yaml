@@ -17,6 +17,7 @@
 
 
 server:
+  address: ${LOOK_SERVER_DOMAIN}
   port: ${LOOK_SERVER_PORT}
 
 spring:
