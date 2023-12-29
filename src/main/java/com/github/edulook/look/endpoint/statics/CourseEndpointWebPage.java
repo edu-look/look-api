@@ -1,5 +1,7 @@
 package com.github.edulook.look.endpoint.statics;
 
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
+import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.endpoint.exceptions.data.ForbiddenMVCException;
 import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import com.github.edulook.look.service.CourseService;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Controller
@@ -33,6 +38,7 @@ public class CourseEndpointWebPage {
 
         log.info("user {}", user.id());
 
-        return "edit.html" ;
+        return "edit.html";
     }
+
 }
