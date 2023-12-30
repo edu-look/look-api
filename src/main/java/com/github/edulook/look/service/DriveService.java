@@ -1,5 +1,6 @@
 package com.github.edulook.look.service;
 
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.exceptions.TextExtractInvalidException;
 import com.google.api.services.drive.Drive;
 import lombok.extern.slf4j.Slf4j;
@@ -28,29 +29,32 @@ public class DriveService {
     }
 
     public Optional<File> download(String fileId, String pathToSave) {
-        var pathResolved = Paths.get(pathToSave).normalize().toAbsolutePath();
-
         if(fileId.isBlank())
             throw new TextExtractInvalidException("file id is invalid");
 
         try(var outputStream = new ByteArrayOutputStream()) {
-            var originFile = drive.files()
-                    .get(fileId)
-                    .execute();
+            var originFile = Optional.ofNullable(drive.files()
+                .get(fileId)
+                .execute())
+                .orElseThrow(ResourceNotFoundException::new);
 
-            var saveTo = new File(pathResolved + originFile.getName());
+            var pathResolved = Paths.get(pathToSave + "/" + originFile.getName())
+                .normalize()
+                .toAbsolutePath();
+
+            var saveTo = pathResolved.toFile();
 
             drive.files()
-                    .get(originFile.getId())
-                    .executeAndDownloadTo(outputStream);
+                .get(originFile.getId())
+                .executeMediaAndDownloadTo(outputStream);
 
-            try(var fileOutputStream = new FileOutputStream(saveTo)) {
-                fileOutputStream.write(outputStream.toByteArray());
+            try(var outputLocalFile = new FileOutputStream(saveTo)) {
+                outputLocalFile.write(outputStream.toByteArray());
             }
 
             return Optional.of(saveTo);
 
-        } catch (IOException e) {
+        } catch (IOException | ResourceNotFoundException e) {
             log.warn("error::", e);
             return Optional.empty();
         }

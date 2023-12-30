@@ -13,6 +13,7 @@ import com.github.edulook.look.infra.repository.firestore.CourseStudentFirestore
 import com.github.edulook.look.infra.repository.firestore.WorkMaterialFirestoreRepository;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -134,6 +135,7 @@ public class CourseRepositoryAdapter implements CourseRepository {
     }
 
     @Override
+    @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
         return workMaterialFirestoreRepository.save(materialSaved).block();
     }
