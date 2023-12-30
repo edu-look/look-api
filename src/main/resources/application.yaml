@@ -2,6 +2,7 @@
 #                                            Environment (Example)
 # -------------------------------------------------------------------------------------------------------
 # LOOK_APPLICATION_NAME=look-service
+# LOOK_SERVER_DOMAIN=domain.com.br
 # LOOK_GCLOUD_CLIENT_ID=000000000000-c9qg23t7n1s50h2aspaec6l4ucavkjqn.apps.googleusercontent.com
 # LOOK_GCLOUD_CLIENT_SECRET=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A
 # LOOK_GCLOUD_SERVER_CLIENT_ID=000000000000-00ja0mia1h00es0c0v0pk0mse8qhpb00.apps.googleusercontent.com
@@ -18,6 +19,7 @@
 
 server:
   port: ${LOOK_SERVER_PORT}
+  address: ${LOOK_SERVER_DOMAIN:localhost}
 
 spring:
   devtools:
