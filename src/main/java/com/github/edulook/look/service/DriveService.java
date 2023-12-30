@@ -1,5 +1,6 @@
 package com.github.edulook.look.service;
 
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.exceptions.TextExtractInvalidException;
 import com.google.api.services.drive.Drive;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +32,11 @@ public class DriveService {
         if(fileId.isBlank())
             throw new TextExtractInvalidException("file id is invalid");
 
-        try {
-            var originFile = drive.files()
+        try(var outputStream = new ByteArrayOutputStream()) {
+            var originFile = Optional.ofNullable(drive.files()
                 .get(fileId)
-                .execute();
+                .execute())
+                .orElseThrow(ResourceNotFoundException::new);
 
             var pathResolved = Paths.get(pathToSave + "/" + originFile.getName())
                 .normalize()
@@ -42,11 +44,9 @@ public class DriveService {
 
             var saveTo = pathResolved.toFile();
 
-            var outputStream = new ByteArrayOutputStream();
-
             drive.files()
                 .get(originFile.getId())
-                .executeAndDownloadTo(outputStream);
+                .executeMediaAndDownloadTo(outputStream);
 
             try(var outputLocalFile = new FileOutputStream(saveTo)) {
                 outputLocalFile.write(outputStream.toByteArray());
@@ -54,7 +54,7 @@ public class DriveService {
 
             return Optional.of(saveTo);
 
-        } catch (IOException e) {
+        } catch (IOException | ResourceNotFoundException e) {
             log.warn("error::", e);
             return Optional.empty();
         }

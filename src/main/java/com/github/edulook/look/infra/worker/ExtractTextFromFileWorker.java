@@ -40,8 +40,7 @@ public class ExtractTextFromFileWorker {
     @Async
     @EventListener
     public void workMaterialProcessor(CourseMaterialExtractPDFEvent event) {
-//        var range = event.getRange();
-        var range = new Range(1, 1);
+        var range = event.getRange();
         if(range.isNotValid()) {
             log.warn("Range invalid {}", range);
             return;
@@ -53,7 +52,7 @@ public class ExtractTextFromFileWorker {
         var pdfFile = downloadFile(material, event.getContentId())
             .orElseThrow(TextExtractInvalidException::new);
 
-        try (PDDocument document = Loader.loadPDF(new RandomAccessReadBufferedFile(pdfFile))) {
+        try (var document = Loader.loadPDF(new RandomAccessReadBufferedFile(pdfFile))) {
             var stripper = new PDFTextStripper();
 
             var contentPDF = material.getMaterials().stream()
@@ -62,7 +61,7 @@ public class ExtractTextFromFileWorker {
                 .orElseThrow(ResourceNotFoundException::new);
 
             var pages = new ArrayList<PageContent.Page>();
-            for (int currentPage = range.getStart(); currentPage <= range.getEnd(); currentPage++) {
+            for (var currentPage = range.getStart(); currentPage <= range.getEnd(); currentPage++) {
                 stripper.setStartPage(range.getStart());
                 stripper.setEndPage(range.getEnd());
                 var page = PageContent.Page.builder()
@@ -103,5 +102,4 @@ public class ExtractTextFromFileWorker {
 
         return courseRepository.findOneMaterial(course, materialId);
     }
-
 }

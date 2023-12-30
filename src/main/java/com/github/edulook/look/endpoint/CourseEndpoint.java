@@ -72,13 +72,9 @@ public class CourseEndpoint {
     public MaterialDTO findOneCourseMaterial(@PathVariable String courseId,
                                              @PathVariable String materialId,
                                              @RequestAttribute("user") UserAuthDTO user) {
-
-        var material =  courseService.findOneCourseMaterial(courseId, materialId)
+       return  courseService.findOneCourseMaterial(courseId, materialId)
             .map(courseAndDTOMapper::toDTO)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s from course %s not found", materialId, courseId)));
-
-        courseService.upsetCourseMaterial(courseId, materialId, material);
-        return material;
     }
 
 
@@ -97,7 +93,6 @@ public class CourseEndpoint {
     @GetMapping("{courseId}/works")
     public List<?> findlAllWorks(@PathVariable String courseId,
                                  @RequestAttribute("user") UserAuthDTO user) {
-
         var courseWorks = courseService
                 .findAllCourseWorks(courseId);
 
