@@ -80,9 +80,9 @@ No diretorio raiz do projeto.
 ````
 - dev profile
 
-Execute o script ```setup.sh``` ou faça a etapa de recuperação de profile manualmente a seguir:
+Execute o script ```setup``` (```setupw.cmd``` no Windows) ou faça a etapa de recuperação de arquivo de profile manualmente a seguir:
   - Clone o repositório [look-secret](https://github.com/edu-look/look-secret/tree/main)
-  - Copie o arquivo ```application-dev.yaml``` para ```src/main/resources```
+  - Copie o arquivo ```application-dev.yaml``` e outros arquivos para ```src/main/resources```
 ````shell
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ````
