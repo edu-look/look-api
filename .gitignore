@@ -2,6 +2,8 @@ HELP.md
 target/*
 tokens/*
 application-dev.yaml
+credentials.json
+serviceAccountKey.json
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
