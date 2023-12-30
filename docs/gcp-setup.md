@@ -12,8 +12,8 @@
 ![](screenshot/gcp/02.png)
 ![](screenshot/gcp/03.png)
 
-## Classroom API
-- É necessário ativar a API do classroom para o projeto.
+## Classroom e Drive API
+- É necessário ativar a API do classroom para o projeto. ***Por favor faça o mesmo processo para ativar o serviço do Drive***.
 ![](screenshot/gcp/04.png)
 ![](screenshot/gcp/05.png)
 ![](screenshot/gcp/06.png)

@@ -71,10 +71,24 @@ Os valores de ***cliente ID*** e ***secret*** são obtidos no Google Cloud Platf
 
 ### Run
 
+
+#### Terminal
+No diretorio raiz do projeto.
+- default profile
 ````shell
 ./mvnw spring-boot:run
 ````
+- dev profile
 
+Execute o script ```setup.sh``` ou faça a etapa de recuperação de profile manualmente a seguir:
+  - Clone o repositório [look-secret](https://github.com/edu-look/look-secret/tree/main)
+  - Copie o arquivo ```application-dev.yaml``` para ```src/main/resources```
+````shell
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+````
+#### IntelliJ
+- [How do I activate a Spring Boot profile when running from IntelliJ - ***Stackoverflow***](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij)
+- [Spring Boot run configuration - ***Jetbrains***](https://www.jetbrains.com/help/idea/run-debug-configuration-spring-boot.html)
 #### Autorizando teacher bot
 - Copie e cole o link que foi exibido no terminal no navegador de internet:
 ![First boot image](docs/screenshot/01.first-boot.png)

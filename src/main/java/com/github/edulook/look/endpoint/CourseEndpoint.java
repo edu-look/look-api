@@ -81,14 +81,17 @@ public class CourseEndpoint {
                                              @RequestAttribute("user") UserAuthDTO user) {
 
         var material = courseService.findOneCourseMaterial(courseId, materialId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s from course %s not found", materialId, courseId)));
+            .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s from course %s not found", materialId, courseId)));
+      
         var event = CheckMaterialLinkEditEvent.builder()
-                .courseId(courseId)
-                .materialId(materialId)
-                .id(UUID.randomUUID())
-                .material(material)
-                .build();
+            .courseId(courseId)
+            .materialId(materialId)
+            .id(UUID.randomUUID())
+            .material(material)
+            .build();
+        
         publisher.publishEvent(event);
+        
         return courseAndDTOMapper.toDTO(material);
     }
 
@@ -106,7 +109,6 @@ public class CourseEndpoint {
     @GetMapping("{courseId}/works")
     public List<?> findlAllWorks(@PathVariable String courseId,
                                  @RequestAttribute("user") UserAuthDTO user) {
-
         var courseWorks = courseService
                 .findAllCourseWorks(courseId);
 

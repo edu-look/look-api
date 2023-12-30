@@ -1,5 +1,6 @@
 package com.github.edulook.look.core.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -27,5 +28,18 @@ public class Range {
     }
     public static Optional<Range> None() {
         return Optional.empty();
+    }
+
+    public boolean isValid() {
+        return start > 0 && end > 0;
+    }
+
+    @JsonIgnore
+    public boolean isNotValid() {
+        return !isValid();
+    }
+
+    public Integer diff() {
+        return end - start;
     }
 }
