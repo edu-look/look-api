@@ -2,15 +2,17 @@
 
 REPOSITORY_NAME=look-secret
 rm -rf $REPOSITORY_NAME
+rm -rf tokens
 
 git clone git@github.com:edu-look/$REPOSITORY_NAME.git
+
 
 if [ $? != 0 ] ; then
   echo -e "\033[31mConfigure o acesso a SSH na sua conta Github\033[0m"
   exit 1
 fi
 
-cp $REPOSITORY_NAME/application-dev.yaml ./src/main/resources
+cp $REPOSITORY_NAME/* ./src/main/resources
 
 
 rm -rf $REPOSITORY_NAME

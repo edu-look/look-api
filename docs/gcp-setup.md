@@ -40,6 +40,9 @@ Configuração necessária para permitir que os alunos e professores acesses os 
 - Salve as credencias para configurar o OAuth dos usuários Look.
 ![](screenshot/gcp/11.png)
 ![](screenshot/gcp/12.png)
+Em URLis de redirecionamento autorizados
+- http://localhost:8085
+- http://localhost:8085/login/oauth2/code/google
 ![](screenshot/gcp/20.png)
 ### Credenciais backend
 Crie uma credencial do tipo Desktop para ser usado no serviço do Look.
