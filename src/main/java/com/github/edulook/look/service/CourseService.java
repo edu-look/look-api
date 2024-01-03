@@ -77,8 +77,6 @@ public class CourseService {
         return announcements;
     }
 
-
-    @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(String courseId, String materialId, MaterialDTO material) {
         var materialSavedOptional = courseRepository.findOneMaterial(Course.builder().id(courseId).build(), materialId);
 

@@ -8,13 +8,18 @@ import com.github.edulook.look.endpoint.io.course.CourseDTO;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.endpoint.io.course.SimpleMaterialDTO;
 import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
+import com.github.edulook.look.infra.worker.events.course.CheckMaterialLinkEditEvent;
 import com.github.edulook.look.service.CourseService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Log4j2
 @RestController
@@ -23,10 +28,12 @@ public class CourseEndpoint {
 
     private final CourseService courseService;
     private final CourseAndDTOMapper courseAndDTOMapper;
+    private final ApplicationEventPublisher publisher;
 
-    public CourseEndpoint(CourseService courseService, CourseAndDTOMapper courseAndDTOMapper) {
+    public CourseEndpoint(CourseService courseService, CourseAndDTOMapper courseAndDTOMapper, ApplicationEventPublisher publisher) {
         this.courseService = courseService;
         this.courseAndDTOMapper = courseAndDTOMapper;
+        this.publisher = publisher;
     }
 
     @GetMapping
@@ -73,12 +80,20 @@ public class CourseEndpoint {
                                              @PathVariable String materialId,
                                              @RequestAttribute("user") UserAuthDTO user) {
 
-        return courseService.findOneCourseMaterial(courseId, materialId)
-            .map(courseAndDTOMapper::toDTO)
+        var material = courseService.findOneCourseMaterial(courseId, materialId)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s from course %s not found", materialId, courseId)));
+      
+        var event = CheckMaterialLinkEditEvent.builder()
+            .courseId(courseId)
+            .materialId(materialId)
+            .id(UUID.randomUUID())
+            .material(material)
+            .build();
+        
+        publisher.publishEvent(event);
+        
+        return courseAndDTOMapper.toDTO(material);
     }
-
-
 
     @PatchMapping("{courseId}/materials/{materialId}/edit")
     public Optional<MaterialDTO> listAllWorkMaterialsUpdate(@PathVariable String courseId,
@@ -94,7 +109,6 @@ public class CourseEndpoint {
     @GetMapping("{courseId}/works")
     public List<?> findlAllWorks(@PathVariable String courseId,
                                  @RequestAttribute("user") UserAuthDTO user) {
-
         var courseWorks = courseService
                 .findAllCourseWorks(courseId);
 

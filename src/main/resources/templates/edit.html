@@ -6,45 +6,596 @@
     }
 </script>
 
-<div id="app">
-    <div v-for="item in material?.materials">
-      <h3>Nome: </h3><input :value="item.name"  @input="event => item.name = event.target.value" />
-      <h3>Descricao </h3><input :value="item.description" @input="event => item.description = event.target.value" />
-        <img :src=item.preview />
+
+
+<div id="app" class="container">
+
+    <div class="logo">
+        IMAGEM
     </div>
+
+    <div class="forms-container">
+
+        <h2>Adicione acessibilidade</h2>
+        <p>Use esse formulário para adicionar acessibilidade, facilitando a utilização
+            das ferramentas de leitor de tela.</p>
+
+        <div v-for="item in material?.materials" class="forms-inputs-container">
+
+            <template v-if=hasRange(item)>
+
+                <div  class="content-container">
+                    <img :src=item.preview />
+
+                    <label class="name-item">Digite o nome do arquivo: </label>
+                    <input :value="item.name"
+                           @input="event => item.name = event.target.value" class="input-name"/>
+
+                </div>
+
+
+                <div class="describtion-container">
+                    <p>Descreva o PDF ou o conteudo ao o lado <i class="mandatory">*</i> : </p>
+                    <textarea  type="text" rows="8" cols="65"  :value="item.description" @input="event => item.description = event.target.value"></textarea>
+
+                    <div class="pdf-range">
+                        <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
+                        <div class="pdf-range-inputs">
+                            <input type="number" min="item.range.start"  class="input-pdf-range"/>
+                            <p>a</p>
+                            <input type="number" id="fname" name="fname" class="input-pdf-range" max="item.range.end"/>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </template>
+
+
+            <template v-else>
+
+                <div class="content-container">
+                    <img :src=item.preview />
+
+                    <label class="name-item">Digite o nome do arquivo: </label>
+                    <input :value="item.name"
+                           @input="event => item.name = event.target.value" class="input-name"/>
+
+                </div>
+
+                <div class="describtion-container">
+                    <p>Descreva a imagem ou o conteudo ao o lado <i class="mandatory">*</i> : </p>
+                    <textarea :value="item.description"
+                              type="text" rows="8" cols="65"
+                              @input="event => item.description = event.target.value" ></textarea>
+
+
+                </div>
+
+
+            </template>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+        
+                 <div class="button-forms-container">
+                                 <a class="custom-button button-delete-forms" @click=openPopup()>Restaurar dados</a>
+
+
+                                 <a class="custom-button button-clear-forms">Limpar formulário</a>
+
+
+                                 <a class="custom-button button-add-forms"  @click=activateAlert(1)>Adicionar acessibilidade</a>
+
+
+                           </div>
+
+
+
+    </div>
+           <template v-if="showAlert">
+          <div v-if="showAlert" class="alert-container" :style="{ opacity: alertOpacity, backgroundColor: alertBackgroundColor }">
+            <div class="text-container-alert">
+              <span id="text-alert">{{ alertText }}</span>
+              <button class="close-button" @click="closeAlert">x</button>
+            </div>
+            
+            <div class="progress-bar">
+              <div class="progress" :style="{ width: progress + '%' }"></div>
+            </div>
+          </div>
+                </template>
+
+        <template v-if="showOverlay">
+
+            <div class="overlay" v-if="showOverlay">
+              <div class="popup">
+                <h3>Deseja mesmo restaurar todos os dados ?</h3>
+                <p>Após a confirmação, os dados salvos no banco de dados desse material será excluído e todas as informações serão restauradas para aquela encontrada no Classroom?</p>
+
+                <div class="button-popup-container">
+                  <button class="cancel-button custom-button button-clear-forms" @click=closePopup>Cancelar</button>
+                  <button class="confirm-button custom-button button-delete-forms" @click="confirmChanges(2)">Confirmar Alterações</button>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+        </template>
+
+
 </div>
+
 
 
 <script type="module">
     import { createApp } from 'vue'
 
     createApp({
-      data(){
-        return {
-          access: '',
-          material: [],
-          course: {
-            id: '',
-            materialId: '',
-          }
-        }
-      },
-      methods: {
-        getCourseIDAndMaterialID() {
-          let { courseId: id, materialId } = location.pathname.match(/v\d+\/\w+\/(?<courseId>\w+)\/\w+\/(?<materialId>\w+)\/\w+/).groups
-          this.course = { id, materialId }
+        data(){
+            return {
+                access: '',
+                material: [],
+                course: {
+                    id: '',
+                    materialId: '',
+                },
+                showAlert: false,
+                showOverlay: false,
+                      alertOpacity: '1',
+                        alertBackgroundColor: '',
+                              alertText: '',
+                              progress: 0,
+                              alertTimer: null,
+                              progressInterval: null
+
+                
+
+            }
         },
+        methods: {
+            openPopup() {
+                  this.showOverlay = true;
+                  },
+                  closePopup() {
+                        this.showOverlay = false;
+                      },
+                      confirmChanges(type) {
+                        this.activateAlert(type);
+                        this.closePopup();
+                      },
 
-        async getCourseMaterial() {
+            getCourseIDAndMaterialID() {
+                let { courseId: id, materialId } = location.pathname.match(/v\d+\/\w+\/(?<courseId>\w+)\/\w+\/(?<materialId>\w+)\/\w+/).groups
+                this.course = { id, materialId }
+            },
+            hasRange(item) {
 
-          const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
+                return item.range && item.range.start !== null && item.range.end !== null
 
-          this.material = await response.json()
+            },
+
+             activateAlert(type) {
+                   this.showAlert = true;
+                   this.alertOpacity = '1';
+                   this.alertBackgroundColor = (type === 1) ? "#1CC833" : "#8F0000";
+                   this.alertText = (type === 1) ? "As informações foram salvas." : "Os dados foram excluídos e restaurados do Classroom.";
+                   let startTime = 0;
+                   this.alertTimer = setTimeout(() => {
+                     this.closeAlert();
+                   }, 5000);
+
+                   startTime = Date.now();
+                   this.progressInterval = setInterval(() => {
+                     const currentTime = Date.now();
+                     const elapsedTime = currentTime - startTime;
+                     this.progress = (elapsedTime / 1000) * 100;
+                   }, 1000);
+                 },
+                 closeAlert() {
+                   this.showAlert = false;
+                   clearInterval(this.progressInterval);
+                 },
+
+
+
+
+
+
+
+
+            async getCourseMaterial() {
+
+                /*const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
+
+                this.material = await response.json() */
+            }
+        },
+        
+        async mounted() {
+            this.getCourseIDAndMaterialID()
+            await this.getCourseMaterial()
         }
-      },
-      async mounted() {
-        this.getCourseIDAndMaterialID()
-        await this.getCourseMaterial()
-      }
     }).mount('#app')
 </script>
+
+
+<style scoped>
+
+
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;400;500;700&display=swap');
+
+
+    img{
+        display: flex;
+        width: 100%;
+
+    }
+
+   body{
+   width: 100%;
+   margin: 0;
+   padding: 0;
+    }
+
+    
+
+
+
+    .container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-family: 'IBM Plex Sans', sans-serif;
+
+
+
+        /*background-image:url('../static/look-background.svg');*/
+         background-color: #AEB7AF;
+        background-size: cover;
+    }
+
+    .logo{
+        display: flex;
+        margin: 0 0 10px 0
+    }
+
+    .forms-container{
+        background-color: #fff;
+        width: 50rem;
+        border-radius: 20px;
+        padding:0 40px ;
+    }
+
+    .forms-inputs-container{
+        display: flex;
+
+
+    }
+
+    .name-item{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        margin: 4px 0 4px 0;
+
+
+    }
+
+    .content-container{
+        margin: 22px 0 0 0;
+    }
+
+
+
+    .describtion-container{
+        display: flex;
+        flex-direction: column;
+        margin: 0 0 0 30px;
+
+    }
+
+    .mandatory{
+        color: red
+    }
+
+    .input-name{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        border: none;
+        background-color: #E2F0FE;
+        font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+
+    .input-pdf-range{
+        width: 124px;
+        height: 46px;
+        background-color: #E2F0FE;
+        font-family: 'IBM Plex Sans', sans-serif;
+        border-style: none;
+
+    }
+
+    .pdf-item-range{
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        font-size: 16px;
+        margin: 10px 0 10px 0;
+
+
+    }
+
+    .pdf-range-inputs {
+        display: flex;
+        flex-direction: row;
+        margin: 0 10px 0 0;
+
+    }
+
+    .pdf-range-inputs p {
+
+        display: flex;
+
+        align-items: center;
+
+        margin: 0 10px 0 10px;
+
+    }
+
+
+
+
+
+
+    textarea{
+        width: 100%;
+        border-style: none;
+        background-color: #E2F0FE;
+        font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+
+    .button-forms-container{
+        margin: 62px 0 20px 0;
+        display: flex;
+
+    }
+
+
+
+    .custom-button {
+        display: flex;
+        width: 281px;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 10px ;
+        margin: 0 12px 0 0;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-weight: 800;
+         user-select: none;
+
+
+    }
+
+
+    .overlay {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+    }
+
+    .popup {
+        display: flex;
+        flex-direction: column;
+
+        width:57.688rem;
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        font-family: 'IBM Plex Sans', sans-serif;
+
+    }
+
+    .popup > h3{
+        color: rgb(52, 51, 51);
+    }
+
+
+    .button-add-forms{
+        background-color: #1CC833;
+        color: black;
+    }
+
+    .button-clear-forms{
+
+        background-color: #AEB7AF;
+        color: black;
+
+    }
+
+    .button-delete-forms{
+        background-color: #8F0000;
+        color: #FFFF;
+    }
+
+    .custom-button:hover{
+        background-color: #ffefbc;
+    }
+
+    .button-forms{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .pdf-range{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cancel-button{
+        width: 25.75rem;
+    }
+
+    .confirm-button{
+        width:25.75rem;
+    }
+
+    .button-popup-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+    }
+
+    .alert-container{
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4CAF50;
+        color: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+
+
+
+
+    .close-button {
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        margin-left: 10px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 4px;
+        background-color: #1CC833;
+        border-radius: 5px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+
+    .progress {
+        height: 100%;
+        background-color: #fff;
+        width: 0;
+        border-radius: 5px;
+        transition: width 1s linear;
+    }
+
+
+
+    .text-container-alert
+    {
+        display: flex;
+        flex-direction: row;
+    }
+
+
+
+
+    @media only screen and (max-width: 600px) {
+
+
+
+
+
+
+        .forms-inputs-container{
+            flex-direction: column;
+
+        }
+
+        .forms-container {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .custom-button {
+            width: auto;
+            margin: 10px 0 0 0;
+        }
+
+        h2, p {
+            text-align: center;
+        }
+
+        .forms-inputs-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .content-container {
+            margin: 10px 0 0 0;
+            text-align: center;
+        }
+
+
+        .describtion-container {
+            margin: 10px 0 0 0;
+        }
+
+        textarea {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .button-forms-container {
+            margin: 20px 0 10px 0;
+            flex-direction: column;
+        }
+
+
+        .button-popup-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+        }
+
+
+
+    }
+</style>

@@ -12,8 +12,8 @@
 ![](screenshot/gcp/02.png)
 ![](screenshot/gcp/03.png)
 
-## Classroom API
-- É necessário ativar a API do classroom para o projeto.
+## Classroom e Drive API
+- É necessário ativar a API do classroom para o projeto. ***Por favor faça o mesmo processo para ativar o serviço do Drive***.
 ![](screenshot/gcp/04.png)
 ![](screenshot/gcp/05.png)
 ![](screenshot/gcp/06.png)
@@ -40,6 +40,9 @@ Configuração necessária para permitir que os alunos e professores acesses os 
 - Salve as credencias para configurar o OAuth dos usuários Look.
 ![](screenshot/gcp/11.png)
 ![](screenshot/gcp/12.png)
+Em URLis de redirecionamento autorizados
+- http://localhost:8085
+- http://localhost:8085/login/oauth2/code/google
 ![](screenshot/gcp/20.png)
 ### Credenciais backend
 Crie uma credencial do tipo Desktop para ser usado no serviço do Look.
