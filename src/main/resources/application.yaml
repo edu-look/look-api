@@ -21,6 +21,15 @@ server:
   port: ${LOOK_SERVER_PORT}
   address: ${LOOK_SERVER_DOMAIN:localhost}
 
+springdoc:
+  swagger-ui:
+    oauth:
+      clientId: ${LOOK_GCLOUD_CLIENT_ID}
+      clientSecret: ${LOOK_GCLOUD_CLIENT_SECRET}
+      realm: https://accounts.google.com
+      appName: look
+      scopeSeparator: openid email profile
+
 spring:
   devtools:
     add-properties: false

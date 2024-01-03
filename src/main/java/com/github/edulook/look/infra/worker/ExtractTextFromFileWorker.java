@@ -1,7 +1,6 @@
 package com.github.edulook.look.infra.worker;
 
 import com.github.edulook.look.core.data.PageContent;
-import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.exceptions.TextExtractInvalidException;
 import com.github.edulook.look.core.model.Course;
@@ -11,7 +10,6 @@ import com.github.edulook.look.service.DriveService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -21,7 +19,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
