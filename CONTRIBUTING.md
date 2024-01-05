@@ -121,6 +121,8 @@ O cliente ID do exemplo acima pode está inválido, adicione o cliente ID válid
   ![Insomnia 8](docs/screenshot/03.8.using-insomnia.png)
 
 ### Extra
+Observe que em todas as request com sucesso retorno no Header da resposta o Authorization Token:
+![Token OBS](docs/screenshot/03.9.using-insomnia.png)
 
 ## Container
 - Construíndo uma image e executando o container
@@ -139,5 +141,3 @@ ENV LOOK_SERVER_DOMAIN=
 ENV LOOK_GCLOUD_CLIENT_ID=
 ...
 ```
-Observe que em todas as request com sucesso retorno no Header da resposta o Authorization Token:
-![Token OBS](docs/screenshot/03.9.using-insomnia.png)

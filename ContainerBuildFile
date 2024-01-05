@@ -24,4 +24,4 @@ ENV LOOK_STORAGE_URL=
 ENV GOOGLE_APPLICATION_CREDENTIALS=
 
 # entrypoint
-CMD ["java", "target/*.jar"]
+ENTRYPOINT ["java", "target/*.jar"]
