@@ -1,0 +1,27 @@
+FROM openjdk:17-jdk-slim-buster
+
+RUN apt update && apt install -y tesseract-ocr
+
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+# make dependencies offline and build a application package
+RUN ./mvnw dependency:go-offline && ./mvnw package
+
+# add env
+ENV LOOK_APPLICATION_NAME=
+ENV LOOK_SERVER_DOMAIN=
+ENV LOOK_GCLOUD_CLIENT_ID=
+ENV LOOK_GCLOUD_CLIENT_SECRET=
+ENV LOOK_GCLOUD_SERVER_CLIENT_ID=
+ENV LOOK_GCLOUD_SERVER_CLIENT_SECRET=
+ENV LOOK_GCLOUD_TOKEN_STORAGE=tokens
+ENV LOOK_GCLOUD_PROJECT_ID=
+ENV LOOK_SERVER_ADDRESS=
+ENV LOOK_SERVER_PORT=
+ENV LOOK_STORAGE_CREDENTIALS=
+ENV LOOK_STORAGE_URL=
+ENV GOOGLE_APPLICATION_CREDENTIALS=
+
+# entrypoint
+CMD ["java", "target/*.jar"]

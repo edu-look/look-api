@@ -8,6 +8,7 @@
   - [Commit message](#commit-message)
 - [Setup](#setup)
 - [Using](#using)
+- [Container](#container)
 
 ## GCP
 Acesse a documentação de setup do projeto no CGP [Aqui](docs/gcp-setup.md)
@@ -120,5 +121,23 @@ O cliente ID do exemplo acima pode está inválido, adicione o cliente ID válid
   ![Insomnia 8](docs/screenshot/03.8.using-insomnia.png)
 
 ### Extra
+
+## Container
+- Construíndo uma image e executando o container
+```sh
+[docker | podman] build -t look-pkg -f ContainerBuildFile
+
+# exemplo:
+$ docker build -t look-pkg -f ContainerBuildFile
+```
+Observe que há um conjunto de variaveis, por favor defina o conteúdo.
+```sh
+...
+# add env
+ENV LOOK_APPLICATION_NAME=
+ENV LOOK_SERVER_DOMAIN=
+ENV LOOK_GCLOUD_CLIENT_ID=
+...
+```
 Observe que em todas as request com sucesso retorno no Header da resposta o Authorization Token:
 ![Token OBS](docs/screenshot/03.9.using-insomnia.png)
