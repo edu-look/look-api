@@ -2,6 +2,7 @@
 #                                            Environment (Example)
 # -------------------------------------------------------------------------------------------------------
 # LOOK_APPLICATION_NAME=look-service
+# LOOK_APPLICATION_LOCAL_DATA=/tmp/look/data
 # LOOK_SERVER_DOMAIN=domain.com.br
 # LOOK_GCLOUD_CLIENT_ID=000000000000-c9qg23t7n1s50h2aspaec6l4ucavkjqn.apps.googleusercontent.com
 # LOOK_GCLOUD_CLIENT_SECRET=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A
@@ -67,6 +68,7 @@ look:
         token-url: https://oauth2.googleapis.com/token
         authorization-encoded-url: https://accounts.google.com/o/oauth2/auth
   application:
+    data: ${LOOK_APPLICATION_LOCAL_DATA}
     name: ${LOOK_APPLICATION_NAME}
     caching:
         tll: 3600000 # milliseconds >> 3600s * 1000ms
