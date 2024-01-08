@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import com.google.api.client.auth.oauth2.Credential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,57 +28,19 @@ public class GoogleClientClassroomDI {
     @Value("${look.application.name}")
     private String applicationName;
 
-    @Value("${look.cloud.gcp.server.client.id}")
-    private String clientId;
+    private final Credential credential;
 
-    @Value("${look.cloud.gcp.server.client.secret}")
-    private String clientSecret;
-
-    @Value("${look.cloud.gcp.server.token-url}")
-    private String encodedUrl;
-    
-    @Value("${look.cloud.gcp.server.authorization-encoded-url}")
-    private String authorizationServerEncodedUrl;
-
-    @Value("${look.cloud.gcp.server.client.storage}")
-    private String storageFolder;
-
-    @Value("${server.port:8085}")
-    private int serverPort;
-
-    @Value("${server.address:localhost}")
-    private String address;
+    public GoogleClientClassroomDI(Credential credential) {
+        this.credential = credential;
+    }
 
     @Bean
     public Classroom classroomClientConfig() throws GeneralSecurityException, IOException {
         var httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         var jsonFactory = GsonFactory.getDefaultInstance();
-        var dataStoraFactory = new FileDataStoreFactory(new File(String.format("%s/%s", storageFolder, "classroom")));
-
-        var flow = new AuthorizationCodeFlow.Builder(
-                BearerToken.authorizationHeaderAccessMethod(),
-                httpTransport,
-                jsonFactory,
-                new GenericUrl(encodedUrl),
-                new ClientParametersAuthentication(clientId, clientSecret),
-                clientId,
-                authorizationServerEncodedUrl
-            )
-            .setScopes(ClassroomScopes.all())
-            .setDataStoreFactory(dataStoraFactory)
-            .build();
-
-
-        var receiver = new LocalServerReceiver.Builder()
-            .setHost(address)
-            .setPort(serverPort)
-            .build();
-        
-        var credentials = new AuthorizationCodeInstalledApp(flow, receiver)
-            .authorize("user");
 
        return new Classroom
-            .Builder(httpTransport, jsonFactory, credentials)
+            .Builder(httpTransport, jsonFactory, credential)
             .setApplicationName(applicationName)
             .build();
     }

@@ -70,9 +70,10 @@ look:
   application:
     data: ${LOOK_APPLICATION_LOCAL_DATA}
     name: ${LOOK_APPLICATION_NAME}
+    refresh_token:
+      time: 3600000
     caching:
         tll: 3600000 # milliseconds >> 3600s * 1000ms
-
 logging:
   level:
     com.github.edulook: TRACE
