@@ -10,6 +10,7 @@ import com.github.edulook.look.core.repository.course.GetCourseWork;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -118,6 +119,7 @@ public class CourseRepositoryAdapter implements CourseRepository {
     }
 
     @Override
+    @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
         // TODO: add persistence here
 

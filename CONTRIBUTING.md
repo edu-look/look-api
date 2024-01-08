@@ -8,6 +8,9 @@
   - [Commit message](#commit-message)
 - [Setup](#setup)
 - [Using](#using)
+  - [Insomnia](#insomnia)
+  - [Extra](#extra) 
+- [Container](#container)
 
 ## GCP
 Acesse a documentação de setup do projeto no CGP [Aqui](docs/gcp-setup.md)
@@ -71,10 +74,24 @@ Os valores de ***cliente ID*** e ***secret*** são obtidos no Google Cloud Platf
 
 ### Run
 
+
+#### Terminal
+No diretorio raiz do projeto.
+- default profile
 ````shell
 ./mvnw spring-boot:run
 ````
+- dev profile
 
+Execute o script ```setup``` (```setupw.cmd``` no Windows) ou faça a etapa de recuperação de arquivo de profile manualmente a seguir:
+  - Clone o repositório [look-secret](https://github.com/edu-look/look-secret/tree/main)
+  - Copie o arquivo ```application-dev.yaml``` e outros arquivos para ```src/main/resources```
+````shell
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+````
+#### IntelliJ
+- [How do I activate a Spring Boot profile when running from IntelliJ - ***Stackoverflow***](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij)
+- [Spring Boot run configuration - ***Jetbrains***](https://www.jetbrains.com/help/idea/run-debug-configuration-spring-boot.html)
 #### Autorizando teacher bot
 - Copie e cole o link que foi exibido no terminal no navegador de internet:
 ![First boot image](docs/screenshot/01.first-boot.png)
@@ -108,3 +125,21 @@ O cliente ID do exemplo acima pode está inválido, adicione o cliente ID válid
 ### Extra
 Observe que em todas as request com sucesso retorno no Header da resposta o Authorization Token:
 ![Token OBS](docs/screenshot/03.9.using-insomnia.png)
+
+## Container
+- Construíndo uma image e executando o container
+```sh
+[docker | podman] build -t look-pkg -f ContainerBuildFile
+
+# exemplo:
+$ docker build -t look-pkg -f ContainerBuildFile
+```
+Observe que há um conjunto de variaveis, por favor defina o conteúdo.
+```sh
+...
+# add env
+ENV LOOK_APPLICATION_NAME=
+ENV LOOK_SERVER_DOMAIN=
+ENV LOOK_GCLOUD_CLIENT_ID=
+...
+```
