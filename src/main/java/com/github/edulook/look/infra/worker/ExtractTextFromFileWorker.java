@@ -9,9 +9,6 @@ import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractP
 import com.github.edulook.look.infra.worker.exceptions.InvalidEventException;
 import com.github.edulook.look.service.DriveService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -19,8 +16,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Slf4j
@@ -30,7 +25,7 @@ public class ExtractTextFromFileWorker {
     private final DriveService driveService;
     private final CourseRepository courseRepository;
 
-    @Value("${look.application.data:./local}")
+    @Value("${look.application.data}")
     private String localData;
 
     public ExtractTextFromFileWorker(DriveService driveService, CourseRepository courseRepository) {
@@ -74,7 +69,7 @@ public class ExtractTextFromFileWorker {
         }
     }
 
-    private static void upsetContent(String contentId, Course.WorkMaterial material, Optional<PageContent> content) {
+    private void upsetContent(String contentId, Course.WorkMaterial material, Optional<PageContent> content) {
         var contentPDF = material.getMaterials().stream()
             .filter(it -> it.getId().equalsIgnoreCase(contentId))
             .findFirst()

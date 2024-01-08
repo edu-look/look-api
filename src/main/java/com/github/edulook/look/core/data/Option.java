@@ -14,4 +14,8 @@ public class Option {
     public static Option withDefaults() {
         return new Option(Boolean.FALSE, Range.withDefaults());
     }
+
+    public static Optional<Option> None() {
+        return Optional.empty();
+    }
 }
