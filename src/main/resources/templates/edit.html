@@ -30,14 +30,14 @@
 
                     <label class="name-item">Digite o nome do arquivo: </label>
                     <input :value="item.name"
-                           @input="event => item.name = event.target.value" class="input-name"/>
+                           @input="event => item.name = event.target.value" class="input-name" required/>
 
                 </div>
 
 
                 <div class="describtion-container">
                     <p>Descreva o PDF ou o conteudo ao o lado <i class="mandatory">*</i> : </p>
-                    <textarea  type="text" rows="8" cols="65"  :value="item.description" @input="event => item.description = event.target.value"></textarea>
+                    <textarea  type="text" rows="8" cols="65"  :value="item.description" @input="event => item.description = event.target.value" required></textarea>
 
                     <div class="pdf-range">
                         <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
@@ -67,7 +67,7 @@
 
                     <label class="name-item">Digite o nome do arquivo: </label>
                     <input :value="item.name"
-                           @input="event => item.name = event.target.value" class="input-name"/>
+                           @input="event => item.name = event.target.value" class="input-name" required/>
 
                 </div>
 
@@ -75,7 +75,7 @@
                     <p>Descreva a imagem ou o conteudo ao o lado <i class="mandatory">*</i> : </p>
                     <textarea :value="item.description"
                               type="text" rows="8" cols="65"
-                              @input="event => item.description = event.target.value" ></textarea>
+                              @input="event => item.description = event.target.value" required></textarea>
 
 
                 </div>
