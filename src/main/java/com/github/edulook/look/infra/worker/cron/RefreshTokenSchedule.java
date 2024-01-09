@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+
 import java.io.IOException;
 
 @Slf4j
@@ -24,3 +25,5 @@ public class RefreshTokenSchedule {
         log.info("refresh token {}", isOk);
     }
 }
+
+
