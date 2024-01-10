@@ -28,7 +28,7 @@
         <div ref="form" v-for="item in material?.materials" class="forms-inputs-container">
 
 
-            <template v-if="hasRange(item)">
+            <template v-if="item.type === 'PDF' ">
 
                 <div  class="content-container">
                     <img :src=item.preview />
@@ -47,9 +47,9 @@
                     <div class="pdf-range">
                         <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
                         <div class="pdf-range-inputs">
-                            <input type="number" min="item.range.start"  class="input-pdf-range"/>
+                            <input type="number" min="item.option.range.start"  class="input-pdf-range"/>
                             <p>a</p>
-                            <input type="number" id="fname" name="fname" class="input-pdf-range" max="item.range.end"/>
+                            <input type="number" id="fname" name="fname" class="input-pdf-range" max="item.option.range.end"/>
 
 
                         </div>
