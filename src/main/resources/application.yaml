@@ -2,6 +2,8 @@
 #                                            Environment (Example)
 # -------------------------------------------------------------------------------------------------------
 # LOOK_APPLICATION_NAME=look-service
+# LOOK_APPLICATION_LOCAL_DATA=/tmp/look/data
+# LOOK_SERVER_DOMAIN=domain.com.br
 # LOOK_GCLOUD_CLIENT_ID=000000000000-c9qg23t7n1s50h2aspaec6l4ucavkjqn.apps.googleusercontent.com
 # LOOK_GCLOUD_CLIENT_SECRET=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A
 # LOOK_GCLOUD_SERVER_CLIENT_ID=000000000000-00ja0mia1h00es0c0v0pk0mse8qhpb00.apps.googleusercontent.com
@@ -17,8 +19,17 @@
 
 
 server:
-  address: ${LOOK_SERVER_DOMAIN}
   port: ${LOOK_SERVER_PORT}
+  address: ${LOOK_SERVER_DOMAIN:localhost}
+
+springdoc:
+  swagger-ui:
+    oauth:
+      clientId: ${LOOK_GCLOUD_CLIENT_ID}
+      clientSecret: ${LOOK_GCLOUD_CLIENT_SECRET}
+      realm: https://accounts.google.com
+      appName: look
+      scopeSeparator: openid email profile
 
 spring:
   devtools:
@@ -57,10 +68,12 @@ look:
         token-url: https://oauth2.googleapis.com/token
         authorization-encoded-url: https://accounts.google.com/o/oauth2/auth
   application:
+    data: ${LOOK_APPLICATION_LOCAL_DATA}
     name: ${LOOK_APPLICATION_NAME}
+    refresh_token:
+      time: 3600000
     caching:
         tll: 3600000 # milliseconds >> 3600s * 1000ms
-
 logging:
   level:
     com.github.edulook: TRACE
