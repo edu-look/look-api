@@ -10,6 +10,11 @@
 
 <div id="app" class="container">
 
+    <head>
+
+        <title>Formulário Look</title>
+    </head>
+
     <div class="logo">
 
     </div>
@@ -20,15 +25,15 @@
         <p>Use esse formulário para adicionar acessibilidade, facilitando a utilização
             das ferramentas de leitor de tela.</p>
 
-        <div v-for="item in material?.materials" class="forms-inputs-container">
+        <div ref="form" v-for="item in material?.materials" class="forms-inputs-container">
 
 
-            <template v-if=hasRange(item)>
+            <template v-if="hasRange(item)">
 
                 <div  class="content-container">
                     <img :src=item.preview />
 
-                    <label class="name-item">Digite o nome do arquivo: </label>
+                    <label class="name-item">Digite o nome do arquivo <i class="mandatory">*</i>  : </label>
                     <input :value="item.name"
                            @input="event => item.name = event.target.value" class="input-name" required/>
 
@@ -65,7 +70,7 @@
                 <div class="content-container">
                     <img :src=item.preview />
 
-                    <label class="name-item">Digite o nome do arquivo: </label>
+                    <label class="name-item">Digite o nome do arquivo <i class="mandatory">*</i>  : </label>
                     <input :value="item.name"
                            @input="event => item.name = event.target.value" class="input-name" required/>
 
@@ -81,7 +86,29 @@
                 </div>
 
 
+
+
+
+
+
             </template>
+
+
+
+
+                <div class="carousel">
+                    <textarea v-model="text" @input="onTextInput" placeholder="Digite seu texto aqui" ></textarea>
+
+                    <div class="slide">
+                        {{ currentSlide }}
+                    </div>
+
+                    <div class="controls">
+                        <button @click="prevSlide" :disabled="currentIndex === 0">Anterior</button>
+                        <button @click="nextSlide" :disabled="currentIndex === totalSlides - 1">Próximo</button>
+                    </div>
+                </div>
+
 
             <a  class="clearButtonInput" @click="clearInputs(item)">Limpar</a>
 
@@ -100,7 +127,7 @@
 
 
 
-            <a class="custom-button button-add-forms"  @click=putCourseMaterial()>Adicionar acessibilidade</a>
+            <a class="custom-button button-add-forms"  @click=areInputsValid()>Adicionar acessibilidade</a>
 
 
         </div>
@@ -158,6 +185,7 @@
                     id: '',
                     materialId: '',
                 },
+                token:'',
                 showAlert: false,
                 showOverlay: false,
                 alertOpacity: '1',
@@ -165,29 +193,135 @@
                 alertText: '',
                 progress: 0,
                 alertTimer: null,
-                progressInterval: null
+                progressInterval: null,
+                text: 'A atualidade, constata-se uma crescente necessidade de otimização de processos, que se \n' +
+                    'prende com a redução de custos e de tempo. Existe, em termos gerais, uma ineficiência \n' +
+                    'no processamento de despesas e faturas, tais como: a digitalização e anexo de faturas; a \n' +
+                    'necessidade de internet; e a necessidade de verificar constantemente se existem despesas \n' +
+                    'por rever, correndo o risco de as negligenciar por ausência de notificação para o gestor \n' +
+                    'responsável.\n' +
+                    'Estes problemas podem ser traduzidos num problema geral e comum a todas as empresas, \n' +
+                    'que dificultam a redução de tempo e custos. \n' +
+                    'Assim, o objetivo deste projeto é encontrar uma solução que permita automatizar e \n' +
+                    'adicionar mobilidade ao processamento de despesas, agilizando o processo de forma a \n' +
+                    'evitar custos desnecessários e ineficiências. Com isto, pretende-se colmatar os problemas \n' +
+                    'acima levantados, pois estes processos serão consideravelmente menos custosos em \n' +
+                    'termos de tempo e monetariamente quando forem automáticos e móveis. \n' +
+                    'Para desenvolver a solução proposta foi necessária uma definição clara do seu âmbito; \n' +
+                    'levantamento dos requisitos; elaboração das especificações; e desenho do calendário de \n' +
+                    'projeto com ciclos de desenvolvimento de software, demonstrações, testes, definição de \n' +
+                    'objectivos e entregáveis.\n' +
+                    'Esta aplicação, desenvolvida numa plataforma de low-code (OutSystems) traz como \n' +
+                    'vantagens a mobilidade, e, consequentemente, a redução do tempo de processamento de \n' +
+                    'despesas, de custos, e eliminação de possíveis falhas como a perca de faturas, resolvendo \n' +
+                    'as ineficiências mencionadas em cima através da opção de anexar a fatura e do \n' +
+                    'funcionamento online e offline.\n' +
+                    'Palavras-chave: OutSystems, Scrum, low-code, sprint, despesa, submissão, revisão; \n' +
+                    'aplicação móvel.', // Texto completo recebido
+                currentSlide: '',
+                currentIndex: 0,
+                slides: [],
+                totalSlides: 0
 
 
 
             }
         },
+
+        props: {
+            inputText: String
+        },
+        watch: {
+            inputText: {
+                text() {
+                    this.generateSlides();
+                }
+            }
+
+        },
+
+
         methods: {
+            generateSlides() {
+                const maxLength = 255;
+                this.slides = [];
+
+                for (let i = 0; i < this.text.length; i += maxLength) {
+                    this.slides.push(this.text.slice(i, i + maxLength));
+                }
+
+                this.totalSlides = this.slides.length;
+                this.updateCurrentSlide();
+            },
+
+
+            areInputsValid() {
+
+                const requiredInputs = document.querySelectorAll('input[required], textarea[required]');
+                for (const input of requiredInputs) {
+                    if (!input.value.trim()) {
+                        alert('Por favor, preencha todos os campos obrigatórios.');
+                        return false;
+                    }
+                }
+
+
+                this.putCourseMaterial().
+                then(console.log)
+
+                return;
+            },
+
+
+            updateCurrentSlide() {
+                this.currentSlide = this.slides[this.currentIndex];
+            },
+
+
+            nextSlide() {
+                if (this.currentIndex < this.totalSlides - 1) {
+                    this.currentIndex++;
+                    this.updateCurrentSlide();
+                }
+            },
+            prevSlide() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.updateCurrentSlide();
+                }
+            },
+
+            onTextInput() {
+                this.currentIndex = 0; // Reinicia para o primeiro slide ao editar o texto
+                this.generateSlides();
+            },
+
+
             openPopup() {
                 this.showOverlay = true;
             },
+
             closePopup() {
                 this.showOverlay = false;
             },
+
             confirmChanges(type) {
                 this.activateAlert(type);
                 this.closePopup();
             },
 
             getCourseIDAndMaterialID() {
-                let { courseId: id, materialId } = location.pathname.match(/v\d+\/\w+\/(?<courseId>\w+)\/\w+\/(?<materialId>\w+)\/\w+/).groups
-                this.course = { id, materialId }
+                let {
+                    courseId: id,
+                    materialId
+                } = location.pathname.match(/v\d+\/\w+\/(?<courseId>\w+)\/\w+\/(?<materialId>\w+)\/\w+/).groups
+                this.course = {id, materialId}
             },
+
+
             hasRange(item) {
+
+
 
                 return item.range && item.range.start !== null && item.range.end !== null
 
@@ -225,17 +359,8 @@
                 }
 
 
-
                 console.log('Campos limpos para o item:', item);
             },
-
-
-
-
-
-
-
-
 
 
             async getCourseMaterial() {
@@ -243,49 +368,90 @@
 
                 const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
 
+                const userResponse = await fetch('/user')
+
+                const user = await userResponse.json()
+
+                this.token = 'Bearer ' + user.jwt.token
+
                 this.material = await response.json()
 
 
+                console.log( this.token)
+
+
+
+                console.log(this.material)
+
 
             },
+
+
 
             async putCourseMaterial() {
-                const url = `/v1/courses/${this.course.id}/materials/${this.course.materialId}`;
 
-                try {
-                    const response = await fetch(url, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
 
-                        },
-                        body: JSON.stringify({
-                            materials: this.material.materials,
+                const url = `/v1/courses/${this.course.id}/materials/${this.course.materialId}/edit`;
 
-                        }),
-                    });
 
-                    if(response.ok){
-                        this.activateAlert(1)
+
+                let varTeste = JSON.stringify(
+                    this.material
+                )
+
+
+
+
+
+                    try {
+
+                        const response = await fetch(url, {
+                            method: 'PUT',
+
+                            headers:{
+                                'Content-Type': 'application/json',
+                                'Authorization': this.token
+                            },
+
+
+                            body: varTeste,
+                        });
+
+                        if(response.ok){
+
+                             await response.json()
+                            this.activateAlert(1)
+                        }
+
+
+                        if (!response.ok) {
+
+
+
+                            console.log(await response.json())
+                            console.log(await response.headers)
+
+                            throw new Error(`Erro ao atualizar material: ${response.status}`);
+                        }
+
+
+
+                    } catch (error) {
+
+                        console.error('Erro durante a requisição PUT:', error);
                     }
 
 
-                    if (!response.ok) {
-
-                        throw new Error(`Erro ao atualizar material: ${response.status}`);
-                    }
 
 
 
-                } catch (error) {
-
-                    console.error('Erro durante a requisição PUT:', error);
-                }
-            },
-
-
-
+            }
         },
+
+
+
+
+
 
         async mounted() {
             this.getCourseIDAndMaterialID()
@@ -299,6 +465,30 @@
 
 
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;400;500;700&display=swap');
+
+
+
+    .carousel {
+        width: 351px;
+        margin: auto;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .slide {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .controls {
+        margin-top: 20px;
+    }
+
+    button {
+        margin: 0 10px;
+    }
+
 
 
 

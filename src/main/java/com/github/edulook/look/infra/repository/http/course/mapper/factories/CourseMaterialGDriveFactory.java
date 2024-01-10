@@ -48,9 +48,9 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
             var filename = file.getTitle();
             var filetype = getFiletype(filename);
 
-            var range = filetype.equalsIgnoreCase(Typename.PDF)
-                    ? Optional.of(Range.withDefaults())
-                    : Range.None();
+            var option = filetype.equalsIgnoreCase(Typename.PDF)
+                    ? Optional.of(Option.withDefaults())
+                    : Option.None();
 
             return Course.WorkMaterial.Material
                 .builder()
@@ -60,7 +60,7 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
                 .previewLink(file.getThumbnailUrl())
                 .type(filetype)
                 .description(file.getTitle())
-                .option(Option.None())
+                .option(option)
                 .content(PageContent.None())
                 .build();
         } catch (Exception e) {

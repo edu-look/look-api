@@ -1,13 +1,16 @@
 package com.github.edulook.look.core.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 
 @Builder
 @Getter
+@NoArgsConstructor
 public class Range {
     private Integer start;
     private Integer end;
