@@ -28,6 +28,7 @@ public class UserAuthenticatedAdapterFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         try {
+
             var auth = SecurityContextHolder.getContext().getAuthentication();
             var details = (WebAuthenticationDetails) auth.getDetails();
 

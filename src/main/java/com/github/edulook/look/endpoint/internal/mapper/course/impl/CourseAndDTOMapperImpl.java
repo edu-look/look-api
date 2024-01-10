@@ -103,6 +103,7 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper {
             .origin(source.getOriginLink())
             .preview(source.getPreviewLink())
             .option(source.getOption())
+            .type(source.getType())
             .build();
     }
 
