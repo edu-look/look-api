@@ -1,6 +1,7 @@
 package com.github.edulook.look.core.model;
 
 
+import com.github.edulook.look.core.data.Option;
 import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.Range;
 import com.google.cloud.firestore.annotation.DocumentId;
@@ -74,7 +75,7 @@ public class Course {
             private String originLink;
             private String previewLink;
             private Optional<PageContent> content;
-            private Optional<Range> range;
+            private Optional<Option> option;
         }
     }
 }

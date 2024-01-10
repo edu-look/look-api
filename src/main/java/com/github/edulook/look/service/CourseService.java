@@ -11,6 +11,7 @@ import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
 import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractPDFEvent;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
+import com.github.edulook.look.service.usecase.extrator.pdf.PDFClassificationEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -77,8 +78,6 @@ public class CourseService {
         return announcements;
     }
 
-
-    @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(String courseId, String materialId, MaterialDTO material) {
         var materialSavedOptional = courseRepository.findOneMaterial(Course.builder().id(courseId).build(), materialId);
 
@@ -86,7 +85,6 @@ public class CourseService {
             throw new ResourceNotFoundException(String.format("material '%s' not found", materialId));
 
         var materialSaved = materialSavedOptional.get();
-
         materialSaved.setDescription(material.description());
 
         materialSaved.getMaterials().parallelStream().forEach(it -> {
@@ -97,7 +95,7 @@ public class CourseService {
                     .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s not found", it.getId())));
 
                 it.setName(materialSelectedDTO.name());
-                it.setRange(materialSelectedDTO.range());
+                it.setOption(materialSelectedDTO.option());
                 it.setDescription(materialSelectedDTO.description());
 
                 emitContentParserEvent(it, materialSaved);
@@ -111,16 +109,24 @@ public class CourseService {
     }
 
     private void emitContentParserEvent(Material it, WorkMaterial materialSaved) {
-        if(it.getRange().isPresent() && it.getType().equalsIgnoreCase(Typename.PDF)) {
+        if(!it.getType().equalsIgnoreCase(Typename.PDF))
+            return;
+
+        it.getOption().ifPresent(option -> {
+            var classification = option.isEnableOCR()
+                ? PDFClassificationEnum.NOREGULAR
+                : PDFClassificationEnum.REGULAR;
+
             var event = CourseMaterialExtractPDFEvent.builder()
                 .contentId(it.getId())
                 .courseId(materialSaved.getCourseId())
                 .materialId(materialSaved.getId())
-                .range(it.getRange().get())
+                .option(it.getOption().get())
+                .classification(classification)
                 .build();
 
             publisher.publishEvent(event);
-        }
+        });
     }
 
     @Cacheable("findOneCourseMaterial")

@@ -1,5 +1,6 @@
 package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
+import com.github.edulook.look.core.data.Option;
 import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.data.Typename;
@@ -60,7 +61,7 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
                 .previewLink(file.getThumbnailUrl())
                 .type(filetype)
                 .description(file.getTitle())
-                .range(range)
+                .option(Option.None())
                 .content(PageContent.None())
                 .build();
         } catch (Exception e) {

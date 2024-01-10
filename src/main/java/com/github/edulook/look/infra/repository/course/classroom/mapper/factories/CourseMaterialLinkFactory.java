@@ -1,5 +1,6 @@
 package com.github.edulook.look.infra.repository.course.classroom.mapper.factories;
 
+import com.github.edulook.look.core.data.Option;
 import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.data.Typename;
@@ -25,7 +26,7 @@ public class CourseMaterialLinkFactory implements AbstractCourseMaterialFactory 
                 .previewLink(link.getThumbnailUrl())
                 .type(Typename.WEB)
                 .description(link.getTitle())
-                .range(Range.None())
+                .option(Option.None())
                 .content(PageContent.None())
                 .build();
         } catch (Exception e) {
