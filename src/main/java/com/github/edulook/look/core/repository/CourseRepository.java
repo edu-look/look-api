@@ -2,6 +2,7 @@ package com.github.edulook.look.core.repository;
 
 import static com.github.edulook.look.core.model.Course.WorkMaterial;
 
+import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.repository.course.*;
 
 public interface CourseRepository
@@ -9,5 +10,6 @@ public interface CourseRepository
         GetCourseWorkMaterial,
         GetCourseWork,
         GetCourseAnnouncement,
-        UpsetCourseWorkMaterial {
+        UpsetCourseWorkMaterial,
+        Crud<Course>{
 }
