@@ -2,7 +2,7 @@
     {
       "imports": {
         "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
-      }
+    }
     }
 </script>
 
@@ -28,7 +28,7 @@
         <div ref="form" v-for="item in material?.materials" class="forms-inputs-container">
 
 
-            <template v-if="item.type === 'PDF' ">
+            <template v-if= "item.type == 'PDF'">
 
                 <div  class="content-container">
                     <img :src=item.preview />
@@ -44,17 +44,69 @@
                     <p>Descreva o PDF ou o conteudo ao o lado <i class="mandatory">*</i> : </p>
                     <textarea  type="text" rows="8" cols="65"  :value="item.description" @input="event => item.description = event.target.value" required></textarea>
 
-                    <div class="pdf-range">
+
+
+
+                    <div class="pdf-range" v-if="item.content">
+
                         <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
+
                         <div class="pdf-range-inputs">
-                            <input type="number" min="item.option.range.start"  class="input-pdf-range"/>
+                            <input type="number" min="0"  :value="item.option.range.start" class="input-pdf-range"/>
                             <p>a</p>
-                            <input type="number" id="fname" name="fname" class="input-pdf-range" max="item.option.range.end"/>
+                            <input type="number"  :value="item.option.range.end" class="input-pdf-range" min="0" />
 
 
                         </div>
 
+
+
+                        <div class="carousel" v-slot={currentIndex}>
+                            <div v-for="(page,index) in item.content?.pages" class="forms-inputs-container" :key="index">
+
+                                <textarea v-show="currentIndex === index" @input="onTextInput" :value="page.content" placeholder="Digite seu texto aqui" ></textarea>
+
+
+                                </div>
+
+                                <div class="controls">
+                                    <button @click="prevSlide" :disabled="currentIndex === 0">Anterior</button>
+                                    <button @click="this.currentIndex = + 1" :disabled="this.currentIndex === item.content?.pages.length - 1">Próximo</button>
+                                </div>
+
+
+
+
+
+                        </div>
+
+
+
                     </div>
+
+                        <div class="pdf-range" else>
+                            <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
+                            <div class="pdf-range-inputs">
+
+                                <input type="number"   min="item.option.range.start" class="input-pdf-range"/>
+                                <p>a</p>
+                                <input type="number" class="input-pdf-range"  />
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+
+
+
+
 
 
                 </div>
@@ -96,18 +148,6 @@
 
 
 
-                <div class="carousel">
-                    <textarea v-model="text" @input="onTextInput" placeholder="Digite seu texto aqui" ></textarea>
-
-                    <div class="slide">
-                        {{ currentSlide }}
-                    </div>
-
-                    <div class="controls">
-                        <button @click="prevSlide" :disabled="currentIndex === 0">Anterior</button>
-                        <button @click="nextSlide" :disabled="currentIndex === totalSlides - 1">Próximo</button>
-                    </div>
-                </div>
 
 
             <a  class="clearButtonInput" @click="clearInputs(item)">Limpar</a>
@@ -174,7 +214,8 @@
 
 
 <script type="module">
-    import { createApp } from 'vue'
+    import { createApp } from 'vue';
+
 
     createApp({
         data(){
@@ -194,30 +235,7 @@
                 progress: 0,
                 alertTimer: null,
                 progressInterval: null,
-                text: 'A atualidade, constata-se uma crescente necessidade de otimização de processos, que se \n' +
-                    'prende com a redução de custos e de tempo. Existe, em termos gerais, uma ineficiência \n' +
-                    'no processamento de despesas e faturas, tais como: a digitalização e anexo de faturas; a \n' +
-                    'necessidade de internet; e a necessidade de verificar constantemente se existem despesas \n' +
-                    'por rever, correndo o risco de as negligenciar por ausência de notificação para o gestor \n' +
-                    'responsável.\n' +
-                    'Estes problemas podem ser traduzidos num problema geral e comum a todas as empresas, \n' +
-                    'que dificultam a redução de tempo e custos. \n' +
-                    'Assim, o objetivo deste projeto é encontrar uma solução que permita automatizar e \n' +
-                    'adicionar mobilidade ao processamento de despesas, agilizando o processo de forma a \n' +
-                    'evitar custos desnecessários e ineficiências. Com isto, pretende-se colmatar os problemas \n' +
-                    'acima levantados, pois estes processos serão consideravelmente menos custosos em \n' +
-                    'termos de tempo e monetariamente quando forem automáticos e móveis. \n' +
-                    'Para desenvolver a solução proposta foi necessária uma definição clara do seu âmbito; \n' +
-                    'levantamento dos requisitos; elaboração das especificações; e desenho do calendário de \n' +
-                    'projeto com ciclos de desenvolvimento de software, demonstrações, testes, definição de \n' +
-                    'objectivos e entregáveis.\n' +
-                    'Esta aplicação, desenvolvida numa plataforma de low-code (OutSystems) traz como \n' +
-                    'vantagens a mobilidade, e, consequentemente, a redução do tempo de processamento de \n' +
-                    'despesas, de custos, e eliminação de possíveis falhas como a perca de faturas, resolvendo \n' +
-                    'as ineficiências mencionadas em cima através da opção de anexar a fatura e do \n' +
-                    'funcionamento online e offline.\n' +
-                    'Palavras-chave: OutSystems, Scrum, low-code, sprint, despesa, submissão, revisão; \n' +
-                    'aplicação móvel.', // Texto completo recebido
+                text: '', // Texto completo recebido
                 currentSlide: '',
                 currentIndex: 0,
                 slides: [],
@@ -227,6 +245,8 @@
 
             }
         },
+
+
 
         props: {
             inputText: String
@@ -242,6 +262,21 @@
 
 
         methods: {
+
+            /*
+            hasPageContent(content){
+                if(!content){
+                    return true
+                } else{
+                    return false;
+                }
+            }
+            ,
+             */
+
+
+
+
             generateSlides() {
                 const maxLength = 255;
                 this.slides = [];
@@ -275,6 +310,7 @@
 
             updateCurrentSlide() {
                 this.currentSlide = this.slides[this.currentIndex];
+
             },
 
 
@@ -366,15 +402,60 @@
             async getCourseMaterial() {
 
 
-                const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
+
+                //const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
 
                 const userResponse = await fetch('/user')
 
                 const user = await userResponse.json()
 
+
+
+                const responseMoker =
+                    {
+                    "description": "TESTE DE API",
+                    "materials": [
+                {
+                    "id": "926de88ad2cd821adc27fd07d9751b1c9fab517095e2bdcdf5b647259b4ce7e1",
+                    "name": "Master sara karmali",
+                    "description": "Master_Sara_Karmali.pdf",
+                    "origin": "https://drive.google.com/file/d/1QWMf-ExPqjQVVuns1UPUj7LzpxUtbCiz/view?usp=drive_web",
+                    "preview": "https://lh3.googleusercontent.com/drive-storage/ANtge_EntJTMohEwPmo8_bnxAiN2NNGN9G9cMQhNsWgaZynGBqZaX-fhvQyY-2_dayvdiYkJnelx9HMQgzEdgp7H5i0CWnGd4OYWAFma1sO8qQ=s200",
+                    "type":"PDF",
+                    "option": {
+                    "enableOCR": false,
+                        "range": {
+                        "start": 0,
+                            "end": 0,
+                            "valid": false
+                    }
+                },
+                    "content": {
+                    "size": 2,
+                        "pages": [
+                        {
+                            "page": 1,
+                            "content": "Page 1 content"
+                        },
+                        {
+                            "page": 2,
+                            "content": "Page 2 content"
+                        }
+                    ]
+                }
+                }
+                ]
+                    }
+
+
+
+
+
                 this.token = 'Bearer ' + user.jwt.token
 
-                this.material = await response.json()
+                //this.material = await response.json()
+
+                this.material = responseMoker
 
 
                 console.log( this.token)
@@ -387,66 +468,69 @@
             },
 
 
-
-            async putCourseMaterial() {
-
-
-                const url = `/v1/courses/${this.course.id}/materials/${this.course.materialId}/edit`;
+            /*
+                        async putCourseMaterial() {
 
 
-
-                let varTeste = JSON.stringify(
-                    this.material
-                )
+                            const url = `/v1/courses/${this.course.id}/materials/${this.course.materialId}/edit`;
 
 
 
+                            let varTeste = JSON.stringify(
+                                this.material
+                            )
 
 
-                    try {
-
-                        const response = await fetch(url, {
-                            method: 'PUT',
-
-                            headers:{
-                                'Content-Type': 'application/json',
-                                'Authorization': this.token
-                            },
 
 
-                            body: varTeste,
-                        });
 
-                        if(response.ok){
+                                try {
 
-                             await response.json()
-                            this.activateAlert(1)
+                                    const response = await fetch(url, {
+                                        method: 'PUT',
+
+                                        headers:{
+                                            'Content-Type': 'application/json',
+                                            'Authorization': this.token
+                                        },
+
+
+                                        body: varTeste,
+                                    });
+
+                                    if(response.ok){
+
+                                         await response.json()
+                                        this.activateAlert(1)
+                                    }
+
+
+                                    if (!response.ok) {
+
+
+
+                                        console.log(await response.json())
+                                        console.log(await response.headers)
+
+                                        throw new Error(`Erro ao atualizar material: ${response.status}`);
+                                    }
+
+
+
+                                } catch (error) {
+
+                                    console.error('Erro durante a requisição PUT:', error);
+                                }
+
+
+
+
+
                         }
+                    },
 
 
-                        if (!response.ok) {
-
-
-
-                            console.log(await response.json())
-                            console.log(await response.headers)
-
-                            throw new Error(`Erro ao atualizar material: ${response.status}`);
-                        }
-
-
-
-                    } catch (error) {
-
-                        console.error('Erro durante a requisição PUT:', error);
-                    }
-
-
-
-
-
-            }
-        },
+             */},
 
 
 
