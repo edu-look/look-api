@@ -52,9 +52,9 @@
                         <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
 
                         <div class="pdf-range-inputs">
-                            <input type="number" min="0"  :value="item.option.range.start" class="input-pdf-range"/>
+                            <input type="number" :min="0" :max="item.option.range.end" :value="item.option.range.start" @input="event => item.option.range.start = event.target.value" class="input-pdf-range" onchange="alert('mudei')"/>
                             <p>a</p>
-                            <input type="number"  :value="item.option.range.end" class="input-pdf-range" min="0" />
+                            <input type="number"  :value="item.option.range.end"  @input="event => item.option.range.end = event.target.value" class="input-pdf-range" min="0" />
 
 
                         </div>
