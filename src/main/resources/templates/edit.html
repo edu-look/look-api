@@ -49,10 +49,25 @@
 
                     <div class="pdf-range" v-if="item.content">
 
-                        <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
+                        <div class="toggle-container">
+                            <div class="message">
+                                Ative o OCR caso seu PDF seja um scanner de outro documento.
+                            </div>
+                            <div class="toggle" @click="ocrAlternation(item)" :class="{ active: item.option.enableOCR }" >
+
+                                <div class="slider"></div>
+
+                            </div>
+                            <div>{{ item.option.enableOCR ? 'OCR Ativado' : 'Ativar OCR' }}</div>
+                        </div>
+
+
+
+                        <label  class="pdf-item-range">Selecione as paginas a serem extraidas do PDF:</label>
 
                         <div class="pdf-range-inputs">
-                            <input type="number" :min="0" :max="item.option.range.end" :value="item.option.range.start" @input="event => item.option.range.start = event.target.value" class="input-pdf-range" onchange="alert('mudei')"/>
+                            <input type="number" min="0" :max="item.option.range.end" :value="item.option.range.start "
+                                   @input=" event => item.option.range.start = event.target.value" class="input-pdf-range"/>
                             <p>a</p>
                             <input type="number"  :value="item.option.range.end"  @input="event => item.option.range.end = event.target.value" class="input-pdf-range" min="0" />
 
@@ -64,14 +79,26 @@
                         <div class="carousel" v-slot={currentIndex}>
                             <div v-for="(page,index) in item.content?.pages" class="forms-inputs-container" :key="index">
 
-                                <textarea v-show="currentIndex === index" @input="onTextInput" :value="page.content" placeholder="Digite seu texto aqui" ></textarea>
+                                    <section v-show="currentIndex === index">
 
+
+
+                                <div class="title-carousel" v-show="currentIndex === index">
+                                    Pagina {{page.page}}
+                                </div>
+
+
+                                    <textarea rows="8" cols="65" @input="event => page.content = event.target.value" :value="page.content" placeholder="Digite seu texto aqui" ></textarea>
+
+
+
+                                    </section>
 
                                 </div>
 
-                                <div class="controls">
-                                    <button @click="prevSlide" :disabled="currentIndex === 0">Anterior</button>
-                                    <button @click="this.currentIndex = + 1" :disabled="this.currentIndex === item.content?.pages.length - 1">Próximo</button>
+                                <div class="controls-page-container">
+                                    <button class="button-pages" @click="prevSlide" :disabled="currentIndex === 0">Anterior</button>
+                                    <button class="button-pages" @click="currentIndex = + 1" :disabled="this.currentIndex === item.content?.pages.length - 1">Próximo</button>
                                 </div>
 
 
@@ -84,13 +111,15 @@
 
                     </div>
 
-                        <div class="pdf-range" else>
-                            <label  class="pdf-item-range">Selecionar paginas (extrair o texto das paginas abaixo):</label>
+
+
+                        <div class="pdf-range" v-else>
+                            <label  class="pdf-item-range">Selecione as paginas a serem extraidas do PDF:</label>
                             <div class="pdf-range-inputs">
 
-                                <input type="number"   min="item.option.range.start" class="input-pdf-range"/>
+                                <input type="number"  min="0" :max="item.option.range.end" :value="item.option.range.start" @input="event => item.option.range.start = event.target.value"  class="input-pdf-range"/>
                                 <p>a</p>
-                                <input type="number" class="input-pdf-range"  />
+                                <input type="number" class="input-pdf-range" min="0" :value="item.option.range.end"  @input="event => item.option.range.end = event.target.value"  />
 
 
                             </div>
@@ -163,7 +192,8 @@
         </div>
 
         <div class="button-forms-container">
-            <a class="custom-button button-delete-forms" @click=openPopup()>Restaurar dados</a>
+            <a class="custom-button button-delete-forms" @click="openPopup('Deseja mesmo retaurar os dados?',
+            'Após a confirmação, os dados salvos no banco de dados desse material será excluído e todas as informações serão restauradas para aquelas encontrada no Classroom?')">Restaurar dados</a>
 
 
 
@@ -192,12 +222,12 @@
 
         <div class="overlay" v-if="showOverlay">
             <div class="popup">
-                <h3>Deseja mesmo restaurar todos os dados ?</h3>
-                <p>Após a confirmação, os dados salvos no banco de dados desse material será excluído e todas as informações serão restauradas para aquela encontrada no Classroom?</p>
+                <h3>{{titlePoup}}</h3>
+                <p>{{descriptionPopup}}</p>
 
                 <div class="button-popup-container">
                     <button class="cancel-button custom-button button-clear-forms" @click=closePopup>Cancelar</button>
-                    <button class="confirm-button custom-button button-delete-forms" @click="confirmChanges(2)">Confirmar Alterações</button>
+                    <button class="confirm-button custom-button button-delete-forms" @click=" showOverlayInputRange ? confirmChanges('Input')  : confirmChanges('Restart')">Confirmar Alterações</button>
                 </div>
             </div>
         </div>
@@ -239,7 +269,12 @@
                 currentSlide: '',
                 currentIndex: 0,
                 slides: [],
-                totalSlides: 0
+                totalSlides: 0,
+                ocrEnabled: false,
+                changeInputAcept:false,
+                titlePoup:'',
+                descriptionPopup:'',
+                showOverlayInputRange:false
 
 
 
@@ -249,45 +284,27 @@
 
 
         props: {
-            inputText: String
         },
         watch: {
-            inputText: {
-                text() {
-                    this.generateSlides();
-                }
-            }
 
         },
 
 
         methods: {
 
-            /*
-            hasPageContent(content){
-                if(!content){
-                    return true
-                } else{
-                    return false;
-                }
-            }
-            ,
-             */
+            changeInputRange(){
 
 
-
-
-            generateSlides() {
-                const maxLength = 255;
-                this.slides = [];
-
-                for (let i = 0; i < this.text.length; i += maxLength) {
-                    this.slides.push(this.text.slice(i, i + maxLength));
-                }
-
-                this.totalSlides = this.slides.length;
-                this.updateCurrentSlide();
             },
+
+
+            ocrAlternation(item) {
+                item.option.enableOCR=  !item.option.enableOCR;
+                this.ocrEnabled = !this.ocrEnabled
+
+            },
+
+
 
 
             areInputsValid() {
@@ -314,9 +331,9 @@
             },
 
 
-            nextSlide() {
-                if (this.currentIndex < this.totalSlides - 1) {
-                    this.currentIndex++;
+            nextSlide(page,index) {
+                if (index < page.length - 1 - 1) {
+                    index++;
                     this.updateCurrentSlide();
                 }
             },
@@ -328,21 +345,26 @@
             },
 
             onTextInput() {
-                this.currentIndex = 0; // Reinicia para o primeiro slide ao editar o texto
+
                 this.generateSlides();
             },
 
 
-            openPopup() {
+            openPopup(titlePopup, descriptionPopup) {
+                this.titlePoup= titlePopup
+                this.descriptionPopup= descriptionPopup
+
                 this.showOverlay = true;
             },
 
             closePopup() {
+                this.showOverlayInputRange = false
                 this.showOverlay = false;
             },
 
             confirmChanges(type) {
                 this.activateAlert(type);
+                // CONFIG PARA BANCO DE DADOS QUANDO TIVER PRONTO
                 this.closePopup();
             },
 
@@ -355,23 +377,49 @@
             },
 
 
-            hasRange(item) {
 
 
 
-                return item.range && item.range.start !== null && item.range.end !== null
+            configAlert(type){
 
-            },
+                switch (type){
+                    case 'Submit':
+                        this.alertBackgroundColor = "#1CC833";
+                        this.alertText =  "As informações foram salvas.";
+
+                        break;
+
+                    case 'Restart':
+                        this.alertBackgroundColor = "#8F0000";
+                        this.alertText =  "Os dados foram excluídos e restaurados do Classroom.";
+                        break;
+
+                    default:
+                        this.alertBackgroundColor = "#1CC833"
+                        this.alertText =  "As informações foram salvas.";
+
+                }
+
+            }
+
+
+
+            ,
+
+
 
             activateAlert(type) {
+
                 this.showAlert = true;
                 this.alertOpacity = '1';
-                this.alertBackgroundColor = (type === 1) ? "#1CC833" : "#8F0000";
-                this.alertText = (type === 1) ? "As informações foram salvas." : "Os dados foram excluídos e restaurados do Classroom.";
+
+
                 let startTime = 0;
                 this.alertTimer = setTimeout(() => {
                     this.closeAlert();
                 }, 5000);
+
+                this.configAlert(type)
 
                 startTime = Date.now();
                 this.progressInterval = setInterval(() => {
@@ -420,7 +468,7 @@
                     "name": "Master sara karmali",
                     "description": "Master_Sara_Karmali.pdf",
                     "origin": "https://drive.google.com/file/d/1QWMf-ExPqjQVVuns1UPUj7LzpxUtbCiz/view?usp=drive_web",
-                    "preview": "https://lh3.googleusercontent.com/drive-storage/ANtge_EntJTMohEwPmo8_bnxAiN2NNGN9G9cMQhNsWgaZynGBqZaX-fhvQyY-2_dayvdiYkJnelx9HMQgzEdgp7H5i0CWnGd4OYWAFma1sO8qQ=s200",
+                    "preview": "https://images.pexels.com/photos/11485185/pexels-photo-11485185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     "type":"PDF",
                     "option": {
                     "enableOCR": false,
@@ -433,17 +481,66 @@
                     "content": {
                     "size": 2,
                         "pages": [
+                            {
+                                "page": 1,
+                                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of" +
+                                    " Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+                            },
+                            {
+                                "page": 2,
+                                "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of " +
+                                    "Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+                            }
+                        ]
+                }
+                },
                         {
-                            "page": 1,
-                            "content": "Page 1 content"
+                            "id": "926de88ad2cd821adc27fd07d9751b1c9fab517095e2bdcdf5b647259b4ce7e1",
+                            "name": "Master sara karmali",
+                            "description": "Master_Sara_Karmali.pdf",
+                            "origin": "https://drive.google.com/file/d/1QWMf-ExPqjQVVuns1UPUj7LzpxUtbCiz/view?usp=drive_web",
+                            "preview": "https://images.pexels.com/photos/10486875/pexels-photo-10486875.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+                            "type":"PDF",
+                            "option": {
+                                "enableOCR": false,
+                                "range": {
+                                    "start": 0,
+                                    "end": 0,
+                                    "valid": false
+                                }
+                            },
+                            "content": {
+                                "size": 2,
+                                "pages": [
+                                    {
+                                        "page": 1,
+                                        "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of" +
+                                            " Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+                                    },
+                                    {
+                                        "page": 2,
+                                        "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of " +
+                                            "Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+                                    }
+                                ]
+                            }
                         },
                         {
-                            "page": 2,
-                            "content": "Page 2 content"
+                            "id": "926de88ad2cd821adc27fd07d9751b1c9fab517095e2bdcdf5b647259b4ce7e1",
+                            "name": "Master sara karmali",
+                            "description": "Master_Sara_Karmali.pdf",
+                            "origin": "https://drive.google.com/file/d/1QWMf-ExPqjQVVuns1UPUj7LzpxUtbCiz/view?usp=drive_web",
+                            "preview": "https://lh3.googleusercontent.com/drive-storage/ANtge_EntJTMohEwPmo8_bnxAiN2NNGN9G9cMQhNsWgaZynGBqZaX-fhvQyY-2_dayvdiYkJnelx9HMQgzEdgp7H5i0CWnGd4OYWAFma1sO8qQ=s200",
+                            "type":"PNG",
+                            "option": {
+                                "enableOCR": false,
+                                "range": {
+                                    "start": 0,
+                                    "end": 0,
+                                    "valid": false
+                                }
+                            }
                         }
-                    ]
-                }
-                }
                 ]
                     }
 
@@ -501,7 +598,7 @@
                                     if(response.ok){
 
                                          await response.json()
-                                        this.activateAlert(1)
+                                        this.activateAlert('Submit')
                                     }
 
 
@@ -551,27 +648,108 @@
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;400;500;700&display=swap');
 
 
-
-    .carousel {
-        width: 351px;
-        margin: auto;
+    .toggle-container {
         text-align: center;
-        padding: 20px;
-    }
-
-    .slide {
-        border: 1px solid #ccc;
-        padding: 20px;
         margin-bottom: 20px;
     }
 
-    .controls {
+    .message {
+        margin: 12px 0 12px 0;
+        color: red;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-weight: bold;
+        font-size: 14px;
+
+    }
+
+    .toggle {
+        display: inline-block;
+        position: relative;
+        width: 50px;
+        height: 25px;
+        background-color: #ccc;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+
+    .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 25px;
+        height: 25px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+    }
+
+    .active .slider {
+        transform: translateX(100%);
+        background-color: #1CC833;
+
+    }
+
+
+
+    .carousel {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 24px 0 0 0;
+
+        text-align: center;
+
+    }
+
+    .title-carousel{
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        margin: 0 10px 0 0;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        user-select: none;
+    }
+
+
+
+    .controls-page-container{
+
         margin-top: 20px;
     }
 
+
+
     button {
-        margin: 0 10px;
+        padding: 10px;
+        cursor: pointer;
     }
+
+
+
+    .button-pages{
+
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-weight: 800;
+        user-select: none;
+        margin: 4px;
+        background-color: #1CC833;
+
+    }
+
+    .button-pages:disabled{
+        background-color: gray;
+    }
+
+    .button-pages:hover{
+        background-color: #95d5b2;
+    }
+
 
 
 
@@ -608,6 +786,7 @@
     img{
         display: flex;
         width: 100%;
+        max-height: 164px;
 
     }
 
@@ -682,10 +861,12 @@
 
     .input-name{
         width: 100%;
+        height: 34px;
         display: flex;
         justify-content: center;
         border: none;
         background-color: #E2F0FE;
+        margin: 0 0 4px 0;
         font-family: 'IBM Plex Sans', sans-serif;
     }
 
@@ -814,17 +995,18 @@
     }
 
     .custom-button:hover{
-        background-color: #ffefbc;
+        background-color: #95d5b2;
+    }
+
+    .button-delete-forms:hover{
+        background-color: #ff9999;
+
     }
 
     .clearButtonInput:hover{
         background-color: #ffefbc;
     }
 
-    .button-forms{
-        display: flex;
-        justify-content: space-between;
-    }
 
     .pdf-range{
         display: flex;
@@ -918,10 +1100,6 @@
         }
 
 
-        .forms-inputs-container{
-            flex-direction: column;
-
-        }
 
         .forms-container {
             width: 100%;
@@ -968,6 +1146,13 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+
+        }
+
+        img{
+            display: flex;
+            width: 100%;
+            height: 100%;
 
         }
 
