@@ -11,6 +11,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
 @Slf4j
 public class LookUtils {
 
@@ -34,5 +36,13 @@ public class LookUtils {
         catch (Exception e) {
             return mapper.toDTO((OAuth2User) principal);
         }
+    }
+
+    public static File mkdir(String dirname) {
+        var dir = new File(dirname);
+        if (!dir.exists()){
+            dir.mkdirs();
+        }
+        return dir;
     }
 }

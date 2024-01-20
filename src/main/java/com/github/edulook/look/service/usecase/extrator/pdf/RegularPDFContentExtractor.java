@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.apache.pdfbox.Loader.*;
+
 @Component
 public class RegularPDFContentExtractor implements PDFContentExtractor {
     @Override
     public Optional<PageContent> extract(File pdf, Range range) {
-        try (var document = Loader.loadPDF(new RandomAccessReadBufferedFile(pdf))) {
+        try (var document = loadPDF(new RandomAccessReadBufferedFile(pdf))) {
             var stripper = new PDFTextStripper();
             var pages = new ArrayList<PageContent.Page>();
 
