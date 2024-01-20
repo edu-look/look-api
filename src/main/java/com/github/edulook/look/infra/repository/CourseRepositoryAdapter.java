@@ -12,131 +12,96 @@ import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-@Component
+@Component("CourseRepositoryAdapter::Class")
 public class CourseRepositoryAdapter implements CourseRepository {
-
-    private final GetCourse getCourseClassroom;
-    private final GetCourse getCourseStorage;
-    private final GetCourseWorkMaterial getCourseWorkMaterialClassroom;
-    private final GetCourseWorkMaterial getCourseWorkMaterialStorage;
-    private final GetCourseWork getCourseWorkClassroom;
-    private final GetCourseWork getCourseWorkStorage;
-    private final GetCourseAnnouncement getCourseAnnouncementClassroom;
-    private final GetCourseAnnouncement getCourseAnnouncementStorage;
+    private final CourseRepository db;
+    private final CourseRepository http;
     private final ApplicationEventPublisher publisher;
 
-    public CourseRepositoryAdapter(@Qualifier("GetCourseClassroom::Class") GetCourse getCourseClassroom,
-                                   @Qualifier("GetCourseStorage::Class") GetCourse getCourseStorage,
-                                   @Qualifier("GetCourseWorkMaterialClassroom::Class") GetCourseWorkMaterial getCourseWorkMaterialClassroom,
-                                   @Qualifier("GetCourseWorkClassroom::Class") GetCourseWork getCourseWorkClassroom,
-                                   @Qualifier("GetCourseWorkStorage:Class") GetCourseWork getCourseWorkStorage,
-                                   @Qualifier("GetCourseWorkMaterialStorage::Class") GetCourseWorkMaterial getCourseWorkMaterialStorage,
-                                   @Qualifier("GetCourseAnnouncementClassroom::Class") GetCourseAnnouncement getCourseAnnouncementClassroom,
-                                   @Qualifier("GetCourseAnnouncementStorage::Class") GetCourseAnnouncement getCourseAnnouncementStorage, ApplicationEventPublisher publisher) {
-        this.getCourseClassroom = getCourseClassroom;
-        this.getCourseStorage = getCourseStorage;
-        this.getCourseWorkMaterialClassroom = getCourseWorkMaterialClassroom;
-        this.getCourseWorkClassroom = getCourseWorkClassroom;
-        this.getCourseWorkStorage = getCourseWorkStorage;
-        this.getCourseWorkMaterialStorage = getCourseWorkMaterialStorage;
-        this.getCourseAnnouncementClassroom = getCourseAnnouncementClassroom;
-        this.getCourseAnnouncementStorage = getCourseAnnouncementStorage;
+    public CourseRepositoryAdapter(@Lazy @Qualifier("CourseRepositoryDB::Class") CourseRepository db,
+                                   @Lazy @Qualifier("CourseRepositoryHTTP::Class") CourseRepository http,
+                                   ApplicationEventPublisher publisher) {
+        this.db = db;
+        this.http = http;
         this.publisher = publisher;
     }
 
 
     @Override
     public List<Course> findCoursesByStudentId(String studentId) {
-        var courses = getCourseStorage.findCoursesByStudentId(studentId);
-
+        var courses = db.findCoursesByStudentId(studentId);
         if(courses.isEmpty())
-            return getCourseClassroom.findCoursesByStudentId(studentId);
-
+            return http.findCoursesByStudentId(studentId);
         return courses;
     }
 
     @Override
     public Optional<Course> findOneCourseByStudentId(String courseId, String studentId) {
-        var course = getCourseStorage.findOneCourseByStudentId(courseId, studentId);
-
+        var course = db.findOneCourseByStudentId(courseId, studentId);
         if(course.isEmpty())
-            return getCourseClassroom.findOneCourseByStudentId(courseId, studentId);
-
+            return http.findOneCourseByStudentId(courseId, studentId);
         return course;
     }
 
     @Override
     public List<WorkMaterial> listAllWorkMaterial(Course course) {
-        var materials = getCourseWorkMaterialStorage.listAllWorkMaterial(course);
-
+        var materials = db.listAllWorkMaterial(course);
         if(materials.isEmpty())
-            return getCourseWorkMaterialClassroom.listAllWorkMaterial(course);
-
+            return http.listAllWorkMaterial(course);
         return materials;
     }
 
     @Override
     public Optional<WorkMaterial> findOneMaterial(Course course, String materialId) {
-        var workMaterial = getCourseWorkMaterialStorage.findOneMaterial(course, materialId);
-
+        var workMaterial = db.findOneMaterial(course, materialId);
         if(workMaterial.isEmpty())
-            return getCourseWorkMaterialClassroom.findOneMaterial(course, materialId);
-
+            return http.findOneMaterial(course, materialId);
         return workMaterial;
     }
 
     @Override
     public List<WorkMaterial> listAllWorkMaterial(Course course, String access) {
-        var materials = getCourseWorkMaterialStorage.listAllWorkMaterial(course, access);
-
+        var materials = db.listAllWorkMaterial(course, access);
         if(materials.isEmpty())
-            return getCourseWorkMaterialClassroom.listAllWorkMaterial(course, access);
-
+            return http.listAllWorkMaterial(course, access);
         return materials;
     }
 
     @Override
     public List<Announcement> getAllAnnouncementByCourse(Course course) {
-        if (isInvalidCourse(course)) {
+        if (Objects.isNull(course) || course.isNotValid())
             return List.of();
-        }
-
-        var announcements = getCourseAnnouncementStorage.getAllAnnouncementByCourse(course);
-
+        var announcements = db.getAllAnnouncementByCourse(course);
         if(announcements.isEmpty())
-            return getCourseAnnouncementClassroom.getAllAnnouncementByCourse(course);
-
+            return http.getAllAnnouncementByCourse(course);
         return announcements;
     }
 
-    private Boolean isInvalidCourse(Course course) {
-        return course == null || course.getId() == null;
-    }
 
     @Override
     @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
         // TODO: add persistence here
-
         return materialSaved;
     }
 
     @Override
     public List<WorkMaterial> listAllWorks(Course course) {
-        var works = getCourseWorkStorage.listAllWorks(course);
+        var works = db.listAllWorks(course);
         if(works.isEmpty()) {
-            works = getCourseWorkClassroom.listAllWorks(course);
-
+            works = http.listAllWorks(course);
             works.parallelStream()
                 .map(WorkMaterialEvent::fromModel)
                 .forEach(publisher::publishEvent);
         }
-
         return works;
     }
 }

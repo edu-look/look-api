@@ -29,7 +29,13 @@ public class Course {
     private String updated;
     private List<Teacher> teachers;
 
-    public Course(String courseId, String id, String description, String title, String createdAt) {
+    public Course(String courseId, String id, String description, String title, String createdAt) {}
+
+    public Boolean isValid() {
+        return getId() != null;
+    }
+    public Boolean isNotValid() {
+        return !isValid();
     }
 
     @Getter

@@ -1,41 +1,36 @@
 package com.github.edulook.look.service;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
-import com.github.edulook.look.endpoint.io.course.MaterialDTO;
-import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
-import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
-import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractPDFEvent;
-import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
-import com.github.edulook.look.service.usecase.extrator.pdf.PDFClassificationEnum;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.core.model.Course.WorkMaterial.Material;
 import com.github.edulook.look.core.repository.CourseRepository;
+import com.github.edulook.look.endpoint.io.course.MaterialDTO;
+import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
+import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractPDFEvent;
+import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
+import com.github.edulook.look.service.usecase.extrator.pdf.PDFClassificationEnum;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 
-import lombok.AllArgsConstructor;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * Facade courses service 
- */
 @Slf4j
 @Service
-@AllArgsConstructor
 public class CourseService {
-
     private final CourseRepository courseRepository;
     private final ApplicationEventPublisher publisher;
+
+    public CourseService(CourseRepository courseRepository, ApplicationEventPublisher publisher) {
+        this.courseRepository = courseRepository;
+        this.publisher = publisher;
+    }
 
 
     @Cacheable("listCourses")
