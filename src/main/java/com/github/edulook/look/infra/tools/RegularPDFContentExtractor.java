@@ -1,11 +1,8 @@
-package com.github.edulook.look.service.usecase.extrator.pdf;
+package com.github.edulook.look.infra.tools;
 
-import com.github.edulook.look.core.data.Option;
 import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.Range;
-import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.usecase.PDFContentExtractor;
-import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Component;
