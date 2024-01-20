@@ -4,6 +4,7 @@ tokens/*
 application-dev.yaml
 credentials.json
 serviceAccountKey.json
+*.traineddata
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
