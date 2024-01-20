@@ -11,7 +11,7 @@ import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
 import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractPDFEvent;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
-import com.github.edulook.look.service.usecase.extrator.pdf.PDFClassificationEnum;
+import com.github.edulook.look.infra.tools.PDFClassificationEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;

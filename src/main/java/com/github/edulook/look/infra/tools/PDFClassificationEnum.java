@@ -1,4 +1,4 @@
-package com.github.edulook.look.service.usecase.extrator.pdf;
+package com.github.edulook.look.infra.tools;
 
 import com.github.edulook.look.core.usecase.PDFContentExtractor;
 

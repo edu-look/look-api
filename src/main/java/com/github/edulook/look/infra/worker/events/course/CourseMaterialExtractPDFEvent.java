@@ -1,10 +1,8 @@
 package com.github.edulook.look.infra.worker.events.course;
 
 import com.github.edulook.look.core.data.Option;
-import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.infra.worker.events.AbstractEvent;
-import com.github.edulook.look.service.usecase.extrator.pdf.PDFClassificationEnum;
-import lombok.AllArgsConstructor;
+import com.github.edulook.look.infra.tools.PDFClassificationEnum;
 import lombok.Builder;
 import lombok.Getter;
 
