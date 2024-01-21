@@ -2,6 +2,7 @@ package com.github.edulook.look.infra.tools;
 
 import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.Range;
+import com.github.edulook.look.core.exceptions.TextExtractInvalidException;
 import com.github.edulook.look.core.usecase.PDFContentExtractor;
 import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -21,6 +22,9 @@ public class RegularPDFContentExtractor implements PDFContentExtractor {
         try (var document = loadPDF(new RandomAccessReadBufferedFile(pdf))) {
             var stripper = new PDFTextStripper();
             var pages = new ArrayList<PageContent.Page>();
+
+            if(!isRangeWithinPages(range, document.getNumberOfPages()))
+                throw new TextExtractInvalidException();
 
             for (var currentPage = range.getStart(); currentPage <= range.getEnd(); currentPage++) {
                 stripper.setStartPage(range.getStart());
