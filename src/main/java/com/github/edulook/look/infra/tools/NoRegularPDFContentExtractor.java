@@ -3,6 +3,7 @@ package com.github.edulook.look.infra.tools;
 import com.github.edulook.look.core.data.PageContent;
 import com.github.edulook.look.core.data.PageContent.Page;
 import com.github.edulook.look.core.data.Range;
+import com.github.edulook.look.core.exceptions.TextExtractInvalidException;
 import com.github.edulook.look.core.usecase.PDFContentExtractor;
 import com.github.edulook.look.utils.LookUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
                 .pages(pages)
                 .size(pdfSlices.size())
                 .build());
-        } catch (TesseractException | IOException e) {
+        } catch (TextExtractInvalidException | TesseractException | IOException e) {
             log.error("error:: ", e);
             return Optional.empty();
         }
@@ -65,14 +66,15 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
                setOcrEngineMode(1);
             }};
 
-            var extraction = tesseract.doOCR(file);
-
             pages.add(Page.builder()
                 .page(slice.index())
-                .content(extraction)
+                .content(tesseract.doOCR(file))
                 .build()
             );
-            file.delete();
+
+            if(file.delete()) {
+                log.info("removing tmp page");
+            };
         }
         return pages;
     }
@@ -81,6 +83,9 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
         var pages = new ArrayList<ContainerPDFRef>();
         var splitter = new Splitter();
         var slices = splitter.split(document);
+
+        if(!isRangeWithinPages(range, document.getNumberOfPages()))
+            throw new TextExtractInvalidException();
 
         var extension = FilenameUtils.getExtension(pdf.getName());
         var filename = FilenameUtils.getName(pdf.getName());

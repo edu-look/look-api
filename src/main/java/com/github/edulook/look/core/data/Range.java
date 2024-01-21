@@ -31,7 +31,7 @@ public class Range {
     }
 
     public boolean isValid() {
-        return start > 0 && end > 0;
+        return start > 0 && end > 0 && start <= end;
     }
 
     @JsonIgnore
