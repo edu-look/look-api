@@ -311,7 +311,7 @@
                     item.range.end = null;
                 }
             },
-            
+
             async getCourseMaterial() {
                 const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
                 const userResponse = await fetch('/user')
