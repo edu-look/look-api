@@ -4,7 +4,6 @@ import com.github.edulook.look.core.model.Student;
 import com.github.edulook.look.core.repository.student.GetStudent;
 import com.github.edulook.look.infra.repository.http.student.mapper.ClassroomStudentAndCoreStudentMapper;
 import com.google.api.services.classroom.Classroom;
-import com.google.api.services.classroom.model.UserProfile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

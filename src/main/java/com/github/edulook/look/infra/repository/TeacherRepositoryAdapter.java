@@ -2,10 +2,7 @@ package com.github.edulook.look.infra.repository;
 
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.core.repository.TeacherRepository;
-import com.github.edulook.look.core.repository.teacher.GetTeacher;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,8 +14,8 @@ public class TeacherRepositoryAdapter implements TeacherRepository {
     private final TeacherRepository db;
     private final TeacherRepository http;
 
-    public TeacherRepositoryAdapter(@Lazy @Qualifier("TeacherRepositoryDB::Class") TeacherRepository db,
-                                    @Lazy @Qualifier("TeacherRepositoryHTTP::Class") TeacherRepository http) {
+    public TeacherRepositoryAdapter(@Qualifier("TeacherRepositoryDB::Class") TeacherRepository db,
+                                    @Qualifier("TeacherRepositoryHTTP::Class") TeacherRepository http) {
         this.db = db;
         this.http = http;
     }

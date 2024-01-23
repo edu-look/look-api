@@ -4,7 +4,6 @@ import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.core.repository.TeacherRepository;
 import com.github.edulook.look.core.repository.teacher.GetTeacher;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ public class TeacherRepositoryHTTP implements TeacherRepository {
 
     private final GetTeacher getTeacher;
 
-    public TeacherRepositoryHTTP(@Lazy @Qualifier("GetTeacherHTTP::Class") GetTeacher getTeacher) {
+    public TeacherRepositoryHTTP(@Qualifier("GetTeacherHTTP::Class") GetTeacher getTeacher) {
         this.getTeacher = getTeacher;
     }
 
