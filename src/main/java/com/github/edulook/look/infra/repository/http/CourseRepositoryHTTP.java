@@ -24,12 +24,12 @@ public class CourseRepositoryHTTP implements CourseRepository {
     public CourseRepositoryHTTP(@Qualifier("GetCourseHTTP::Class") GetCourse getCourse,
                                 @Qualifier("GetCourseWorkMaterialHTTP::Class") GetCourseWorkMaterial getCourseWorkMaterial,
                                 @Qualifier("GetCourseWorkHTTP::Class") GetCourseWork getCourseWork,
-                                @Qualifier("GetCourseAnnouncementHTTP::Class") GetCourseAnnouncement getCourseAnnouncement, GetCourse getCourse1, GetCourseWorkMaterial getCourseWorkMaterial1, GetCourseWork getCourseWork1, GetCourseAnnouncement getCourseAnnouncement1) {
+                                @Qualifier("GetCourseAnnouncementHTTP::Class") GetCourseAnnouncement getCourseAnnouncement) {
 
-        this.getCourse = getCourse1;
-        this.getCourseWorkMaterial = getCourseWorkMaterial1;
-        this.getCourseWork = getCourseWork1;
-        this.getCourseAnnouncement = getCourseAnnouncement1;
+        this.getCourse = getCourse;
+        this.getCourseWorkMaterial = getCourseWorkMaterial;
+        this.getCourseWork = getCourseWork;
+        this.getCourseAnnouncement = getCourseAnnouncement;
     }
 
     @Override
