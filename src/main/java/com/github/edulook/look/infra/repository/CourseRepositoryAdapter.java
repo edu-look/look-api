@@ -4,16 +4,10 @@ import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Course.Announcement;
 import com.github.edulook.look.core.model.Course.WorkMaterial;
 import com.github.edulook.look.core.repository.CourseRepository;
-import com.github.edulook.look.core.repository.course.GetCourse;
-import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
-import com.github.edulook.look.core.repository.course.GetCourseWork;
-import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,8 +20,9 @@ public class CourseRepositoryAdapter implements CourseRepository {
     private final CourseRepository http;
     private final ApplicationEventPublisher publisher;
 
-    public CourseRepositoryAdapter(@Lazy @Qualifier("CourseRepositoryDB::Class") CourseRepository db,
-                                   @Lazy @Qualifier("CourseRepositoryHTTP::Class") CourseRepository http,
+
+    public CourseRepositoryAdapter(@Qualifier("CourseRepositoryDB::Class") CourseRepository db,
+                                   @Qualifier("CourseRepositoryHTTP::Class") CourseRepository http,
                                    ApplicationEventPublisher publisher) {
         this.db = db;
         this.http = http;
