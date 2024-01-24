@@ -1,4 +1,4 @@
-/*
+
 
 package com.github.edulook.look.infra.worker.cron;
 
@@ -29,4 +29,3 @@ public class RefreshTokenSchedule {
 }
 
 
-*/
