@@ -90,12 +90,12 @@ public class CourseEndpoint {
             .material(material)
             .build();
         
-        publisher.publishEvent(event);
+
         
         return courseAndDTOMapper.toDTO(material);
     }
 
-    @PatchMapping("{courseId}/materials/{materialId}/edit")
+    @PutMapping("{courseId}/materials/{materialId}/edit")
     public Optional<MaterialDTO> listAllWorkMaterialsUpdate(@PathVariable String courseId,
                                                    @PathVariable String materialId,
                                                    @RequestBody MaterialDTO material,

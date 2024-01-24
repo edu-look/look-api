@@ -22,6 +22,8 @@ public record MaterialDTO(
         String name,
         String description,
 
+        String type,
+
         String origin,
         String preview,
         Optional<PageContent> content,

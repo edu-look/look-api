@@ -1,3 +1,5 @@
+
+
 package com.github.edulook.look.infra.worker;
 
 import com.github.edulook.look.core.data.PageContent;
@@ -97,3 +99,4 @@ public class ExtractTextFromFileWorker {
         return courseRepository.findOneMaterial(course, materialId);
     }
 }
+
