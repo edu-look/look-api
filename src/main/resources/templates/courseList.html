@@ -1,0 +1,181 @@
+<script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+    }
+</script>
+<div id="app">
+    <div class="navbar">
+        <div class="logo" alt="Logo do Projeto">
+            <img :src="logo.image" alt="Imagem do Curso" />
+        </div>
+        <div class="user-menu" @click="toggleMenu">
+            <img :src="user.profileImage" alt="Foto do Usuário" />
+            <div class="menu">
+                <ul>
+                    <li class="menu-item logout-button" @click="logout">Sair</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="course-list">
+            <div v-for="course in courses" :key="course.id" class="course-card">
+                <img :src="course.imageUrl" alt="Imagem do Curso" />
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { createApp, ref } from 'vue';
+
+    createApp({
+        data() {
+            return {
+                logo: {
+                    image: 'https://placekitten.com/200/150'
+                },
+                user: {
+                    name: 'Seu Nome',
+                    profileImage: 'https://placekitten.com/32/32',
+                },
+                menuOpen: false,
+                courses: [
+                    {
+                        id: 1,
+                        title: 'Curso de Matematica',
+                        description: 'Aprenda sobre números e equações matemáticas.',
+                        imageUrl: 'https://placekitten.com/200/150',
+                    },
+                    {
+                        id: 2,
+                        title: 'Curso de Ciências',
+                        description: 'Explore o mundo da biologia, química e física.',
+                        imageUrl: 'https://placekitten.com/201/150',
+                    },
+
+                ]
+
+            }
+        },
+        methods: {
+            toggleMenu() {
+                this.menuOpen = !this.menuOpen;
+            },
+            logout() {
+
+                alert('Você clicou em Sair');
+            }
+
+
+    }}).mount('#app')
+</script>
+
+
+<style scoped>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;400;500;700&display=swap');
+
+
+    body {
+        margin: 0;
+        font-family: 'IBM Plex Sans', sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+    }
+
+    .logo img{
+        max-width: 100px;
+    }
+
+    .user-menu {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+    }
+
+    .user-menu img {
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+
+    .menu {
+        right: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .menu li {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .menu-item{
+        border-radius: 8px;
+        background-color: #8F0000;
+    }
+
+    .menu li:hover {
+        background-color: #f0f0f0;
+    }
+
+    .main-container {
+        padding: 20px;
+    }
+
+    .course-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .course-card {
+        background-color: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+
+    .course-card:hover {
+        transform: scale(1.05);
+    }
+
+    .course-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .course-card h3 {
+        padding: 10px;
+        font-size: 1.2em;
+        margin: 0;
+    }
+
+    .course-card p {
+        padding: 10px;
+        margin: 0;
+        color: #666;
+    }
+</style>
