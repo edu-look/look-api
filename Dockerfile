@@ -1,29 +1,29 @@
 FROM openjdk:17-jdk-slim-buster
 
-RUN apt update && apt install -y tesseract-ocr tesseract-por tesseract-en
+RUN apt-get update && apt-get install -y tesseract-ocr wget
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
-RUN wget https://github.com/tesseract-ocr/tessdata_best/raw/main/por.traineddata -P src/main/resources
+RUN rm -rf tokens data ; \
+	mkdir -p data/ ; \
+	wget https://github.com/tesseract-ocr/tessdata_best/raw/main/por.traineddata -P ./data
 
-# make dependencies offline and build a application package
-RUN ./mvnw dependency:go-offline && ./mvnw package
+RUN ./mvnw clean install -Dmaven.test.skip=true
 
-# add env
-ENV LOOK_APPLICATION_NAME=
-ENV LOOK_SERVER_DOMAIN=
 ENV LOOK_GCLOUD_CLIENT_ID=
 ENV LOOK_GCLOUD_CLIENT_SECRET=
 ENV LOOK_GCLOUD_SERVER_CLIENT_ID=
 ENV LOOK_GCLOUD_SERVER_CLIENT_SECRET=
+ENV LOOK_APPLICATION_NAME=look-service
+ENV LOOK_APPLICATION_LOCAL_DATA=./data
 ENV LOOK_GCLOUD_TOKEN_STORAGE=tokens
-ENV LOOK_GCLOUD_PROJECT_ID=
-ENV LOOK_SERVER_ADDRESS=
-ENV LOOK_SERVER_PORT=
-ENV LOOK_STORAGE_CREDENTIALS=
-ENV LOOK_STORAGE_URL=
+ENV LOOK_GCLOUD_PROJECT_ID=look-project-400817
+ENV LOOK_SERVER_PORT=8085
 ENV GOOGLE_APPLICATION_CREDENTIALS=
 
-# entrypoint
-ENTRYPOINT ["java", "target/*.jar"]
+EXPOSE 8085
+
+COPY target/*.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

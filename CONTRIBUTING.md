@@ -11,6 +11,8 @@
   - [Insomnia](#insomnia)
   - [Extra](#extra) 
 - [Container](#container)
+  - [Construíndo a image](#construíndo-a-image)
+  - [Iniciando container](#iniciando-container)
 
 ## GCP
 Acesse a documentação de setup do projeto no CGP [Aqui](docs/gcp-setup.md)
@@ -127,19 +129,31 @@ Observe que em todas as request com sucesso retorno no Header da resposta o Auth
 ![Token OBS](docs/screenshot/03.9.using-insomnia.png)
 
 ## Container
-- Construíndo uma image e executando o container
+### Construíndo a image
 ```sh
-[docker | podman] build -t look-pkg -f ContainerBuildFile
-
-# exemplo:
-$ docker build -t look-pkg -f ContainerBuildFile
+[docker | podman] build -f Dockerfile -t <image-name>
 ```
+
+- Exemplo:
+```
+$ podman build -f Dockerfile -t look-api
+```
+
+### Iniciando container
+```
+[docker | podman] run --net=host -d <image-name>
+```
+
+- Exemplo:
+```
+$ podman run --net=host -d localhost/look-api:latest
+```
+
 Observe que há um conjunto de variaveis, por favor defina o conteúdo.
 ```sh
 ...
 # add env
 ENV LOOK_APPLICATION_NAME=
-ENV LOOK_SERVER_DOMAIN=
 ENV LOOK_GCLOUD_CLIENT_ID=
 ...
 ```
