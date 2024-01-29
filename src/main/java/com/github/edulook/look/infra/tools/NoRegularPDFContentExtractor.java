@@ -13,8 +13,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +23,9 @@ import java.util.Optional;
 import static org.apache.pdfbox.Loader.loadPDF;
 
 @Slf4j
-@Component
 public class NoRegularPDFContentExtractor implements PDFContentExtractor {
-    @Value("${look.application.language:./data}")
-    private String workDir;
-    @Value("${look.application.data:./por}")
-    private String language;
+    private final String workDir = "./data";
+    private final String language = "por";
 
     @Override
     public Optional<PageContent> extract(File pdf, Range range) {
@@ -64,6 +59,7 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
                setLanguage(language);
                setPageSegMode(1);
                setOcrEngineMode(1);
+               setDatapath(workDir);
             }};
 
             pages.add(Page.builder()
