@@ -20,7 +20,7 @@
 
 server:
   port: ${LOOK_SERVER_PORT}
-  address: ${LOOK_SERVER_DOMAIN:localhost}
+  address: ${HOSTNAME}
 
 springdoc:
   swagger-ui:
