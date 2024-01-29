@@ -8,4 +8,9 @@ import com.github.edulook.look.core.model.Course;
 public interface GetCourse {
     List<Course> findCoursesByStudentId(String studentId);
     Optional<Course> findOneCourseByStudentId(String courseId, String studentId);
+
+    List<Course> findCoursesByTeacherID(String teacherId);
+
+    Optional<Course> findOneCourseByTeacherID(String courseId, String teacherId);
+
 }

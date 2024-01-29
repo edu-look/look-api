@@ -38,6 +38,12 @@ public class CourseService {
        return courseRepository.findCoursesByStudentId(studentId);
     }
 
+    @Cacheable("listCourses")
+    public List<Course> listCoursesTeacher(String teacherId) throws IOException {
+        return courseRepository.findCoursesByTeacherID(teacherId);
+    }
+
+
     @Cacheable("listAllWorkMaterials")
     public List<WorkMaterial> listAllWorkMaterials(String courseId, String access) {
         if(courseId == null) {

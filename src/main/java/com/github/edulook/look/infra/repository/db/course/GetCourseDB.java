@@ -20,4 +20,10 @@ public class GetCourseDB implements GetCourse {
     public Optional<Course> findOneCourseByStudentId(String courseId, String studentId) {
         return Optional.empty();
     }
+
+    @Override
+    public List<Course> findCoursesByTeacherID(String teacherId) {return List.of();}
+
+    @Override
+    public Optional<Course> findOneCourseByTeacherID(String courseId, String teacherId) {return Optional.empty();}
 }
