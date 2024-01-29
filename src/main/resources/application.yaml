@@ -31,6 +31,16 @@ springdoc:
       appName: look
       scopeSeparator: openid email profile
 
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,env
+  endpoint:
+    health:
+      show-details: always
+
 spring:
   devtools:
     add-properties: false
