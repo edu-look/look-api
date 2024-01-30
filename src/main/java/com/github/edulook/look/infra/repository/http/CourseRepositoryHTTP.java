@@ -43,6 +43,16 @@ public class CourseRepositoryHTTP implements CourseRepository {
     }
 
     @Override
+    public List<Course> findCoursesByTeacherId(String teacherId) {
+        return getCourse.findCoursesByTeacherId(teacherId);
+    }
+
+    @Override
+    public Optional<Course> findOneCourseByTeacherId(String courseId, String teacherId) {
+        return getCourse.findOneCourseByTeacherId(courseId, teacherId);
+    }
+
+    @Override
     public List<Course.WorkMaterial> listAllWorkMaterial(Course course) {
         return  getCourseWorkMaterial.listAllWorkMaterial(course);
     }

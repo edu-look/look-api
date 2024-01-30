@@ -89,7 +89,6 @@ public class CourseEndpoint {
             .id(UUID.randomUUID())
             .material(material)
             .build();
-        
 
         
         return courseAndDTOMapper.toDTO(material);

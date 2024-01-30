@@ -32,10 +32,14 @@ public class CourseService {
         this.publisher = publisher;
     }
 
+    @Cacheable("listCourses")
+    public List<Course> listCourses(String studentId) {
+       return courseRepository.findCoursesByStudentId(studentId);
+    }
 
     @Cacheable("listCourses")
-    public List<Course> listCourses(String studentId) throws IOException {
-       return courseRepository.findCoursesByStudentId(studentId);
+    public List<Course> listCoursesTeacher(String teacherId) {
+        return courseRepository.findCoursesByTeacherId(teacherId);
     }
 
     @Cacheable("listAllWorkMaterials")
@@ -54,7 +58,6 @@ public class CourseService {
 
         return workMaterials;
     }
-
 
     @Cacheable("listAllAnnouncements")
     public List<Announcement> listAllAnnouncements(String courseId, String studentId) {
