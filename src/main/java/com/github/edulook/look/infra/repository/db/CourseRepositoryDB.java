@@ -19,15 +19,17 @@ public class CourseRepositoryDB implements CourseRepository {
     private final GetCourseWorkMaterial getCourseWorkMaterial;
     private final GetCourseWork getCourseWork;
     private final GetCourseAnnouncement getCourseAnnouncement;
+    private final UpsetCourseWorkMaterialDB upsetCourseWorkMaterial;
 
     public CourseRepositoryDB(@Qualifier("GetCourseDB::Class") GetCourse getCourse,
                               @Qualifier("GetCourseWorkDB:Class") GetCourseWork getCourseWork,
                               @Qualifier("GetCourseWorkMaterialDB::Class") GetCourseWorkMaterial getCourseWorkMaterial,
-                              @Qualifier("GetCourseAnnouncementDB::Class") GetCourseAnnouncement getCourseAnnouncement) {
+                              @Qualifier("GetCourseAnnouncementDB::Class") GetCourseAnnouncement getCourseAnnouncement, UpsetCourseWorkMaterialDB upsetCourseWorkMaterialDB) {
         this.getCourse = getCourse;
         this.getCourseWorkMaterial = getCourseWorkMaterial;
         this.getCourseWork = getCourseWork;
         this.getCourseAnnouncement = getCourseAnnouncement;
+        this.upsetCourseWorkMaterial = upsetCourseWorkMaterialDB;
     }
 
     @Override
@@ -63,8 +65,7 @@ public class CourseRepositoryDB implements CourseRepository {
     @Override
     @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public Course.WorkMaterial upsetCourseMaterial(Course.WorkMaterial materialSaved) {
-        // TODO: add persistence here
-        return materialSaved;
+        return upsetCourseWorkMaterial.save(materialSaved);
     }
 
     @Override
