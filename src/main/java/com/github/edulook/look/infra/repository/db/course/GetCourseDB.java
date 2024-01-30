@@ -22,12 +22,12 @@ public class GetCourseDB implements GetCourse {
     }
 
     @Override
-    public List<Course> findCoursesByTeacherID(String teacherId) {
+    public List<Course> findCoursesByTeacherId(String teacherId) {
         return List.of();
     }
 
     @Override
-    public Optional<Course> findOneCourseByTeacherID(String courseId, String teacherId) {
+    public Optional<Course> findOneCourseByTeacherId(String courseId, String teacherId) {
         return Optional.empty();
     }
 }

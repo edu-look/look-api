@@ -41,13 +41,13 @@ public class CourseRepositoryDB implements CourseRepository {
     }
 
     @Override
-    public List<Course> findCoursesByTeacherID(String teacherId) {
-        return getCourse.findCoursesByTeacherID(teacherId);
+    public List<Course> findCoursesByTeacherId(String teacherId) {
+        return getCourse.findCoursesByTeacherId(teacherId);
     }
 
     @Override
-    public Optional<Course> findOneCourseByTeacherID(String courseId, String teacherId) {
-        return getCourse.findOneCourseByTeacherID(courseId, teacherId);
+    public Optional<Course> findOneCourseByTeacherId(String courseId, String teacherId) {
+        return getCourse.findOneCourseByTeacherId(courseId, teacherId);
     }
 
     @Override
@@ -81,5 +81,4 @@ public class CourseRepositoryDB implements CourseRepository {
     public List<Course.WorkMaterial> listAllWorks(Course course) {
         return getCourseWork.listAllWorks(course);
     }
-
 }

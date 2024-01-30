@@ -33,13 +33,13 @@ public class CourseService {
     }
 
     @Cacheable("listCourses")
-    public List<Course> listCourses(String studentId) throws IOException {
+    public List<Course> listCourses(String studentId) {
        return courseRepository.findCoursesByStudentId(studentId);
     }
 
     @Cacheable("listCourses")
-    public List<Course> listCoursesTeacher(String teacherId) throws IOException {
-        return courseRepository.findCoursesByTeacherID(teacherId);
+    public List<Course> listCoursesTeacher(String teacherId) {
+        return courseRepository.findCoursesByTeacherId(teacherId);
     }
 
     @Cacheable("listAllWorkMaterials")

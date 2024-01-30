@@ -47,18 +47,18 @@ public class CourseRepositoryAdapter implements CourseRepository {
     }
 
     @Override
-    public List<Course> findCoursesByTeacherID(String teacherId) {
-        var courses = db.findCoursesByTeacherID(teacherId);
+    public List<Course> findCoursesByTeacherId(String teacherId) {
+        var courses = db.findCoursesByTeacherId(teacherId);
         if(courses.isEmpty())
-            return http.findCoursesByTeacherID(teacherId);
+            return http.findCoursesByTeacherId(teacherId);
         return courses;
     }
 
     @Override
-    public Optional<Course> findOneCourseByTeacherID(String courseId, String teacherId) {
-        var course = db.findOneCourseByTeacherID(courseId, teacherId);
+    public Optional<Course> findOneCourseByTeacherId(String courseId, String teacherId) {
+        var course = db.findOneCourseByTeacherId(courseId, teacherId);
         if(course.isEmpty())
-            return http.findOneCourseByTeacherID(courseId, teacherId);
+            return http.findOneCourseByTeacherId(courseId, teacherId);
         return course;
     }
 
@@ -115,5 +115,4 @@ public class CourseRepositoryAdapter implements CourseRepository {
         }
         return works;
     }
-
 }

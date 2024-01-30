@@ -121,7 +121,7 @@ public class GetCourseHTTP implements GetCourse {
     }
 
     @Override
-    public List<Course> findCoursesByTeacherID(String teacherId) {
+    public List<Course> findCoursesByTeacherId(String teacherId) {
         try {
             var response = findCoursesTeacher(teacherId);
             if(response.isEmpty())
@@ -139,7 +139,7 @@ public class GetCourseHTTP implements GetCourse {
     }
 
     @Override
-    public Optional<Course> findOneCourseByTeacherID(String courseId, String teacherId) {
+    public Optional<Course> findOneCourseByTeacherId(String courseId, String teacherId) {
         try {
             var courseFound = getClassroomCourse(courseId);
             if(courseFound.isEmpty())

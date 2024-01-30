@@ -6,22 +6,16 @@ import com.github.edulook.look.core.repository.course.GetCourse;
 import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
 import com.github.edulook.look.core.repository.course.GetCourseWork;
 import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
-import com.google.api.services.classroom.Classroom;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component("CourseRepositoryHTTP::Class")
 public class CourseRepositoryHTTP implements CourseRepository {
 
-    @Autowired
-    private Classroom classroom;
     private final GetCourse getCourse;
     private final GetCourseWorkMaterial getCourseWorkMaterial;
     private final GetCourseWork getCourseWork;
@@ -49,13 +43,13 @@ public class CourseRepositoryHTTP implements CourseRepository {
     }
 
     @Override
-    public List<Course> findCoursesByTeacherID(String teacherId) {
-        return getCourse.findCoursesByTeacherID(teacherId);
+    public List<Course> findCoursesByTeacherId(String teacherId) {
+        return getCourse.findCoursesByTeacherId(teacherId);
     }
 
     @Override
-    public Optional<Course> findOneCourseByTeacherID(String courseId, String teacherId) {
-        return getCourse.findOneCourseByTeacherID(courseId, teacherId);
+    public Optional<Course> findOneCourseByTeacherId(String courseId, String teacherId) {
+        return getCourse.findOneCourseByTeacherId(courseId, teacherId);
     }
 
     @Override
@@ -90,5 +84,4 @@ public class CourseRepositoryHTTP implements CourseRepository {
     public List<Course.WorkMaterial> listAllWorks(Course course) {
         return getCourseWork.listAllWorks(course);
     }
-
 }

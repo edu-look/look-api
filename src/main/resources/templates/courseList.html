@@ -2,7 +2,7 @@
     {
       "imports": {
         "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
-    }
+      }
     }
 </script>
 <div id="app">
@@ -65,12 +65,10 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 this.courses = await response.json()
-                console.log(this.courses)
             }
         },
         async mounted() {
             await this.getCourses();
-            console.log(this.getCourses)
         }
     }).mount('#app')
 </script>
