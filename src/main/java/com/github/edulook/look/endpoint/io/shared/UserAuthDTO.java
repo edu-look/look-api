@@ -1,6 +1,7 @@
 package com.github.edulook.look.endpoint.io.shared;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import lombok.Builder;
 
@@ -18,4 +19,8 @@ public record UserAuthDTO(
         Instant expiresAt,
         Instant createdAt
     ){}
+
+    public static Optional<UserAuthDTO> None() {
+        return Optional.empty();
+    }
 }

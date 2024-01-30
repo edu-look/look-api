@@ -7,7 +7,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import java.io.IOException;
 
@@ -29,13 +28,12 @@ public class UserAuthenticatedAdapterFilter implements Filter {
 
         try {
             var auth = SecurityContextHolder.getContext().getAuthentication();
-            var details = (WebAuthenticationDetails) auth.getDetails();
-
-            var user = toUserDTO(auth.getPrincipal());
-
-            request.setAttribute("user", user);
-            var httpServletResponse = ((HttpServletResponse) response);
-            httpServletResponse.addHeader("Authorization", String.format("Bearer %s", user.jwt().token()));
+            var userDTO = toUserDTO(auth.getPrincipal());
+            userDTO.ifPresent(user -> {
+                request.setAttribute("user", user);
+                var httpServletResponse = ((HttpServletResponse) response);
+                httpServletResponse.addHeader("Authorization", String.format("Bearer %s", user.jwt().token()));
+            });
         }
         catch (Exception e) {
             log.error("error:: ", e);
