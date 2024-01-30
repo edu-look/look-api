@@ -27,17 +27,18 @@
                     <p>Descreva o PDF ou o conteudo ao o lado <i class="mandatory">*</i> : </p>
                     <textarea type="text" rows="8" cols="65" :value="item.description"
                               @input="event => item.description = event.target.value" required></textarea>
-                    <div class="pdf-range" v-if="item.content">
-                        <div class="toggle-container">
-                            <div class="message">
-                                O documento é um escaner/foto de um livro ou de outro material?
-                            </div>
-                            <div class="toggle" @click="ocrAlternation(item)"
-                                 :class="{ active: item.option.enableOCR }">
-                                <div class="slider"></div>
-                            </div>
-                            <div>{{ item.option.enableOCR ? 'Sim' : 'Não' }}</div>
+                    <div class="toggle-container">
+                        <div class="message">
+                            O documento é um escaner/foto de um livro ou de outro material?
                         </div>
+                        <div class="toggle" @click="ocrAlternation(item)"
+                             :class="{ active: item.option.enableOCR }">
+                            <div class="slider"></div>
+                        </div>
+                        <div>{{ item.option.enableOCR ? 'Sim' : 'Não' }}</div>
+                    </div>
+
+                    <div class="pdf-range" v-if="item.content">
                         <label class="pdf-item-range">Selecione as paginas a serem extraidas do PDF:</label>
                         <div class="pdf-range-inputs">
                             <input type="number" min="0" :max="item.option.range.end" :value="item.option.range.start "
@@ -65,6 +66,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="pdf-range" v-else>
                         <label class="pdf-item-range">Selecione as paginas a serem extraidas do PDF:</label>
                         <div class="pdf-range-inputs">
