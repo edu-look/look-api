@@ -41,7 +41,7 @@ public class CourseEndpointWebPage {
     }
 
     @GetMapping(value = "class", produces = "text/html")
-    public String getCoursesTeacher(@RequestAttribute("user") UserAuthDTO user, Model model) throws IOException {
+    public String getCoursesTeacher(@RequestAttribute("user") UserAuthDTO user, Model model) {
         log.info("user {}", user.id());
 
         var courses =  courseAndDTOMapper.toDTOList(courseService.listCoursesTeacher(user.id()));
