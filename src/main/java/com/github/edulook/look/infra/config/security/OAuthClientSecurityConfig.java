@@ -4,9 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -18,11 +16,12 @@ public class OAuthClientSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
             .authorizeHttpRequests( auth -> {
-                auth
-                    .anyRequest()
+                auth.anyRequest()
                     .authenticated();
             })
-            .oauth2Login(Customizer.withDefaults())
+            .oauth2Login(auth ->
+                auth.loginPage("/login")
+                    .permitAll())
             .oauth2ResourceServer(config -> config.jwt(Customizer.withDefaults()))
             .build();
     }

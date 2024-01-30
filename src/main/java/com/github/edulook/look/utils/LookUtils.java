@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class LookUtils {
@@ -29,13 +31,20 @@ public class LookUtils {
       return "{}";
     }
 
-    public static UserAuthDTO toUserDTO(Object principal) {
+    public static Optional<UserAuthDTO> toUserDTO(Object principal) {
+        var parses = List.of(Jwt.class, OAuth2User.class);
         try {
-            return mapper.toDTO((Jwt) principal);
+            if(principal instanceof Jwt) {
+                return Optional.ofNullable(mapper.toDTO((Jwt) principal));
+            }
+            if(principal instanceof OAuth2User) {
+                return Optional.ofNullable(mapper.toDTO((OAuth2User) principal));
+            }
         }
         catch (Exception e) {
-            return mapper.toDTO((OAuth2User) principal);
+            e.printStackTrace();
         }
+        return UserAuthDTO.None();
     }
 
     public static File mkdir(String dirname) {
