@@ -1,5 +1,6 @@
 package com.github.edulook.look.endpoint.statics;
 
+import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.endpoint.exceptions.data.ForbiddenMVCException;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -53,6 +52,28 @@ public class CourseEndpointWebPage {
 
         return "courseList.html";
     }
+
+    @GetMapping("class/{courseId}/materials")
+    public String listAllWorkMaterials(@PathVariable String courseId,
+                                       @RequestAttribute("user") UserAuthDTO user,
+                                       Model model) {
+        log.info("user logged: {}", user.id());
+        log.info("materials to course: {}", courseId);
+
+        var materials = courseService
+                .listAllWorkMaterials(courseId, user.jwt().token())
+                .parallelStream()
+                .map(courseAndDTOMapper::toSimpleDTO)
+                .toList();
+
+        if(materials.isEmpty())
+            throw new ResourceNotFoundException(String.format("materials not found to '%s' course id", courseId));
+
+        model.addAttribute("materials", materials);
+
+        return "accessibilityClass.html";
+    }
+
 }
 
 
