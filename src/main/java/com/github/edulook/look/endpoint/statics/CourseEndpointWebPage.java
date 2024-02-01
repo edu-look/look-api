@@ -60,17 +60,6 @@ public class CourseEndpointWebPage {
         log.info("user logged: {}", user.id());
         log.info("materials to course: {}", courseId);
 
-        var materials = courseService
-                .listAllWorkMaterials(courseId, user.jwt().token())
-                .parallelStream()
-                .map(courseAndDTOMapper::toSimpleDTO)
-                .toList();
-
-        if(materials.isEmpty())
-            throw new ResourceNotFoundException(String.format("materials not found to '%s' course id", courseId));
-
-        model.addAttribute("materials", materials);
-
         return "accessibilityClass.html";
     }
 

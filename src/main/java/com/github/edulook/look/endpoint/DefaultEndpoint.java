@@ -17,7 +17,7 @@ public class DefaultEndpoint {
         response.sendRedirect("/v1/students/profile");
     }
 
-    @GetMapping("/user")
+    @GetMapping("v1/user")
     public Object user(@RequestAttribute("user") UserAuthDTO user) {
         return  user;
     }

@@ -356,7 +356,7 @@
 
             async getCourseMaterial() {
                 const response = await fetch(`/v1/courses/${this.course.id}/materials/${this.course.materialId}`)
-                const userResponse = await fetch('/user')
+                const userResponse = await fetch('/v1/user')
                 this.user = await userResponse.json()
                 this.token = 'Bearer ' + this.user.jwt.token
                 this.material = await response.json()

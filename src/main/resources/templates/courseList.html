@@ -79,9 +79,11 @@
             },
             async getCourses() {
                 const response = await fetch(`/v1/courses/class`)
-                const userResponse = await fetch('/user')
+                const userResponse = await fetch('/v1/user')
                 this.user = await userResponse.json()
                 this.token = 'Bearer ' + this.user.jwt.token
+
+                console.log(`Token: ${this.user}`);
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
