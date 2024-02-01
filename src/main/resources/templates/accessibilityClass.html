@@ -7,7 +7,6 @@
 </script>
 <div id="app" class="container">
     <head>
-        <title>Erro de Autorização</title>
         <link rel="stylesheet" href="https://cdn.tailwindcss.com">
         <meta charset="UTF-8"/>
     </head>
@@ -49,10 +48,10 @@
 
     <section v-show="currentSection === 'material'" id="material">
         <h2 class="section-title">Lista de Materiais</h2>
-        <div v-for="material in materials" :key="material.id" class="material-card">
+        <div v-for="material in materials" :key="material.id" class="material-card" @click="redirectToEditMaterial(material)">
             <div class="card-container">
                 <h3>{{material.title}}</h3>
-                <p>`{{material.description}}`</p>
+                <p>{{material.description}}</p>
             </div>
         </div>
     </section>
@@ -81,47 +80,10 @@
                         createdAt: 0
                     }
                 },
+                currentCourseId: null,
                 currentSection: 'material',
-                materials:[
-                    {
-                        id: "650577932466",
-                        courseId: "640229959979",
-                        title: "Teste de API",
-                        description: "TESTE DE API",
-                        createdAt: "2023-12-28T23:33:39.713Z"
-                    },{
-                        id: "650577932466",
-                        courseId: "640229959979",
-                        title: "Teste de API",
-                        description: "TESTE DE API",
-                        createdAt: "2023-12-28T23:33:39.713Z"
-                    },{
-                        id: "650577932466",
-                        courseId: "640229959979",
-                        title: "Teste de API",
-                        description: "TESTE DE API",
-                        createdAt: "2023-12-28T23:33:39.713Z"
-                    },{
-                        id: "650577932466",
-                        courseId: "640229959979",
-                        title: "Teste de API",
-                        description: "TESTE DE API",
-                        createdAt: "2023-12-28T23:33:39.713Z"
-                    },{
-                        id: "650577932466",
-                        courseId: "640229959979",
-                        title: "Teste de API",
-                        description: "TESTE DE API",
-                        createdAt: "2023-12-28T23:33:39.713Z"
-                    },{
-                        id: "650577932466",
-                        courseId: "640229959979",
-                        title: "Teste de API",
-                        description: "TESTE DE API",
-                        createdAt: "2023-12-28T23:33:39.713Z"
-                    }
-                ],
-                activities:[]
+                materials: [],
+                activities: []
             }
         },
         methods: {
@@ -141,6 +103,9 @@
                         break;
                 }
             },
+            redirectToEditMaterial(material)  {
+                window.location.href = `/v1/courses/${this.currentCourseId}/materials/${material.id}/edit`;
+            },
             async getUser() {
                 const userResponse = await fetch('/user')
                 this.user = await userResponse.json()
@@ -149,19 +114,33 @@
             logout() {
                 window.location.href = '/login?logout';
             },
-            async getMaterial() {
-                // const materialResponse = await fetch('/{courseId}/materials')
-                //const materialResponseTest = await fetch('/640229959979/materials')
-                //this.material = await materialResponseTest.json()
+
+            selectCourse(courseId) {
+                this.currentCourseId = courseId;
+                this.getMaterial();
             },
+            async getMaterial() {
+                if (!this.currentCourseId) {
+                    throw new Error('No course selected');
+                }
+                const response = await fetch(`/v1/courses/${this.currentCourseId}/materials`, {
+                    headers: {
+                        'Authorization': this.token
+                    }
+                });
 
-            async getActivities() {
-
-            }
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                this.materials = await response.json();
+                console.log(this.materials);
+            },
         },
         async mounted() {
             await this.getUser();
-            await this.getMaterial()
+            const urlSegments = window.location.pathname.split('/');
+            this.currentCourseId = urlSegments[urlSegments.length - 2];
+            await this.getMaterial();
         }
     }).mount('#app')
 

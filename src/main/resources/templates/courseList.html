@@ -72,9 +72,7 @@
         },
         methods: {
             redirectToCourse(courseSelect)  {
-                const queryParams = new URLSearchParams({ course: JSON.stringify(courseSelect)});
-                console.log(JSON.parse(queryParams.get('course')))
-               // window.location.href = `/acessibillituClass.html?${queryParams.toString()}`;
+                window.location.href = `/v1/courses/class/${courseSelect.id}/materials`;
             },
             logout() {
                 window.location.href = '/login?logout';
