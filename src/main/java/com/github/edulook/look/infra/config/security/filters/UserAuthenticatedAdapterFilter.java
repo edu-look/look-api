@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.github.edulook.look.utils.LookUtils.toUserDTO;
 
@@ -27,13 +28,15 @@ public class UserAuthenticatedAdapterFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         try {
-            var auth = SecurityContextHolder.getContext().getAuthentication();
-            var userDTO = toUserDTO(auth.getPrincipal());
-            userDTO.ifPresent(user -> {
-                request.setAttribute("user", user);
-                var httpServletResponse = ((HttpServletResponse) response);
-                httpServletResponse.addHeader("Authorization", String.format("Bearer %s", user.jwt().token()));
-            });
+            Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .ifPresent(auth -> {
+                    var userDTO = toUserDTO(auth.getPrincipal());
+                    userDTO.ifPresent(user -> {
+                        request.setAttribute("user", user);
+                        var httpServletResponse = ((HttpServletResponse) response);
+                        httpServletResponse.addHeader("Authorization", String.format("Bearer %s", user.jwt().token()));
+                    });
+                });
         }
         catch (Exception e) {
             log.error("error:: ", e);

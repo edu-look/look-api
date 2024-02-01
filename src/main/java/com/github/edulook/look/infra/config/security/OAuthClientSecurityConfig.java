@@ -11,17 +11,23 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class OAuthClientSecurityConfig {
-    
+    private static final String[] securityMatcher = {
+            "/v1/**", "oauth2/**", "login/**"
+    };
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+            .securityMatcher(securityMatcher)
             .authorizeHttpRequests( auth -> {
-                auth.anyRequest()
+                auth.requestMatchers("/public/**")
+                    .permitAll()
+                    .anyRequest()
                     .authenticated();
             })
             .oauth2Login(auth ->
                 auth.loginPage("/login")
-                    .permitAll())
+                .permitAll()
+            )
             .oauth2ResourceServer(config -> config.jwt(Customizer.withDefaults()))
             .build();
     }

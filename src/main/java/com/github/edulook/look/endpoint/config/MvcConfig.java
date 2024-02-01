@@ -8,10 +8,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
+    private static final String[] RESOURCE_LOCATIONS = {
+        "classpath:/static/",
+    };
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-            .addResourceHandler("/resources/**")
-            .addResourceLocations("/resources/");
+        if (!registry.hasMappingForPattern("/**")) {
+            registry.addResourceHandler("/**").addResourceLocations(
+                    RESOURCE_LOCATIONS);
+        }
     }
 }
