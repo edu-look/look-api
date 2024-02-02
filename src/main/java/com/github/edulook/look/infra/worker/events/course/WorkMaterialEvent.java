@@ -1,14 +1,14 @@
 package com.github.edulook.look.infra.worker.events.course;
 
+import com.github.edulook.look.core.model.WorkMaterial;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
 
-import java.time.Clock;
 import java.util.List;
 
-import static com.github.edulook.look.core.model.Course.WorkMaterial;
-import static com.github.edulook.look.core.model.Course.WorkMaterial.Material;
+
+
+import com.github.edulook.look.core.model.Material;
 
 @Getter
 @Builder

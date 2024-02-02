@@ -1,10 +1,9 @@
 package com.github.edulook.look.endpoint.internal.mapper.course.impl;
 
-import com.github.edulook.look.core.data.Range;
-import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.model.Course;
-import com.github.edulook.look.core.model.Course.WorkMaterial;
-import com.github.edulook.look.core.model.Course.Announcement;
+import com.github.edulook.look.core.model.WorkMaterial;
+import com.github.edulook.look.core.model.Announcement;
+import com.github.edulook.look.core.model.Material;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
@@ -95,7 +94,7 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper {
     }
 
     @Override
-    public ContentMaterialDTO toDTO(WorkMaterial.Material source) {
+    public ContentMaterialDTO toDTO(Material source) {
         return ContentMaterialDTO.builder()
             .description(source.getDescription())
             .id(source.getId())

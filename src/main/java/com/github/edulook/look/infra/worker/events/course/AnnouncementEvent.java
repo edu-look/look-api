@@ -2,11 +2,8 @@ package com.github.edulook.look.infra.worker.events.course;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
 
-import java.time.Clock;
-
-import static com.github.edulook.look.core.model.Course.Announcement;
+import com.github.edulook.look.core.model.Announcement;
 
 @Getter
 @Builder

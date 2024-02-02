@@ -1,8 +1,7 @@
 package com.github.edulook.look.endpoint;
 
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
-import com.github.edulook.look.core.model.Course.Announcement;
-import com.github.edulook.look.core.model.Course.WorkMaterial;
+import com.github.edulook.look.core.model.Announcement;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
@@ -18,8 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Log4j2
 @RestController
