@@ -1,7 +1,6 @@
 package com.github.edulook.look.core.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,18 +11,18 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 public class Range {
-    private Integer start;
-    private Integer end;
+    private Integer startPosition;
+    private Integer endPosition;
 
-    public Range(Integer start, Integer end) {
-        if(start == null || end == null)
+    public Range(Integer startPosition, Integer endPosition) {
+        if(startPosition == null || endPosition == null)
             throw new IllegalArgumentException("Range::start or Range::end can't be null");
 
-        if(start > end)
+        if(startPosition > endPosition)
             throw new IllegalArgumentException("Range::end should be major or equals than Range::start");
 
-        this.start = start;
-        this.end = end;
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
     }
 
     public static Range withDefaults() {
@@ -34,7 +33,7 @@ public class Range {
     }
 
     public boolean isValid() {
-        return start > 0 && end > 0 && start <= end;
+        return startPosition > 0 && endPosition > 0 && startPosition <= endPosition;
     }
 
     @JsonIgnore
@@ -43,6 +42,6 @@ public class Range {
     }
 
     public Integer diff() {
-        return end - start;
+        return endPosition - startPosition;
     }
 }
