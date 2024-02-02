@@ -1,0 +1,87 @@
+server:
+  address: localhost
+  port: 8085
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,env
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  swagger-ui:
+    oauth:
+      clientId: 279941193466-dukasel3kmn74s8qs76se3apuj9doilv.apps.googleusercontent.com
+      clientSecret: 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
+      realm: https://accounts.google.com
+      appName: look
+      scopeSeparator: openid email profile
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/look
+    username: postgres
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+    properties:
+      hibernate:
+        show_sql: true
+  output:
+    ansi:
+      enabled: Always
+
+  cloud:
+    gcp:
+      project-id: look-project-400817
+      credentials:
+        location: classpath:credentials.json
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            authorization-grant-type: authorization_code
+            client-id: 279941193466-dukasel3kmn74s8qs76se3apuj9doilv.apps.googleusercontent.com
+            client-secret: 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
+#            redirect_uri: https://da45-191-7-39-254.ngrok-free.app/login/oauth2/code/google
+
+        resourceserver:
+          jwt:
+            issuer-uri: https://accounts.google.com
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+  application:
+    name: look-service
+
+
+look:
+  cloud:
+    gcp:
+      server:
+        client:
+          id: 279941193466-jurmlv7ru4q0mom9m5mpn0rdmn7bd0bo.apps.googleusercontent.com
+          secret: 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
+          storage: tokens
+        token-url: https://oauth2.googleapis.com/token
+        authorization-encoded-url: https://accounts.google.com/o/oauth2/auth
+  application:
+    data: './data'
+    name: look-service
+    refresh_token:
+      time: 3600000
+    caching:
+        tll: 3600000 # milliseconds >> 3600s * 1000ms
+
+logging:
+  level:
+    com.github.edulook: DEBUG
+    root: INFO
+    org.springframework.web: DEBUG
