@@ -1,7 +1,7 @@
 package com.github.edulook.look.core.repository.course;
 
 import com.github.edulook.look.core.model.Course;
-import com.github.edulook.look.core.model.Course.WorkMaterial;
+import com.github.edulook.look.core.model.WorkMaterial;
 
 import java.util.List;
 

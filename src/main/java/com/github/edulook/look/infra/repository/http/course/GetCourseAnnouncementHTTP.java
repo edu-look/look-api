@@ -2,7 +2,7 @@ package com.github.edulook.look.infra.repository.http.course;
 
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.model.Course;
-import com.github.edulook.look.core.model.Course.Announcement;
+import com.github.edulook.look.core.model.Announcement;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
 import com.github.edulook.look.core.repository.teacher.GetTeacher;

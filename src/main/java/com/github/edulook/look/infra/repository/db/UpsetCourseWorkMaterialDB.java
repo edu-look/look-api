@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
-import static com.github.edulook.look.core.model.Course.WorkMaterial;
+import com.github.edulook.look.core.model.WorkMaterial;
 
 @Repository
 public interface UpsetCourseWorkMaterialDB extends JpaRepository<WorkMaterial, String> {

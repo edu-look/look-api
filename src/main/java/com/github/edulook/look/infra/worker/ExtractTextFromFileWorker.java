@@ -2,10 +2,11 @@
 
 package com.github.edulook.look.infra.worker;
 
-import com.github.edulook.look.core.data.PageContent;
+import com.github.edulook.look.core.model.PageContent;
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.exceptions.TextExtractInvalidException;
 import com.github.edulook.look.core.model.Course;
+import com.github.edulook.look.core.model.WorkMaterial;
 import com.github.edulook.look.core.repository.CourseRepository;
 import com.github.edulook.look.infra.worker.events.course.CourseMaterialExtractPDFEvent;
 import com.github.edulook.look.infra.worker.exceptions.InvalidEventException;
@@ -71,20 +72,20 @@ public class ExtractTextFromFileWorker {
         }
     }
 
-    private void upsetContent(String contentId, Course.WorkMaterial material, Optional<PageContent> content) {
+    private void upsetContent(String contentId, WorkMaterial material, Optional<PageContent> content) {
         var contentPDF = material.getMaterials().stream()
             .filter(it -> it.getId().equalsIgnoreCase(contentId))
             .findFirst()
             .orElseThrow(ResourceNotFoundException::new);
 
-        contentPDF.setContent(content);
+        contentPDF.setContent(content.orElse(null));
 
         material.setMaterials(material.getMaterials().stream()
             .map(it -> contentPDF.getId().equalsIgnoreCase(it.getId()) ? contentPDF : it)
             .toList());
     }
 
-    private Optional<File> downloadFile(Course.WorkMaterial material, String contentId) {
+    private Optional<File> downloadFile(WorkMaterial material, String contentId) {
         var content = material.getMaterials().stream()
             .filter(it -> it.getId().equalsIgnoreCase(contentId))
             .findFirst();
@@ -92,7 +93,7 @@ public class ExtractTextFromFileWorker {
         return content.flatMap(it -> driveService.downloadViaSharedLink(it.getOriginLink(), localData));
     }
 
-    private Optional<Course.WorkMaterial> getWorkMaterial(String courseId, String materialId) {
+    private Optional<WorkMaterial> getWorkMaterial(String courseId, String materialId) {
         var course = Course.builder()
             .id(courseId)
             .build();
