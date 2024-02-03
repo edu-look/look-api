@@ -28,6 +28,13 @@
             </div>
         </div>
     </div>
+    <div class="menu-navigation">
+        <a href="/v1/courses/class"><img src="/public/icons/courses-icon.svg"/>Voltar para cursos</a>
+        <p class="course-actual-navigation"> > </p>
+        <a href="/v1/courses/class"><img src="/public/icons/book-icon.svg"/>Material X</a>
+        <p class="course-actual-navigation"> > </p>
+        <p class="course-actual-navigation"> Formulário de Edição </p>
+    </div>
     <main class="container">
     <div class="logo">
     </div>
@@ -408,10 +415,53 @@
         max-width: 100px;
     }
 
+
+    .menu-navigation{
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        background-color: #4CAF50;
+        padding-left: 30px ;
+    }
+
+    .menu-navigation img{
+        max-width: 100px;
+        margin: 0 5px 0 0;
+        width: 24px;
+    }
+
+    .menu-navigation a{
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        padding: 20px 0 10px 10px;
+        margin: 0 10px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .menu-navigation a:hover{
+        background-color: #1CC833;
+    }
+
+    .course-actual-navigation{
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        padding: 20px 0 10px 10px;
+        margin: 0 10px;
+        font-weight: bold;
+    }
+
+    .course-actual-navigation:nth-child(5){
+        color: #121212;
+    }
+
     .user-menu {
         display: flex;
         align-items: center;
-        cursor: pointer;
         margin:0 4px 0 0;
 
     }
@@ -441,7 +491,6 @@
 
     .menu li {
         padding: 10px;
-        cursor: pointer;
     }
 
     .menu-item{
@@ -451,6 +500,7 @@
 
     .menu li:hover {
         background-color: #f68686;
+        cursor: pointer;
     }
 
     .toggle-container {
@@ -778,7 +828,6 @@
         padding: 15px;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        display: flex;
         justify-content: space-between;
         align-items: center;
         opacity: 0;
