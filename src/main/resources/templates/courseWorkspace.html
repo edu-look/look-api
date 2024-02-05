@@ -9,6 +9,7 @@
     <head>
         <link rel="stylesheet" href="https://cdn.tailwindcss.com">
         <meta charset="UTF-8"/>
+        <title>Look</title>
     </head>
     <body>
     <div class="header">
@@ -16,7 +17,6 @@
                 <a href="/v1/courses/class">
                     <img src="/public/img/logo-antenas-branco-fundo-branco.svg" alt="Logo do Projeto"/>
                 </a>
-
         </div>
         <div class="user-menu">
             <div class="user-name">
@@ -39,7 +39,6 @@
         <a :class="{ 'active-section': currentSection === 'material' }" @click="showSection('material')">Material</a>
         <a  v-show="false" :class="{ 'active-section': currentSection === 'atividades' }" @click="showSection('atividades')">Atividades</a>
     </nav>
-
     <section v-show="currentSection === 'material'" id="material">
         <h2 class="section-title">Lista de Materiais</h2>
         <div v-for="material in materials" :key="material.id" class="ag-format-container" @click="redirectToEditMaterial(material)">
@@ -51,9 +50,9 @@
                             {{material.title}}
                         </div>
                         <div class="ag-courses-item_date-box">
-                            Criado em:
                             <span class="ag-courses-item_date">
                         {{material.description}}
+
                 </span>
                         </div>
                     </a>
