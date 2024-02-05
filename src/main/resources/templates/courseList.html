@@ -85,6 +85,7 @@
             },
 
             redirectToCourse(courseSelect)  {
+                window.localStorage.setItem('currentCourseName', courseSelect.name);
                 window.location.href = `/v1/courses/class/${courseSelect.id}/materials`;
             },
             logout() {

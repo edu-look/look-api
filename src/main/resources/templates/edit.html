@@ -31,7 +31,7 @@
     <div class="menu-navigation">
         <a href="/v1/courses/class"><img src="/public/icons/courses-icon.svg"/>Voltar para cursos</a>
         <p class="course-actual-navigation"> > </p>
-        <a href="/v1/courses/class"><img src="/public/icons/book-icon.svg"/>Material X</a>
+        <a @click="getCourseId" :href="`/v1/courses/class/${currentCourseId}/materials`"><img src="/public/icons/book-icon.svg"/>{{ materialName }}</a>
         <p class="course-actual-navigation"> > </p>
         <p class="course-actual-navigation"> Formulário de Edição </p>
     </div>
@@ -292,6 +292,11 @@
                 this.closePopup();
             },
 
+            getCourseId() {
+                const urlSegments = window.location.pathname.split('/');
+                this.currentCourseId = urlSegments[urlSegments.length - 4];
+            },
+
             getCourseIDAndMaterialID() {
                 let {
                     courseId: id,
@@ -381,6 +386,8 @@
             }
         },
         async mounted() {
+            this.materialName = window.localStorage.getItem('currentMaterialName');
+            this.getCourseId();
             this.getCourseIDAndMaterialID()
             await this.getCourseMaterial()
         }

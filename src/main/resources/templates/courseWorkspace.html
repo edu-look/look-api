@@ -33,7 +33,7 @@
     <div class="menu-navigation">
         <a href="/v1/courses/class"><img src="/public/icons/courses-icon.svg"/>Voltar para cursos</a>
         <p class="course-actual-navigation"> > </p>
-        <p class="course-actual-navigation">Curso X</p>
+        <p class="course-actual-navigation">{{ courseName }}</p>
     </div>
     <nav>
         <a :class="{ 'active-section': currentSection === 'material' }" @click="showSection('material')">Material</a>
@@ -108,6 +108,7 @@
                 }
             },
             redirectToEditMaterial(material)  {
+                window.localStorage.setItem('currentMaterialName', material.title);
                 window.location.href = `/v1/courses/${this.currentCourseId}/materials/${material.id}/edit`;
             },
             async getUser() {
@@ -137,10 +138,10 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 this.materials = await response.json();
-                console.log(this.currentCourseId)
             },
         },
         async mounted() {
+            this.courseName = window.localStorage.getItem('currentCourseName');
             await this.getUser();
             const urlSegments = window.location.pathname.split('/');
             this.currentCourseId = urlSegments[urlSegments.length - 2];

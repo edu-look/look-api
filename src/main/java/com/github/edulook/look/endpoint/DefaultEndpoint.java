@@ -14,7 +14,7 @@ public class DefaultEndpoint {
 
     @GetMapping
     public void rootRedirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/v1/students/profile");
+        response.sendRedirect("/v1/courses/class");
     }
 
     @GetMapping("v1/user")
