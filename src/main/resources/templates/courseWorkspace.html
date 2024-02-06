@@ -20,18 +20,18 @@
         </div>
         <div class="user-menu">
             <div class="user-name">
-                Ola,{{user.name}}
+                Olá,{{user.name}}
             </div>
             <img :src="user.photo" alt="Foto do Usuário" />
             <div class="menu">
                 <ul>
-                    <li class="menu-item logout-button" @click="logout">Sair da Conta</li>
+                    <li class="menu-item logout-button" @click="logout">Sair</li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="menu-navigation">
-        <a href="/v1/courses/class"><img src="/public/icons/courses-icon.svg"/>Voltar para cursos</a>
+        <a href="/v1/courses/class"><img src="/public/icons/courses-icon.svg"/>Voltar para salas</a>
         <p class="course-actual-navigation"> > </p>
         <p class="course-actual-navigation">{{ courseName }}</p>
     </div>
@@ -40,7 +40,7 @@
         <a  v-show="false" :class="{ 'active-section': currentSection === 'atividades' }" @click="showSection('atividades')">Atividades</a>
     </nav>
     <section v-show="currentSection === 'material'" id="material">
-        <h2 class="section-title">Lista de Materiais</h2>
+        <h2 class="section-title">Aulas</h2>
         <div v-for="material in materials" :key="material.id" class="ag-format-container" @click="redirectToEditMaterial(material)">
             <div class="ag-courses_box">
                 <div class="ag-courses_item">
@@ -61,7 +61,7 @@
         </div>
     </section>
     <section v-show="currentSection === 'atividades'" id="atividades" >
-        <h2>Lista de Atividades</h2>
+        <h2>Atividades</h2>
     </section>
     </body>
 </div>
