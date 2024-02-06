@@ -60,7 +60,7 @@ public class CourseEndpointWebPage {
         log.info("user logged: {}", user.id());
         log.info("materials to course: {}", courseId);
 
-        return "accessibilityClass.html";
+        return "courseWorkspace.html";
     }
 
 }
