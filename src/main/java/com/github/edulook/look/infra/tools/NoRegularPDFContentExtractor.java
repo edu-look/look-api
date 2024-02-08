@@ -1,7 +1,7 @@
 package com.github.edulook.look.infra.tools;
 
-import com.github.edulook.look.core.data.PageContent;
-import com.github.edulook.look.core.data.PageContent.Page;
+import com.github.edulook.look.core.model.PageContent;
+import com.github.edulook.look.core.model.Page;
 import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.exceptions.TextExtractInvalidException;
 import com.github.edulook.look.core.usecase.PDFContentExtractor;
@@ -86,7 +86,7 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
         var extension = FilenameUtils.getExtension(pdf.getName());
         var filename = FilenameUtils.getName(pdf.getName());
 
-        for (var currentPage = range.getStart(); currentPage <= range.getEnd(); currentPage++) {
+        for (var currentPage = range.getStartPosition(); currentPage <= range.getEndPosition(); currentPage++) {
             var pdfPage = slices.get(currentPage-1);
             var pageName = String.format("%s/%s-%s.%s", workDir, filename, currentPage, extension);
             pages.add(new ContainerPDFRef(currentPage, pageName));

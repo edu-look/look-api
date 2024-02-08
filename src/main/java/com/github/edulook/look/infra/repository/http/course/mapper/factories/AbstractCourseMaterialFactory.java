@@ -8,7 +8,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 
-import static com.github.edulook.look.core.model.Course.WorkMaterial.Material;
+import com.github.edulook.look.core.model.Material;
 
 
 public interface AbstractCourseMaterialFactory {

@@ -1,16 +1,12 @@
 package com.github.edulook.look.infra.repository.http.course.mapper.factories;
 
 import com.github.edulook.look.core.data.Option;
-import com.github.edulook.look.core.data.PageContent;
-import com.github.edulook.look.core.data.Range;
 import com.github.edulook.look.core.data.Typename;
-import com.github.edulook.look.core.model.Course;
 import com.google.api.services.classroom.model.Material;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Slf4j
 public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactory {
@@ -37,7 +33,7 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
     );
 
     @Override
-    public Course.WorkMaterial.Material create(Material source) {
+    public com.github.edulook.look.core.model.Material create(Material source) {
         try {
             if (source == null)
                 throw new IllegalArgumentException("material can't be null");
@@ -48,11 +44,12 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
             var filename = file.getTitle();
             var filetype = getFiletype(filename);
 
-            var option = filetype.equalsIgnoreCase(Typename.PDF)
-                    ? Optional.of(Option.withDefaults())
-                    : Option.None();
 
-            return Course.WorkMaterial.Material
+            var option = filetype.equalsIgnoreCase(Typename.PDF)
+                    ? Option.withDefaults()
+                    : Option.None().orElse(new Option());
+
+            return com.github.edulook.look.core.model.Material
                 .builder()
                 .id(hash256(file.getAlternateLink()))
                 .name(normalizeFilename(file.getTitle()))
@@ -61,7 +58,6 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
                 .type(filetype)
                 .description(file.getTitle())
                 .option(option)
-                .content(PageContent.None())
                 .build();
         } catch (Exception e) {
             log.error("error:: ", e);

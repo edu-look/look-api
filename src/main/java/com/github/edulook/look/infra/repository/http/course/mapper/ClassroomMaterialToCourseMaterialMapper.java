@@ -1,6 +1,6 @@
 package com.github.edulook.look.infra.repository.http.course.mapper;
 
-import com.github.edulook.look.core.model.Course.WorkMaterial;
+import com.github.edulook.look.core.model.WorkMaterial;
 import com.github.edulook.look.infra.repository.http.course.mapper.factories.FactoryCourseMaterial;
 import com.google.api.services.classroom.model.CourseWork;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
-import static com.github.edulook.look.core.model.Course.WorkMaterial.Material;
+import com.github.edulook.look.core.model.Material;
 
 @Component
 @NoArgsConstructor

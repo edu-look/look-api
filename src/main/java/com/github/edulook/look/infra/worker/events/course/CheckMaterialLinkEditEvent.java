@@ -1,6 +1,6 @@
 package com.github.edulook.look.infra.worker.events.course;
 
-import com.github.edulook.look.core.model.Course.WorkMaterial;
+import com.github.edulook.look.core.model.WorkMaterial;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

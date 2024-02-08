@@ -67,6 +67,23 @@ firebase:
   serviceAccountKeyPath: ${LOOK_STORAGE_CREDENTIALS}
   databaseUrl: ${LOOK_STORAGE_URL}
 
+  datasource:
+    url: ${LOOK_STORAGE_URL}
+    username: ${LOOK_STORAGE_USERNAME}
+    password: ${LOOK_STORAGE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+    properties:
+      hibernate:
+        show_sql: true
+  output:
+    ansi:
+      enabled: Always
+
 look:
   cloud:
     gcp:

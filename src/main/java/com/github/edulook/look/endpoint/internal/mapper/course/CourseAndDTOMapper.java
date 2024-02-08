@@ -9,11 +9,11 @@ import com.github.edulook.look.endpoint.io.course.SimpleMaterialDTO;
 import org.mapstruct.Mapper;
 
 import com.github.edulook.look.core.model.Course;
-import com.github.edulook.look.core.model.Course.Announcement;
+import com.github.edulook.look.core.model.Announcement;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
 import com.github.edulook.look.endpoint.io.course.CourseDTO.AnnouncementDTO;
-import com.github.edulook.look.core.model.Course.WorkMaterial;
-import com.github.edulook.look.core.model.Course.WorkMaterial.Material;
+import com.github.edulook.look.core.model.WorkMaterial;
+import com.github.edulook.look.core.model.Material;
 
 @Mapper(componentModel = "spring")
 public interface CourseAndDTOMapper {

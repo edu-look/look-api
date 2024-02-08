@@ -1,6 +1,8 @@
 package com.github.edulook.look.infra.repository.db;
 
+import com.github.edulook.look.core.model.Announcement;
 import com.github.edulook.look.core.model.Course;
+import com.github.edulook.look.core.model.WorkMaterial;
 import com.github.edulook.look.core.repository.CourseRepository;
 import com.github.edulook.look.core.repository.course.GetCourse;
 import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
@@ -19,15 +21,17 @@ public class CourseRepositoryDB implements CourseRepository {
     private final GetCourseWorkMaterial getCourseWorkMaterial;
     private final GetCourseWork getCourseWork;
     private final GetCourseAnnouncement getCourseAnnouncement;
+    private final UpsetCourseWorkMaterialDB upsetCourseWorkMaterial;
 
     public CourseRepositoryDB(@Qualifier("GetCourseDB::Class") GetCourse getCourse,
                               @Qualifier("GetCourseWorkDB:Class") GetCourseWork getCourseWork,
                               @Qualifier("GetCourseWorkMaterialDB::Class") GetCourseWorkMaterial getCourseWorkMaterial,
-                              @Qualifier("GetCourseAnnouncementDB::Class") GetCourseAnnouncement getCourseAnnouncement) {
+                              @Qualifier("GetCourseAnnouncementDB::Class") GetCourseAnnouncement getCourseAnnouncement, UpsetCourseWorkMaterialDB upsetCourseWorkMaterialDB) {
         this.getCourse = getCourse;
         this.getCourseWorkMaterial = getCourseWorkMaterial;
         this.getCourseWork = getCourseWork;
         this.getCourseAnnouncement = getCourseAnnouncement;
+        this.upsetCourseWorkMaterial = upsetCourseWorkMaterialDB;
     }
 
     @Override
@@ -40,7 +44,6 @@ public class CourseRepositoryDB implements CourseRepository {
         return getCourse.findOneCourseByStudentId(courseId, studentId);
     }
 
-    @Override
     public List<Course> findCoursesByTeacherId(String teacherId) {
         return getCourse.findCoursesByTeacherId(teacherId);
     }
@@ -51,34 +54,33 @@ public class CourseRepositoryDB implements CourseRepository {
     }
 
     @Override
-    public List<Course.WorkMaterial> listAllWorkMaterial(Course course) {
+    public List<WorkMaterial> listAllWorkMaterial(Course course) {
        return  getCourseWorkMaterial.listAllWorkMaterial(course);
     }
 
     @Override
-    public Optional<Course.WorkMaterial> findOneMaterial(Course course, String materialId) {
+    public Optional<WorkMaterial> findOneMaterial(Course course, String materialId) {
         return getCourseWorkMaterial.findOneMaterial(course, materialId);
     }
 
     @Override
-    public List<Course.WorkMaterial> listAllWorkMaterial(Course course, String access) {
+    public List<WorkMaterial> listAllWorkMaterial(Course course, String access) {
         return getCourseWorkMaterial.listAllWorkMaterial(course, access);
     }
 
     @Override
-    public List<Course.Announcement> getAllAnnouncementByCourse(Course course) {
+    public List<Announcement> getAllAnnouncementByCourse(Course course) {
         return getCourseAnnouncement.getAllAnnouncementByCourse(course);
     }
 
     @Override
     @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
-    public Course.WorkMaterial upsetCourseMaterial(Course.WorkMaterial materialSaved) {
-        // TODO: add persistence here
-        return materialSaved;
+    public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
+        return upsetCourseWorkMaterial.save(materialSaved);
     }
 
     @Override
-    public List<Course.WorkMaterial> listAllWorks(Course course) {
+    public List<WorkMaterial> listAllWorks(Course course) {
         return getCourseWork.listAllWorks(course);
     }
 }

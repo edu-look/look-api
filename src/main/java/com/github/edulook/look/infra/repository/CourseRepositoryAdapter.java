@@ -1,8 +1,8 @@
 package com.github.edulook.look.infra.repository;
 
 import com.github.edulook.look.core.model.Course;
-import com.github.edulook.look.core.model.Course.Announcement;
-import com.github.edulook.look.core.model.Course.WorkMaterial;
+import com.github.edulook.look.core.model.Announcement;
+import com.github.edulook.look.core.model.WorkMaterial;
 import com.github.edulook.look.core.repository.CourseRepository;
 import com.github.edulook.look.infra.worker.events.course.WorkMaterialEvent;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -100,8 +100,7 @@ public class CourseRepositoryAdapter implements CourseRepository {
     @Override
     @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
-        // TODO: add persistence here
-        return materialSaved;
+        return db.upsetCourseMaterial(materialSaved);
     }
 
     @Override

@@ -3,9 +3,9 @@ package com.github.edulook.look.service;
 import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.model.Course;
-import com.github.edulook.look.core.model.Course.Announcement;
-import com.github.edulook.look.core.model.Course.WorkMaterial;
-import com.github.edulook.look.core.model.Course.WorkMaterial.Material;
+import com.github.edulook.look.core.model.Announcement;
+import com.github.edulook.look.core.model.WorkMaterial;
+import com.github.edulook.look.core.model.Material;
 import com.github.edulook.look.core.repository.CourseRepository;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
 import com.github.edulook.look.infra.worker.events.course.AnnouncementEvent;
@@ -93,7 +93,7 @@ public class CourseService {
                     .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s not found", it.getId())));
 
                 it.setName(materialSelectedDTO.name());
-                it.setOption(materialSelectedDTO.option());
+                it.setOption(materialSelectedDTO.option().orElse(null));
                 it.setDescription(materialSelectedDTO.description());
 
                 emitContentParserEvent(it, materialSaved);
