@@ -14,10 +14,10 @@ public class DefaultEndpoint {
 
     @GetMapping
     public void rootRedirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/v1/students/profile");
+        response.sendRedirect("/v1/courses/class");
     }
 
-    @GetMapping("/user")
+    @GetMapping("v1/user")
     public Object user(@RequestAttribute("user") UserAuthDTO user) {
         return  user;
     }

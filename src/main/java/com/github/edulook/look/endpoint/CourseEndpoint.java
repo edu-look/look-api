@@ -2,6 +2,7 @@ package com.github.edulook.look.endpoint;
 
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.model.Announcement;
+
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
@@ -86,7 +87,6 @@ public class CourseEndpoint {
             .id(UUID.randomUUID())
             .material(material)
             .build();
-        
 
         
         return courseAndDTOMapper.toDTO(material);

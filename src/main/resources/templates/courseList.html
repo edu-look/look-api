@@ -1,0 +1,246 @@
+<script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+</script>
+<div id="app">
+    <head>
+        <meta charset="UTF-8">
+        <title>Look</title>
+    </head>
+    <div class="navbar">
+    <div class="logo" >
+        <a href="/v1/courses/class">
+            <img src="/public/img/logo-antenas-branco-fundo-branco.svg" alt="Logo do Projeto"/>
+        </a>
+    </div>
+    <div class="user-menu" @click="toggleMenu">
+        <div class="user-name">
+            Olá,{{user.name}}
+        </div>
+        <img :src="user.photo" alt="Foto do Usuário" />
+        <div class="menu">
+            <ul>
+                <li class="menu-item logout-button" @click="logout">Sair</li>
+            </ul>
+        </div>
+    </div>
+</div>
+    <div class="main-container">
+        <h1 class="title-list">Salas de Aula</h1>
+        <div class="course-list">
+            <div v-for="course in courses" :key="course.id" class="course-card">
+                <div class="course-background"  :style="{ 'background-image': 'url(' + urlImage(course.id) + ')' }">
+                    <div class="course-content" @click="redirectToCourse(course)">
+                        <h3 class="course-title">{{ course.name }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { createApp, ref } from 'vue';
+    createApp({
+        data() {
+            return {
+                user:{
+                    name: "",
+                    id: "",
+                    email: "",
+                    photo: "",
+                    jwt: {
+                        token: "",
+                        expiresAt: 0,
+                        createdAt: 0
+                    }
+                },
+                courses: []
+            }
+        },
+        methods: {
+            hashImage(str, seed = 0) {
+                let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+                for(let i = 0, ch; i < str.length; i++) {
+                    ch = str.charCodeAt(i);
+                    h1 = Math.imul(h1 ^ ch, 2654435761);
+                    h2 = Math.imul(h2 ^ ch, 1597334677);
+                }
+                h1  = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+                h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+                h2  = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+                h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+                return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+            },
+            urlImage(courseId){
+                const defaultImage = [
+                    '/public/img/image-default1.jpg',
+                    '/public/img/image-default2.jpg',
+                    '/public/img/image-default3.jpg',
+                    '/public/img/image-default4.jpg'
+                ]
+                return defaultImage[this.hashImage(`/v1/courses/class/${courseId}/materials`) % defaultImage.length]
+            },
+
+            redirectToCourse(courseSelect)  {
+                window.localStorage.setItem('currentCourseName', courseSelect.name);
+                window.location.href = `/v1/courses/class/${courseSelect.id}/materials`;
+            },
+            logout() {
+                window.location.href = '/login?logout';
+            },
+            async getCourses() {
+                const response = await fetch(`/v1/courses/class`)
+                const userResponse = await fetch('/v1/user')
+                this.user = await userResponse.json()
+                this.token = 'Bearer ' + this.user.jwt.token
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                this.courses = await response.json()
+            }
+        },
+        async mounted() {
+            await this.getCourses();
+        }
+    }).mount('#app')
+</script>
+
+<style scoped>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;400;500;700&display=swap');
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'IBM Plex Sans', sans-serif;
+        background-color: #f4f4f4;
+        background-image: url("/public/img/background-azul-marinho.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 0 20px 0;
+    }
+
+    .logo{
+        padding: 10px 0 0 30px;
+    }
+
+    .logo img{
+        max-width: 100px;
+    }
+
+    .user-menu {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        margin:0 4px 0 0;
+    }
+
+    .user-name{
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-weight: bold;
+    }
+
+    .user-menu img {
+        border-radius: 50%;
+        width: 3rem;
+        margin: 10px;
+    }
+
+
+    .menu {
+        right: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .menu li {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .menu-item{
+        border-radius: 8px;
+        background-color: #8F0000;
+    }
+
+    .menu li:hover {
+        background-color: #ff4747;
+    }
+
+    .title-list{
+        padding: 10px 0 0 20px;
+    }
+
+    .course-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .course-card:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+
+    .course-title {
+        font-size: 1.5em;
+        margin: 0;
+    }
+
+    .course-card  {
+        position: relative;
+        width: 300px;
+        height: 200px;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        margin: 20px;
+    }
+    .course-background {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+    }
+    .course-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 1;
+    }
+
+    .course-card h3 {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        padding: 3.2em;
+        font-size: 1.2em;
+        margin: 0;
+        color: white;
+    }
+
+    .main-container{
+        padding: 10px 0 0 20px;
+    }
+
+
+</style>

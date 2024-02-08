@@ -20,7 +20,7 @@
 
 server:
   port: ${LOOK_SERVER_PORT}
-  address: ${LOOK_SERVER_DOMAIN:localhost}
+  address: ${HOSTNAME}
 
 springdoc:
   swagger-ui:
@@ -30,6 +30,16 @@ springdoc:
       realm: https://accounts.google.com
       appName: look
       scopeSeparator: openid email profile
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,env
+  endpoint:
+    health:
+      show-details: always
 
 spring:
   devtools:

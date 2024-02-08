@@ -1,0 +1,109 @@
+<script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+</script>
+
+<div id="app" class="container">
+    <head>
+        <title>Login Look
+        </title>
+    </head>
+    <main class="bg">
+        <div class="welcome-card">
+            <div class="logo">
+                <img src="../public/img/logo-simplificado-branco.png"/>
+
+            </div>
+            <h1>Bem-vindo!</h1>
+            <h4>Comece os estudos com 1 clique.</h4>
+            <a href="/oauth2/authorization/google" class="google-button">
+                <img src="../public/icons/igoogle.svg"/>
+                Entrar com o Google
+            </a>
+        </div>
+    </main>
+</div>
+<script type="module">
+    import { createApp } from 'vue';
+
+    createApp({
+        data() {
+            return {
+            };
+        },
+        methods: {
+        },
+    }).mount('#app');
+</script>
+
+<style scoped>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    .bg {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: 300% 300%;
+        background-image: linear-gradient(90deg, rgba(0,36,10,1) 0%, rgba(4,148,5,1) 51%, rgba(0,255,104,1) 100%);
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .welcome-card {
+        width: 300px;
+        padding: 60px;
+        border-radius: 8px;
+        text-align: center;
+        background-color: #1CC833 ;
+    }
+
+    .logo img {
+        width: 18rem;
+        height: 10rem;
+    }
+
+    h1 {
+        color: #fff;
+    }
+
+    .google-button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 20px 0 20px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background-color: black;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #1CC833;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .google-button:hover {
+        background-color: #2d703c;
+    }
+
+    .google-button img {
+        margin-right: 10px;
+        max-width: 34px;
+    }
+</style>

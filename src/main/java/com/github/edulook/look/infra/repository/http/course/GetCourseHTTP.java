@@ -79,6 +79,19 @@ public class GetCourseHTTP implements GetCourse {
         return Optional.of(courses);
     }
 
+    private Optional<ListCoursesResponse> findCoursesTeacher(String teacherId) throws IOException {
+        var courses = classroom.courses()
+                .list()
+                .setTeacherId(teacherId)
+                .setCourseStates(List.of(CourseState.ACTIVE))
+                .execute();
+
+        if(courses == null || courses.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(courses);
+    }
+
     private Map<String, List<Teacher>> getTeachersByCourse(List<String> courseIdList) throws IOException {
         var teachersByCourse = new HashMap<String, List<Teacher>>();
         /*
@@ -94,6 +107,39 @@ public class GetCourseHTTP implements GetCourse {
 
     @Override
     public Optional<Course> findOneCourseByStudentId(String courseId, String studentId) {
+        try {
+            var courseFound = getClassroomCourse(courseId);
+            if(courseFound.isEmpty())
+                return Optional.empty();
+            var course = courseFound.get();
+            var teachers = getTeacher.getTeachersFromCourse(course.getId());
+            return Optional.ofNullable(mapper.toModel(course, teachers));
+        } catch (IOException e) {
+            log.error("error:: ", e);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Course> findCoursesByTeacherId(String teacherId) {
+        try {
+            var response = findCoursesTeacher(teacherId);
+            if(response.isEmpty())
+                return  List.of();
+
+            var courses =  response.get().getCourses();
+            var teachers = getTeachersByCourse(getCourseIDs(courses));
+
+            return transformClassroomCourseToCoreCourse(courses, teachers);
+
+        } catch (IOException e) {
+            log.error("error:: ", e);
+            return List.of();
+        }
+    }
+
+    @Override
+    public Optional<Course> findOneCourseByTeacherId(String courseId, String teacherId) {
         try {
             var courseFound = getClassroomCourse(courseId);
             if(courseFound.isEmpty())
