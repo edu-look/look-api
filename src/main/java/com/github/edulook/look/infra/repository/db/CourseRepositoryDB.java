@@ -4,10 +4,8 @@ import com.github.edulook.look.core.model.Announcement;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.WorkMaterial;
 import com.github.edulook.look.core.repository.CourseRepository;
-import com.github.edulook.look.core.repository.course.GetCourse;
-import com.github.edulook.look.core.repository.course.GetCourseAnnouncement;
-import com.github.edulook.look.core.repository.course.GetCourseWork;
-import com.github.edulook.look.core.repository.course.GetCourseWorkMaterial;
+import com.github.edulook.look.core.repository.course.*;
+import com.github.edulook.look.infra.repository.db.course.config.UpsetCourseWorkMaterialJPA;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
@@ -21,17 +19,18 @@ public class CourseRepositoryDB implements CourseRepository {
     private final GetCourseWorkMaterial getCourseWorkMaterial;
     private final GetCourseWork getCourseWork;
     private final GetCourseAnnouncement getCourseAnnouncement;
-    private final UpsetCourseWorkMaterialDB upsetCourseWorkMaterial;
+    private final UpsetCourseWorkMaterial upsetCourseWorkMaterial;
 
     public CourseRepositoryDB(@Qualifier("GetCourseDB::Class") GetCourse getCourse,
                               @Qualifier("GetCourseWorkDB:Class") GetCourseWork getCourseWork,
                               @Qualifier("GetCourseWorkMaterialDB::Class") GetCourseWorkMaterial getCourseWorkMaterial,
-                              @Qualifier("GetCourseAnnouncementDB::Class") GetCourseAnnouncement getCourseAnnouncement, UpsetCourseWorkMaterialDB upsetCourseWorkMaterialDB) {
+                              @Qualifier("GetCourseAnnouncementDB::Class") GetCourseAnnouncement getCourseAnnouncement,
+                              @Qualifier("UpsetCourseWorkMaterialDB::Class") UpsetCourseWorkMaterial upsetCourseWorkMaterial) {
         this.getCourse = getCourse;
         this.getCourseWorkMaterial = getCourseWorkMaterial;
         this.getCourseWork = getCourseWork;
         this.getCourseAnnouncement = getCourseAnnouncement;
-        this.upsetCourseWorkMaterial = upsetCourseWorkMaterialDB;
+        this.upsetCourseWorkMaterial = upsetCourseWorkMaterial;
     }
 
     @Override
@@ -76,7 +75,7 @@ public class CourseRepositoryDB implements CourseRepository {
     @Override
     @CacheEvict(value = "findOneCourseMaterial", allEntries = true)
     public WorkMaterial upsetCourseMaterial(WorkMaterial materialSaved) {
-        return upsetCourseWorkMaterial.save(materialSaved);
+        return upsetCourseWorkMaterial.upsetCourseMaterial(materialSaved);
     }
 
     @Override
