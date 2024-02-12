@@ -9,7 +9,6 @@ import com.github.edulook.look.endpoint.io.shared.UserAuthDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.List;
@@ -44,7 +43,7 @@ public class LookUtils {
         catch (Exception e) {
             e.printStackTrace();
         }
-        return UserAuthDTO.None();
+        return UserAuthDTO.none();
     }
 
     public static File mkdir(String dirname) {

@@ -47,7 +47,7 @@ public class CourseMaterialGDriveFactory implements AbstractCourseMaterialFactor
 
             var option = filetype.equalsIgnoreCase(Typename.PDF)
                     ? Option.withDefaults()
-                    : Option.None().orElse(new Option());
+                    : null;
 
             return com.github.edulook.look.core.model.Material
                 .builder()

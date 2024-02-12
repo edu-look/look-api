@@ -6,7 +6,9 @@ import com.github.edulook.look.infra.tools.PDFClassificationEnum;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Getter
 @Builder
@@ -19,13 +21,12 @@ public class CourseMaterialExtractPDFEvent extends AbstractEvent {
     private PDFClassificationEnum classification;
 
     public boolean isValid() {
-        var noContainsNull = Objects.nonNull(courseId)
-            && Objects.nonNull(materialId)
-            && Objects.nonNull(contentId)
-            && Objects.nonNull(option)
-            && Objects.nonNull(classification);
+        var nullNotPresent = Stream.of(courseId, materialId, contentId, option)
+            .filter(Objects::isNull)
+            .toList()
+            .isEmpty();
 
-        return noContainsNull && option.getRange().isValid();
+        return nullNotPresent && option.isValid();
     }
 
     public boolean isNotValid() {

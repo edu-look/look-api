@@ -56,13 +56,13 @@ public class ExtractTextFromFileWorker {
             .orElseThrow(TextExtractInvalidException::new);
 
         try {
-            var classification = event.getClassification();
-            var extractor = classification.instance();
-
-            var extractionContent = extractor.extract(pdf, range);
-            upsetContent(event.getContentId(), material, extractionContent);
-
-            courseRepository.upsetCourseMaterial(material);
+            event.getClassification()
+                .instance()
+                .extract(pdf, range)
+                .ifPresentOrElse(pageContent -> {
+                    upsetContent(event.getContentId(), material, pageContent);
+                    courseRepository.upsetCourseMaterial(material);
+                }, TextExtractInvalidException::new);
         } catch (Exception e) {
           log.error("error::", e);
         } finally {
@@ -72,13 +72,13 @@ public class ExtractTextFromFileWorker {
         }
     }
 
-    private void upsetContent(String contentId, WorkMaterial material, Optional<PageContent> content) {
+    private void upsetContent(String contentId, WorkMaterial material, PageContent content) {
         var contentPDF = material.getMaterials().stream()
             .filter(it -> it.getId().equalsIgnoreCase(contentId))
             .findFirst()
             .orElseThrow(ResourceNotFoundException::new);
 
-        contentPDF.setContent(content.orElse(null));
+        contentPDF.setContent(content);
 
         material.setMaterials(material.getMaterials().stream()
             .map(it -> contentPDF.getId().equalsIgnoreCase(it.getId()) ? contentPDF : it)

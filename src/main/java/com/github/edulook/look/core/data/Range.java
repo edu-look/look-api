@@ -28,7 +28,7 @@ public class Range {
     public static Range withDefaults() {
         return new Range(0, 0);
     }
-    public static Optional<Range> None() {
+    public static Optional<Range> none() {
         return Optional.empty();
     }
 
@@ -39,9 +39,5 @@ public class Range {
     @JsonIgnore
     public boolean isNotValid() {
         return !isValid();
-    }
-
-    public Integer diff() {
-        return endPosition - startPosition;
     }
 }

@@ -3,7 +3,6 @@ package com.github.edulook.look.core.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public class PageContent {
         this.pages = pages;
     }
 
-    public static Optional<PageContent> None() {
+    public static Optional<PageContent> none() {
         return Optional.empty();
     }
 }

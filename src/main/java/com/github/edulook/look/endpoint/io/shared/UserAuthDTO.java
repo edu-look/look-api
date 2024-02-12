@@ -20,7 +20,7 @@ public record UserAuthDTO(
         Instant createdAt
     ){}
 
-    public static Optional<UserAuthDTO> None() {
+    public static Optional<UserAuthDTO> none() {
         return Optional.empty();
     }
 }
