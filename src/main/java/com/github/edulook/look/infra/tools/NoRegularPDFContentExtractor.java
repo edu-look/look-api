@@ -18,14 +18,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.apache.pdfbox.Loader.loadPDF;
 
 @Slf4j
 public class NoRegularPDFContentExtractor implements PDFContentExtractor {
-    private final String workDir = "./data";
-    private final String language = "por";
+    private final String WORK_DIR = "./data";
+    private final String LANGUAGE = "por";
+    private final int TESSERACT_ENGINE_MODE = 1;
+    private final int TESSERACT_PAGE_SEG_MODE = 1;
 
     @Override
     public Optional<PageContent> extract(File pdf, Range range) {
@@ -34,13 +37,13 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
             return Optional.empty();
         }
 
-        LookUtils.mkdir(workDir);
+        LookUtils.mkdir(WORK_DIR);
 
         try (var document = loadPDF(new RandomAccessReadBufferedFile(pdf))) {
             var pdfSlices = splitPDFFile(pdf, range, document);
-            var pages = extractContent(pdfSlices);
+            var pages = extractPagesContent(pdfSlices);
 
-            return Optional.ofNullable(PageContent.builder()
+            return Optional.of(PageContent.builder()
                 .pages(pages)
                 .size(pdfSlices.size())
                 .build());
@@ -50,29 +53,33 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
         }
     }
 
-    private List<Page> extractContent(List<ContainerPDFRef> pdfSlices) throws TesseractException {
-        var pages = new ArrayList<Page>();
+    private List<Page> extractPagesContent(List<ContainerPDFRef> pages) throws TesseractException {
+        final Tesseract tesseract = new Tesseract() {{
+            setLanguage(LANGUAGE);
+            setPageSegMode(TESSERACT_PAGE_SEG_MODE);
+            setOcrEngineMode(TESSERACT_ENGINE_MODE);
+            setDatapath(WORK_DIR);
+        }};
 
-        for(var slice : pdfSlices) {
-            var file = new File(slice.filename());
-            var tesseract = new Tesseract() {{
-               setLanguage(language);
-               setPageSegMode(1);
-               setOcrEngineMode(1);
-               setDatapath(workDir);
-            }};
-
-            pages.add(Page.builder()
-                .page(slice.index())
-                .content(tesseract.doOCR(file))
-                .build()
-            );
-
-            if(file.delete()) {
-                log.info("removing tmp page");
-            };
-        }
-        return pages;
+        return pages
+            .stream()
+            .map(it -> {
+                var page = new File(it.filename());
+                try {
+                    return Page.builder()
+                        .page(it.index())
+                        .content(tesseract.doOCR(page))
+                        .build();
+                } catch (TesseractException e) {
+                    return null;
+                } finally {
+                    if(page.exists() && page.delete()) {
+                        log.info("removed tmp page");
+                    };
+                }
+            })
+            .filter(Objects::nonNull)
+            .toList();
     }
 
     private List<ContainerPDFRef> splitPDFFile(File pdf, Range range, PDDocument document) throws IOException {
@@ -88,7 +95,7 @@ public class NoRegularPDFContentExtractor implements PDFContentExtractor {
 
         for (var currentPage = range.getStartPosition(); currentPage <= range.getEndPosition(); currentPage++) {
             var pdfPage = slices.get(currentPage-1);
-            var pageName = String.format("%s/%s-%s.%s", workDir, filename, currentPage, extension);
+            var pageName = String.format("%s/%s-%s.%s", WORK_DIR, filename, currentPage, extension);
             pages.add(new ContainerPDFRef(currentPage, pageName));
             pdfPage.save(pageName);
         }
