@@ -32,9 +32,7 @@ public class DriveService {
             throw new TextExtractInvalidException("file id is invalid");
 
         try(var outputStream = new ByteArrayOutputStream()) {
-            var originFile = Optional.ofNullable(drive.files()
-                .get(fileId)
-                .execute())
+            var originFile = Optional.ofNullable(drive.files().get(fileId).execute())
                 .orElseThrow(ResourceNotFoundException::new);
 
             var pathResolved = Paths.get(pathToSave + "/" + originFile.getName())
