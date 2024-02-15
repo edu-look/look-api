@@ -19,14 +19,17 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("v1/courses")
-@AllArgsConstructor
 public class TeacherEndpoint {
-
     private final CourseService courseService;
     private final CourseAndDTOMapper courseAndDTOMapper;
 
-    @GetMapping(value = "class", produces = "application/json")
+    public TeacherEndpoint(CourseService courseService, CourseAndDTOMapper courseAndDTOMapper) {
+        this.courseService = courseService;
+        this.courseAndDTOMapper = courseAndDTOMapper;
+    }
+
     @ResponseBody
+    @GetMapping(value = "class", produces = "application/json")
     public List<CourseDTO> getCoursesTeacher(@RequestAttribute("user") UserAuthDTO user) throws IOException {
         log.info("user logged: {}", user.id());
 

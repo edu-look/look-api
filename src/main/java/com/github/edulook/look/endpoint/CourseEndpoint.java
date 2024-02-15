@@ -23,19 +23,16 @@ import java.util.UUID;
 @RestController
 @RequestMapping("v1/courses")
 public class CourseEndpoint {
-
     private final CourseService courseService;
     private final CourseAndDTOMapper courseAndDTOMapper;
-    private final ApplicationEventPublisher publisher;
 
-    public CourseEndpoint(CourseService courseService, CourseAndDTOMapper courseAndDTOMapper, ApplicationEventPublisher publisher) {
+    public CourseEndpoint(CourseService courseService, CourseAndDTOMapper courseAndDTOMapper) {
         this.courseService = courseService;
         this.courseAndDTOMapper = courseAndDTOMapper;
-        this.publisher = publisher;
     }
 
     @GetMapping
-    public List<CourseDTO> getCourses(@RequestAttribute("user") UserAuthDTO user) throws IOException {
+    public List<CourseDTO> getCourses(@RequestAttribute("user") UserAuthDTO user) {
         log.info("user logged: {}", user.id());
 
         var courses =  courseAndDTOMapper
@@ -57,8 +54,7 @@ public class CourseEndpoint {
     }
 
     @GetMapping("{courseId}/materials")
-    public List<SimpleMaterialDTO> listAllWorkMaterials(@PathVariable String courseId,
-                                                        @RequestAttribute("user") UserAuthDTO user) {
+    public List<SimpleMaterialDTO> listAllWorkMaterials(@PathVariable String courseId, @RequestAttribute("user") UserAuthDTO user) {
         log.info("user logged: {}", user.id());
         log.info("materials to course: {}", courseId);
 
@@ -67,6 +63,7 @@ public class CourseEndpoint {
             .parallelStream()
             .map(courseAndDTOMapper::toSimpleDTO)
             .toList();
+
         if(materials.isEmpty())
             throw new ResourceNotFoundException(String.format("materials not found to '%s' course id", courseId));
 
@@ -77,37 +74,23 @@ public class CourseEndpoint {
     public MaterialDTO findOneCourseMaterial(@PathVariable String courseId,
                                              @PathVariable String materialId,
                                              @RequestAttribute("user") UserAuthDTO user) {
-
         var material = courseService.findOneCourseMaterial(courseId, materialId)
             .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s from course %s not found", materialId, courseId)));
-      
-        var event = CheckMaterialLinkEditEvent.builder()
-            .courseId(courseId)
-            .materialId(materialId)
-            .id(UUID.randomUUID())
-            .material(material)
-            .build();
 
-        
         return courseAndDTOMapper.toDTO(material);
     }
 
     @PutMapping("{courseId}/materials/{materialId}/edit")
     public Optional<MaterialDTO> listAllWorkMaterialsUpdate(@PathVariable String courseId,
-                                                   @PathVariable String materialId,
-                                                   @RequestBody MaterialDTO material,
-                                                   @RequestAttribute("user") UserAuthDTO user) {
-
+                                                            @PathVariable String materialId,
+                                                            @RequestBody MaterialDTO material, @RequestAttribute("user") UserAuthDTO user) {
         return Optional.ofNullable(courseService.upsetCourseMaterial(courseId, materialId, material))
-                .map(courseAndDTOMapper::toDTO);
+            .map(courseAndDTOMapper::toDTO);
     }
 
-
     @GetMapping("{courseId}/works")
-    public List<?> findlAllWorks(@PathVariable String courseId,
-                                 @RequestAttribute("user") UserAuthDTO user) {
-        var courseWorks = courseService
-                .findAllCourseWorks(courseId);
+    public List<?> findAllWorks(@PathVariable String courseId, @RequestAttribute("user") UserAuthDTO user) {
+        var courseWorks = courseService.findAllCourseWorks(courseId);
 
         if(courseWorks.isEmpty())
             throw new ResourceNotFoundException(String.format("course works not found to '%s' course id", courseId));

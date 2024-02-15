@@ -7,10 +7,10 @@ import com.github.edulook.look.core.model.Material;
 import com.github.edulook.look.core.model.Teacher;
 import com.github.edulook.look.endpoint.internal.mapper.course.CourseAndDTOMapper;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
-import com.github.edulook.look.endpoint.io.course.CourseDTO.AnnouncementDTO;
-import com.github.edulook.look.endpoint.io.course.CourseDTO.TeacherDTO;
+import com.github.edulook.look.endpoint.io.course.AnnouncementDTO;
+import com.github.edulook.look.endpoint.io.teacher.TeacherDTO;
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
-import com.github.edulook.look.endpoint.io.course.MaterialDTO.ContentMaterialDTO;
+import com.github.edulook.look.endpoint.io.course.ContentMaterialDTO;
 import com.github.edulook.look.endpoint.io.course.SimpleMaterialDTO;
 import org.springframework.stereotype.Component;
 

@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("v1/students")
 public class StudentEndpoint {
-
     private final StudentService studentService;
     private final StudentAndDTOMapper mapper;
-
 
     public StudentEndpoint(StudentService studentService, StudentAndDTOMapper mapper) {
         this.studentService = studentService;
@@ -27,13 +25,12 @@ public class StudentEndpoint {
 
     @GetMapping("profile")
     public StudentDTO getProfile(@RequestAttribute("user") UserAuthDTO user) {
+        log.info("user logged: {}", user.id());
 
-            log.info("user logged: {}", user.id());
+        var student = studentService
+            .getStudentProfile(user.id())
+            .orElseThrow(() -> new ResourceNotFoundException(String.format("profile to %s not found", user.email())));
 
-            var student = studentService
-                .getStudentProfile(user.id())
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("profile to %s not found", user.email())));
-
-            return mapper.toDTO(student);
+        return mapper.toDTO(student);
     }
 }

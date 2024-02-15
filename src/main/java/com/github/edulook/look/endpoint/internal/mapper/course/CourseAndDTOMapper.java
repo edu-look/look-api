@@ -3,7 +3,7 @@ package com.github.edulook.look.endpoint.internal.mapper.course;
 import java.util.List;
 
 import com.github.edulook.look.endpoint.io.course.MaterialDTO;
-import com.github.edulook.look.endpoint.io.course.MaterialDTO.ContentMaterialDTO;
+import com.github.edulook.look.endpoint.io.course.ContentMaterialDTO;
 
 import com.github.edulook.look.endpoint.io.course.SimpleMaterialDTO;
 import org.mapstruct.Mapper;
@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Announcement;
 import com.github.edulook.look.endpoint.io.course.CourseDTO;
-import com.github.edulook.look.endpoint.io.course.CourseDTO.AnnouncementDTO;
+import com.github.edulook.look.endpoint.io.course.AnnouncementDTO;
 import com.github.edulook.look.core.model.WorkMaterial;
 import com.github.edulook.look.core.model.Material;
 
