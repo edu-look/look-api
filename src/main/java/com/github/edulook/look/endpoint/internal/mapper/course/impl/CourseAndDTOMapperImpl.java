@@ -89,6 +89,7 @@ public class CourseAndDTOMapperImpl implements CourseAndDTOMapper {
 
         return MaterialDTO.builder()
             .description(source.getDescription())
+            .createdAt(source.getCreatedAt())
             .materials(materials)
             .build();
     }

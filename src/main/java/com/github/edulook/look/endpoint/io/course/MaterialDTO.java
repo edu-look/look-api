@@ -7,6 +7,7 @@ import java.util.List;
 @Builder
 public record MaterialDTO(
     String description,
+    String createdAt,
     List<ContentMaterialDTO> materials
 ){
 }
