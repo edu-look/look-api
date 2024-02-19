@@ -17,5 +17,4 @@ public class LookApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LookApplication.class, args);
 	}
-
 }
