@@ -1,6 +1,5 @@
 package com.github.edulook.look.service;
 
-import com.github.edulook.look.core.data.Typename;
 import com.github.edulook.look.core.exceptions.ResourceNotFoundException;
 import com.github.edulook.look.core.model.Course;
 import com.github.edulook.look.core.model.Announcement;
@@ -17,8 +16,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -68,58 +67,64 @@ public class CourseService {
             return List.of();
         }
 
-        var announcements = courseRepository
-                .getAllAnnouncementByCourse(course.get());
+        var announcements = courseRepository.getAllAnnouncementByCourse(course.get());
 
         announcements.forEach(it -> publisher.publishEvent(AnnouncementEvent.fromModel(it)));
 
         return announcements;
     }
 
-    public WorkMaterial upsetCourseMaterial(String courseId, String materialId, MaterialDTO material) {
-        var materialSavedOptional = courseRepository.findOneMaterial(Course.builder().id(courseId).build(), materialId);
+    public WorkMaterial upsetCourseMaterial(String courseId, String materialId, MaterialDTO materialDTO) {
+        var course = Course.builder()
+            .id(courseId)
+            .build();
 
-        if(materialSavedOptional.isEmpty())
-            throw new ResourceNotFoundException(String.format("material '%s' not found", materialId));
+        var material = courseRepository
+            .findOneMaterial(course, materialId)
+            .orElseThrow(() -> new ResourceNotFoundException(String.format("material '%s' not found", materialId)));
 
-        var materialSaved = materialSavedOptional.get();
-        materialSaved.setDescription(material.description());
+        updateWorkMaterial(material, materialDTO);
 
-        materialSaved.getMaterials().parallelStream().forEach(it -> {
-            try {
-                var materialSelectedDTO = material.materials().stream()
-                    .filter(mat -> mat.id().equalsIgnoreCase(it.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s not found", it.getId())));
-
-                it.setName(materialSelectedDTO.name());
-                it.setOption(materialSelectedDTO.option().orElse(null));
-                it.setDescription(materialSelectedDTO.description());
-
-                emitContentParserEvent(it, materialSaved);
-            }
-            catch (Exception e) {
-                log.error("error:: ", e);
-            }
-        });
-
-        return courseRepository.upsetCourseMaterial(materialSaved);
+        return courseRepository
+            .upsetCourseMaterial(material)
+            .also(it -> it.forEachMaterial(content -> emitContentParserEvent(content, it)));
     }
 
-    private void emitContentParserEvent(Material it, WorkMaterial materialSaved) {
-        if(!it.getType().equalsIgnoreCase(Typename.PDF))
+    private void updateWorkMaterial(WorkMaterial workMaterial, MaterialDTO materialDTO) {
+        workMaterial.forEachMaterial(material -> replaceOldContentForDTOContent(material, materialDTO));
+        workMaterial.setDescription(materialDTO.description());
+    }
+
+    private void replaceOldContentForDTOContent(Material material, MaterialDTO materialDTO) {
+        try {
+            var materialSelectedDTO = materialDTO.materials().stream()
+                .filter(mat -> mat.id().equalsIgnoreCase(material.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("material %s not found", material.getId())));
+
+            material.setName(materialSelectedDTO.name());
+            material.setOption(materialSelectedDTO.option().orElse(null));
+            material.setDescription(materialSelectedDTO.description());
+        }
+        catch (Exception e) {
+            log.error("error:: ", e);
+        }
+    }
+
+    private void emitContentParserEvent(Material material, WorkMaterial workMaterial) {
+        if(Objects.isNull(material) || material.notPDFContent())
             return;
 
-        it.getOption().ifPresent(option -> {
-            var classification = option.isEnableOCR()
+        material.ifOptionPresent(it -> {
+            var classification = it.isEnableOCR()
                 ? PDFClassificationEnum.NOREGULAR
                 : PDFClassificationEnum.REGULAR;
 
             var event = CourseMaterialExtractPDFEvent.builder()
-                .contentId(it.getId())
-                .courseId(materialSaved.getCourseId())
-                .materialId(materialSaved.getId())
-                .option(it.getOption().get())
+                .contentId(material.getId())
+                .courseId(workMaterial.getCourseId())
+                .materialId(workMaterial.getId())
+                .option(it)
                 .classification(classification)
                 .build();
 
