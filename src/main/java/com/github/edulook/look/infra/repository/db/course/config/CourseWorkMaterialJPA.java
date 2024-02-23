@@ -22,5 +22,4 @@ public interface CourseWorkMaterialJPA extends JpaRepository<WorkMaterial, Strin
     Optional<WorkMaterial> findByCourseAndMaterialId(Course courseId, String materialId);
 
 
-
 }
