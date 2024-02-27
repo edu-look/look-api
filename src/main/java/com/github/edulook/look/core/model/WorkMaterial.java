@@ -28,6 +28,9 @@ public class WorkMaterial {
     private String createdAt;
     @OneToMany(mappedBy = "workMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Material> materials;
+    @ManyToOne
+    @JoinColumn(name = "access", referencedColumnName = "access")
+    private UserCourseAccess access;
 
     public void forEachMaterial(Consumer<Material> consumer) {
         if (Objects.isNull(materials))
